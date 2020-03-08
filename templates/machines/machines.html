@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+
+    {% if latest_machines %}
+    <table>
+        <tr>
+            <td>Назва машини</td>
+            <td>Інвентарний номер</td>
+            <td>Номер машини</td>
+        </tr>
+        {% for machine in latest_machines %}
+        <tr>
+            <td>{{ machine.name }}</td>
+            <td>{{ machine.inventory_number }}</td>
+            <td>{{ machine.number_machine }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+        <p>NO MACHINES LIST</p>
+    {% endif %}
+
+
+
+{% endblock %}
