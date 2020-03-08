@@ -1,7 +1,7 @@
 def read_data_xls(*argv):
     import xlrd
     import datetime
-    loc = ("files/machines_bd.xls") 
+    loc = ("static_files/other_data/machines_bd.xls") 
   
     wb = xlrd.open_workbook(loc) 
     sheet = wb.sheet_by_index(0) 
