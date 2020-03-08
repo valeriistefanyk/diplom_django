@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.shortcuts import get_object_or_404
 
 from machines import models
 
@@ -10,6 +11,11 @@ def all_machines(request):
     }
     return render(request, 'machines/machines.html', context=context)
 
-def detail_machine(request):
-
-    return render(request, 'machines/detail_machine.html')
+def detail_machine(request, id):
+    machine = get_object_or_404(models.Machine, pk=id)
+    
+    context = {
+        'machine': machine,
+    }
+    
+    return render(request, 'machines/detail_machine.html', context)

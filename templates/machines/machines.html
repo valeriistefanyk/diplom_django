@@ -9,12 +9,14 @@
             <td>Назва машини</td>
             <td>Інвентарний номер</td>
             <td>Номер машини</td>
+            <td>&nbsp;</td>
         </tr>
         {% for machine in latest_machines %}
         <tr>
             <td>{{ machine.name }}</td>
             <td>{{ machine.inventory_number }}</td>
             <td>{{ machine.number_machine }}</td>
+            <td><a href="{% url 'detail' machine.id %}">детальніше</a></td>
         </tr>
         {% endfor %}
     </table>
