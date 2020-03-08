@@ -2,6 +2,8 @@
 
 {% block content %}
 
+    <!-- Добавляем sidebar -->
+    {% include 'parts_element/_sidebar.html' %}
 
     {% if latest_machines %}
     <table class="table">
@@ -23,7 +25,8 @@
     {% else %}
         <p>NO MACHINES LIST</p>
     {% endif %}
+    <br><br>
 
-
-
+    <!-- Добавляем footer -->
+    {% include 'parts_element/_footer.html' %}
 {% endblock %}
