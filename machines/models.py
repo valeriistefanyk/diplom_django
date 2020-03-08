@@ -52,7 +52,10 @@ class Machine(models.Model):
     hydraulic_fluid_mark = models.CharField(max_length=100, blank=True)
     hydraulic_fluid_volume = models.CharField(max_length=30, blank=True)
 
+    def full_name(self):
+        return f"{self.name} №{self.number_machine} [IN {self.inventory_number}]" 
+
     def __str__(self):
-        return f"{self.name} №{self.number_machine} [{self.inventory_number}]"
+        return f"{self.name} № {self.number_machine} [{self.inventory_number}]"
 
     # district = models.ForeignKey(Brigade, null = True, on_delete=models.CASCADE)
