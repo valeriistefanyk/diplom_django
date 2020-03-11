@@ -2,14 +2,30 @@ from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 
+from main._helper_func import _whoisit, _status
+
+
 # request is django.core.handlers.wsgi.WSGIRequest class
 def home(request):
+    return render(request, 'main/home.html')
 
 
-    if request.user.is_authenticated:
-        user = request.user
-        return HttpResponse('Hello ' + user.username + '.<br><a href="/logout">LOGOUT</a>')
-    return HttpResponse('Ви не аутентифіковані, для аутентифікації перейдіть будь ласка на сторінку /login/')
+def redirect_on_right_page(request):
+
+    user = request.user
+    status = _whoisit(user)
+    if status == _status['admin']:
+        return redirect('/admin/')
+    if status == _status['driver']:
+        return redirect('driver:home-page')
+    if status == _status['director']:
+        return redirect('director:home-page')
+     
+    if status == _status['engineer']:
+        return redirect('engineer:home-page')
+
+    return redirect('home')
+
 
 def mylogin(request):
     
@@ -23,12 +39,15 @@ def mylogin(request):
             user = authenticate(username=utxt, password=ptxt)
             if user != None:
                 login(request, user)
-                return redirect('home')
+                # return redirect('redirect_on_right_page')
+                return redirect_on_right_page(request)
+
             return HttpResponse('Hello some user!')
 
     return render(request, 'main/login.html')
 
 
 def mylogout(request):
+
     logout(request)
     return redirect('mylogin')
