@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from django.http import Http404
 
 from engineer import models
 
@@ -9,6 +10,10 @@ def hello_mess(request):
     if not request.user.is_authenticated:
         return redirect('mylogin')
     # login check end
+    
+    if not ('engineer.view_engineer' in request.user.get_group_permissions()):
+        # return redirect(reverse('home', kwargs={ 'message': FooBar }))
+        raise Http404("У Вас не має прав на перегляд цієї сторінки")
 
     return render(request, 'engineer/home_page.html')
 
@@ -20,6 +25,9 @@ def showRaports(request):
         return redirect('mylogin')
     # login check end
 
+    if not ('engineer.view_engineer' in request.user.get_group_permissions()):
+        # return redirect(reverse('home', kwargs={ 'message': FooBar }))
+        raise Http404("У Вас не має прав на перегляд цієї сторінки")
 
     raports = models.Report.objects.all()
     context = {

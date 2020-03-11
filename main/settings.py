@@ -40,10 +40,10 @@ INSTALLED_APPS = [
     
     'debug_toolbar',
 
-    'employees',
     'machines',
     'director',
     'engineer',
+    'administrator',
     'senior_driver',
 ]
 
