@@ -9,11 +9,12 @@ def hello_mess(request):
         return redirect('mylogin')
     # login check end
 
-    if not ('driver.view_driver' in request.user.get_group_permissions()):
+    if not ('senior_driver.view_seniordriver' in request.user.get_group_permissions()):
         # return redirect(reverse('home', kwargs={ 'message': FooBar }))
         raise Http404("У Вас не має прав на перегляд цієї сторінки")
 
     return render(request, 'senior-driver/home_page.html', context={})
+
 
 def about(request):
 
@@ -22,8 +23,25 @@ def about(request):
         return redirect('mylogin')
     # login check end
 
-    if not ('driver.view_driver' in request.user.get_group_permissions()):
+    if not ('senior_driver.view_seniordriver' in request.user.get_group_permissions()):
         # return redirect(reverse('home', kwargs={ 'message': FooBar }))
         raise Http404("У Вас не має прав на перегляд цієї сторінки")
 
-    return render(request, 'senior-driver/about.html')
+    return render(request, 'senior-driver/about_page.html')
+
+
+
+
+def make_report(request):
+
+    # login check start
+    if not request.user.is_authenticated:
+        return redirect('mylogin')
+    # login check end
+
+    if not ('senior_driver.view_seniordriver' in request.user.get_group_permissions()):
+        # return redirect(reverse('home', kwargs={ 'message': FooBar }))
+        raise Http404("У Вас не має прав на перегляд цієї сторінки")
+
+
+    return render(request, 'senior-driver/make_report.html')
