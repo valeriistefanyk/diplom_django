@@ -1,5 +1,5 @@
 from django.db import models
-
+from senior_driver.models import SeniorDriver
 
 class Machine(models.Model):
     """Опис колійних машин"""
@@ -51,6 +51,9 @@ class Machine(models.Model):
     
     hydraulic_fluid_mark = models.CharField(max_length=100, blank=True)
     hydraulic_fluid_volume = models.CharField(max_length=30, blank=True)
+
+    brigade = models.ForeignKey(SeniorDriver, on_delete=models.CASCADE)
+
 
     def full_name(self):
         return f"{self.name} №{self.number_machine} [IN {self.inventory_number}]" 

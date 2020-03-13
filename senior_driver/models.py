@@ -6,6 +6,7 @@ class SeniorDriver(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
     date_of_birth = models.DateField(blank=True, null=False)
-    
+    brigade_name = models.CharField(blank=True, max_length=50)
+
     def __str__(self):
         return f"{self.user.username}"
