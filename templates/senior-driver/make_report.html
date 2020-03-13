@@ -4,9 +4,34 @@
 
 {% block content %}
 
-<h2>Створення звіту</h2>
-<br><br><br><br><br>
+    <h2>Створення звіту</h2>
+    <form action="{% url 'driver:report' %}" method="POST">
+        {% csrf_token %}
 
-<a href="{% url 'driver:home-page' %}">В особистий кабінет</a>
+        <p><label for="motohour">Мотогини:</label>
+        <input type="number" name="motohour" id="motohour" required></p>
+    
+        <p><label for="fuel">Використано бензину:</label>
+        <input type="number" name="fuel" id="fuel" required></p>
+
+        <p><label for="date">Дата:</label>
+        <input type="date" name="date" id="date" required></p>
+    
+        <p><label for="breakage">Була поломка:</label>
+        <input type="checkbox" name="breakage" id="breakage"></p>
+        
+        <select id="machine" name="machine" onChange="redirectUrl()">
+            {% for machine in used_machines %}
+            <option value="{{machine.id}}">
+                {{machine.full_name}}
+            </option>
+            {% endfor %}
+        </select>
+
+        <input type="submit" value="Submit">
+    </form>
+    <br><br><br><br><br>
+
+    <a href="{% url 'driver:home-page' %}">В особистий кабінет</a>
 
 {% endblock %}

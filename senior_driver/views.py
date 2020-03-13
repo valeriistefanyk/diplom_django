@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect
 from django.http import Http404
 
+from machines.models import Machine
+
 
 def hello_mess(request):
 
@@ -31,7 +33,6 @@ def about(request):
 
 
 
-
 def make_report(request):
 
     # login check start
@@ -43,5 +44,17 @@ def make_report(request):
         # return redirect(reverse('home', kwargs={ 'message': FooBar }))
         raise Http404("У Вас не має прав на перегляд цієї сторінки")
 
+    machines = Machine.objects.all()
 
-    return render(request, 'senior-driver/make_report.html')
+    # todo change
+    used_machines = machines[:5]
+    context = {
+        'used_machines': used_machines 
+    }
+
+    if request.method == "POST":
+        # TODO: make post data
+        print("METHOD POST")
+        return redirect('driver:home-page')
+
+    return render(request, 'senior-driver/make_report.html', context)
