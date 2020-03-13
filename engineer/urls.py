@@ -6,5 +6,5 @@ app_name = 'engineer'
 
 urlpatterns = [
     path('', views.hello_mess, name='home-page'),
-    path('raports/', views.showRaports, name='raports'),
+    path('reports/', views.showRaports, name='reports'),
 ]

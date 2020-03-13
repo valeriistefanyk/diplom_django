@@ -17,16 +17,18 @@
         <p><label for="date">Дата:</label>
         <input type="date" name="date" id="date" required></p>
     
-        <p><label for="breakage">Була поломка:</label>
-        <input type="checkbox" name="breakage" id="breakage"></p>
         
-        <select id="machine" name="machine" onChange="redirectUrl()">
-            {% for machine in used_machines %}
+        
+        <select id="machine" name="machine">
+            {% for machine in can_use_machines %}
             <option value="{{machine.id}}">
                 {{machine.full_name}}
             </option>
             {% endfor %}
         </select>
+        <br><br>
+        <p><label for="breakage">Була поломка:</label>
+            <input type="checkbox" name="breakage" id="breakage"></p>
 
         <input type="submit" value="Submit">
     </form>

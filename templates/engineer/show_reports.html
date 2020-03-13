@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block title %}Звіти{% endblock %}
+
+{% block content %}
+
+    <h3>Звіти</h3><br>
+    {% if reports %}
+    {% for report in reports %}
+        <p>Звіт за {{ report.date }}</p>
+        <p>Оформив: {{ report.filled_up.user.first_nama }} {{ report.filled_up.user.last_name }}</p>
+        <p>Машина {{ report.machine.full_name }}</p>
+        <p>Мотогодини: {{ report.motohour}}. Використано бензину: {{ report.fuel }} </p>
+        
+        {% if report.breakage %}
+            <br>    
+            <p>Поломка машини!</p>
+            <p>Інформація про поломку: ---- ДОБАВИТЬ ПОЛЕ В БД ----</p>
+        {% endif %}
+        
+        <hr>
+    {% endfor %}
+    
+    {% else %}
+        <p>Звітів на даний момент немає</p>
+    {% endif%}
+
+    <br><br><br>
+    <a href="{% url 'engineer:home-page' %}">В особистий кабінет</a>
+
+{% endblock %}

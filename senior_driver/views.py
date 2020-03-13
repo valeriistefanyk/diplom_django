@@ -4,6 +4,7 @@ from django.http import Http404
 from machines.models import Machine
 from engineer.models import Report
 
+
 def hello_mess(request):
 
     # login check start
@@ -46,10 +47,14 @@ def make_report(request):
 
     machines = Machine.objects.all()
 
-    # todo change
-    used_machines = machines[:5]
+    if not request.user.is_superuser:
+        can_use_machines = Machine.objects.filter(
+            brigade=request.user.seniordriver).exclude(breakage=True)
+    else:
+        can_use_machines = Machine.objects.all()[:5]
+        
     context = {
-        'used_machines': used_machines 
+        'can_use_machines': can_use_machines 
     }
 
     if request.method == "POST":
@@ -66,11 +71,16 @@ def make_report(request):
             
             breakage = True if request.POST.get('breakage') == 'on' else False
 
-            print(
-                f"filled up: {filled_up}\ndate: {date}\nmotohour: {motohour}\nfuel: {fuel}\nmachine id: {machine_id}\nbreakage: {breakage}"
-            )
+            # print(
+            #     f"filled up: {filled_up}\ndate: {date}\nmotohour: {motohour}\nfuel: {fuel}\nmachine id: {machine_id}\nbreakage: {breakage}"
+            # )
+
+            if breakage:
+                machine.breakage = True
+                machine.save()
 
             report = Report.objects.create(filled_up=filled_up, date=date, motohour=motohour, fuel=fuel, machine=machine, breakage=breakage)
+            
 
         return redirect('driver:home-page')
 

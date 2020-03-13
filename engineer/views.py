@@ -29,9 +29,9 @@ def showRaports(request):
         # return redirect(reverse('home', kwargs={ 'message': FooBar }))
         raise Http404("У Вас не має прав на перегляд цієї сторінки")
 
-    raports = models.Report.objects.all()
+    reports = models.Report.objects.all()
     context = {
-        'raports': raports
+        'reports': reports
     }
     
-    return render(request, 'engineer/show_raports.html', context)
+    return render(request, 'engineer/show_reports.html', context)

@@ -52,6 +52,7 @@ class Machine(models.Model):
     hydraulic_fluid_mark = models.CharField(max_length=100, blank=True)
     hydraulic_fluid_volume = models.CharField(max_length=30, blank=True)
 
+    breakage = models.BooleanField(default=False)
     brigade = models.ForeignKey(SeniorDriver, on_delete=models.CASCADE)
 
 
