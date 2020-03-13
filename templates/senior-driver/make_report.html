@@ -9,10 +9,10 @@
         {% csrf_token %}
 
         <p><label for="motohour">Мотогини:</label>
-        <input type="number" name="motohour" id="motohour" required></p>
+        <input type="number" step="0.1" name="motohour" id="motohour" required></p>
     
         <p><label for="fuel">Використано бензину:</label>
-        <input type="number" name="fuel" id="fuel" required></p>
+        <input type="number" step="0.1" name="fuel" id="fuel" required></p>
 
         <p><label for="date">Дата:</label>
         <input type="date" name="date" id="date" required></p>
