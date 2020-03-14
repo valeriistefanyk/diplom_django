@@ -30,8 +30,12 @@ def showRaports(request):
         raise Http404("У Вас не має прав на перегляд цієї сторінки")
 
     reports = models.Report.objects.all()
+    # reports_forwarded = reports.
+
     context = {
-        'reports': reports
+        'reports': reports,
+        'reports_forwarded': reports.filter(checked=True),
+        'reports_unforwarded': reports.filter(checked=False),
     }
     
     return render(request, 'engineer/show_reports.html', context)

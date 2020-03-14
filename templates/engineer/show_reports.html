@@ -4,15 +4,59 @@
 
 {% block content %}
 
-    <h3>Звіти</h3><br>
-    {% if reports %}
-    {% for report in reports %}
-        <p>Звіт за {{ report.date }}</p>
-        <p>Оформив: {{ report.filled_up.user.first_nama }} {{ report.filled_up.user.last_name }}</p>
-        <p>Машина {{ report.machine.full_name }}</p>
-        <p>Мотогодини: {{ report.motohour}}. Використано бензину: {{ report.fuel }} </p>
+<nav class="navbar navbar-expand-md navbar-dark bg-dark">
+    <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="#">Привіт, {{ user.username }}!</a>
+            </li>
+            <li class="nav-item">
+                <a href="{% url 'engineer:home-page' %}" class="nav-link">Кабінет</a>
+            </li>
+            <li class="nav-item">
+                <a href="{% url 'mylogout' %}" class="nav-link">Вийти</a>
+            </li>
+           
+        </ul>
+    </div>
+</nav>
+
+    <br><br>
+    <h2>Звіти</h2><br>
+
+    {% if reports_unforwarded %}
+    <h4>Звіти які ще не передані керівництву:</h4>
+    {% for report_unforwarded in reports_unforwarded %}
+        <p>Звіт за {{ report_unforwarded.date }}</p>
+        <p>Оформив: {{ report_unforwarded.filled_up.user.first_nama }} {{ report_unforwarded.filled_up.user.last_name }}</p>
+        <p>Машина {{ report_unforwarded.machine.full_name }}</p>
+        <p>Мотогодини: {{ report_unforwarded.motohour}}. Використано бензину: {{ report_unforwarded.fuel }} </p>
         
-        {% if report.breakage %}
+        {% if reports_unforwarded.breakage %}
+            <br>    
+            <p>Поломка машини!</p>
+            <p>Інформація про поломку: ---- ДОБАВИТЬ ПОЛЕ В БД ----</p>
+        {% endif %}
+        <br>
+        <form action="#" method="POST">
+            {% csrf_token %}
+            <button>Передати керівництву</button>
+        </form>
+        <hr>
+        
+    {% endfor %}
+    <br><br>
+    {% endif%}
+
+    {% if reports_forwarded %}
+    <h4>Звіти які передані керівництву:</h4>
+    {% for report_forwarded in reports_forwarded %}
+        <p>Звіт за {{ report_forwarded.date }}</p>
+        <p>Оформив: {{ report_forwarded.filled_up.user.first_nama }} {{ report_forwarded.filled_up.user.last_name }}</p>
+        <p>Машина {{ report_forwarded.machine.full_name }}</p>
+        <p>Мотогодини: {{ report_forwarded.motohour}}. Використано бензину: {{ report_forwarded.fuel }} </p>
+        
+        {% if report_forwarded.breakage %}
             <br>    
             <p>Поломка машини!</p>
             <p>Інформація про поломку: ---- ДОБАВИТЬ ПОЛЕ В БД ----</p>
@@ -20,12 +64,7 @@
         
         <hr>
     {% endfor %}
-    
-    {% else %}
-        <p>Звітів на даний момент немає</p>
     {% endif%}
-
-    <br><br><br>
-    <a href="{% url 'engineer:home-page' %}">В особистий кабінет</a>
+    
 
 {% endblock %}
