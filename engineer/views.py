@@ -29,8 +29,17 @@ def showRaports(request):
         # return redirect(reverse('home', kwargs={ 'message': FooBar }))
         raise Http404("У Вас не має прав на перегляд цієї сторінки")
 
+    if request.method == "POST":
+        checked = request.POST.get('checked')
+        report_id = request.POST.get('report_id')
+        
+        if checked == "True":
+            report = models.Report.objects.get(pk=report_id)
+            report.checked = True
+            report.save()
+            print(f"CHECKED: {checked}\nREPORT ID: {report_id}\nREPORT MODEL: {report}\nREPORT CHECKED BEFORE: {report.checked}")
+
     reports = models.Report.objects.all()
-    # reports_forwarded = reports.
 
     context = {
         'reports': reports,

@@ -38,9 +38,12 @@
             <p>Інформація про поломку: ---- ДОБАВИТЬ ПОЛЕ В БД ----</p>
         {% endif %}
         <br>
-        <form action="#" method="POST">
+        <form action="{% url 'engineer:reports' %}" method="POST">
             {% csrf_token %}
-            <button>Передати керівництву</button>
+            <!-- можно добавить модально окно "уверены что хотите передать директору?" -->
+            <input type="hidden" name="checked" value="True" />
+            <input type="hidden" name="report_id" value="{{report_unforwarded.id}}" />
+            <button>Передати керівництву</button> 
         </form>
         <hr>
         

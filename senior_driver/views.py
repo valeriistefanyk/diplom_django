@@ -58,8 +58,7 @@ def make_report(request):
     }
 
     if request.method == "POST":
-        # TODO: make post data
-        print("METHOD POST")
+        
         if not request.user.is_superuser:
             filled_up = request.user.seniordriver
             date = request.POST.get('date')

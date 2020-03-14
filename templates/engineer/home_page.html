@@ -4,28 +4,28 @@
 
 {% block content %}
 
-<nav class="navbar navbar-expand-md navbar-dark bg-dark">
-    <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
-        <ul class="navbar-nav ml-auto">
-            <li class="nav-item">
-                <a class="nav-link" href="#">Привіт, {{ user.username }}!</a>
-            </li>
-            <li class="nav-item">
-                <a href="{% url 'mylogout' %}" class="nav-link">Вийти</a>
-            </li>
-           
-        </ul>
-    </div>
-</nav>
-
-<br>
-<h1>HOME PAGE ENGINEER</h1>
-<h1>HOME PAGE ENGINEER</h1>
-<h1>HOME PAGE ENGINEER</h1>
-<h1>HOME PAGE ENGINEER</h1>
-<h1>HOME PAGE ENGINEER</h1>
-<h1>HOME PAGE ENGINEER</h1>
-<br>
-<h2><a href="{% url 'engineer:reports' %}">Звіти</a></h2>
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark">
+        <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Привіт, {{ user.username }}!</a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'mylogout' %}" class="nav-link">Вийти</a>
+                </li>
+            
+            </ul>
+        </div>
+    </nav>
+    
+    <br>
+    <h1>HOME PAGE ENGINEER</h1>
+    <h1>HOME PAGE ENGINEER</h1>
+    <h1>HOME PAGE ENGINEER</h1>
+    <h1>HOME PAGE ENGINEER</h1>
+    <h1>HOME PAGE ENGINEER</h1>
+    <h1>HOME PAGE ENGINEER</h1>
+    <br>
+    <h2><a href="{% url 'engineer:reports' %}">Звіти</a></h2>
 
 {% endblock %}
