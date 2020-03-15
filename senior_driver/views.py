@@ -5,7 +5,9 @@ from machines.models import Machine
 from engineer.models import Report
 import datetime
 
-def hello_mess(request):
+
+
+def home_page(request):
 
     # login check start
     if not request.user.is_authenticated:
@@ -17,6 +19,7 @@ def hello_mess(request):
         raise Http404("У Вас не має прав на перегляд цієї сторінки")
 
     return render(request, 'senior-driver/home_page.html', context={})
+
 
 
 def about(request):
@@ -85,3 +88,44 @@ def make_report(request):
         return redirect('driver:home-page')
 
     return render(request, 'senior-driver/make_report.html', context)
+
+
+
+def show_my_reports(request):
+    # login and permission check start
+    if not request.user.is_authenticated:
+        return redirect('mylogin')
+    
+    if not ('senior_driver.view_seniordriver' in request.user.get_group_permissions()):
+        # return redirect(reverse('home', kwargs={ 'message': FooBar }))
+        raise Http404("У Вас не має прав на перегляд цієї сторінки")
+    # login and permission check end
+    
+    my_reports = Report.objects.filter(filled_up__user=request.user)
+    context = {
+        'my_reports': my_reports
+    }
+    
+    return render(request, 'senior-driver/my_reports.html', context)
+
+
+
+def show_machines(request):
+    
+    # login and permission check start
+    if not request.user.is_authenticated:
+        return redirect('mylogin')
+    
+    if not ('senior_driver.view_seniordriver' in request.user.get_group_permissions()):
+        # return redirect(reverse('home', kwargs={ 'message': FooBar }))
+        raise Http404("У Вас не має прав на перегляд цієї сторінки")
+    # login and permission check end
+    
+
+    my_machines = Machine.objects.filter(brigade=request.user.seniordriver)
+    context = {
+        'my_machines': my_machines.filter(breakage=False),
+        'my_machines_broken': my_machines.filter(breakage=True),
+    }
+
+    return render(request, 'senior-driver/my_machines.html', context)

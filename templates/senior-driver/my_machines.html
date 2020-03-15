@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block title %}Мої машини{% endblock %}
+
+{% block content %}
+
+<nav class="navbar navbar-expand-md navbar-dark bg-dark">
+    <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="#">Привіт, {{ user.username }}!</a>
+            </li>
+            <li class="nav-item">
+                <a href="{% url 'driver:home-page' %}" class="nav-link">Кабінет</a>
+            </li>
+            <li class="nav-item">
+                <a href="{% url 'mylogout' %}" class="nav-link">Вийти</a>
+            </li>
+           
+        </ul>
+    </div>
+</nav>
+
+    <br><br>
+    <h3>Машини які належать Вам:</h3><br>
+
+    {# НЕ СЛОМАННЫЕ МАШИНЫ #}
+    {% if my_machines %}
+        <ul>   
+        {% for my_machine in my_machines %}
+            <li>
+                <p>{{ my_machine.full_name }}  | 
+                    <a href="{% url 'machines:detail' my_machine.id %}">детальніше</a></p>
+            </li> 
+        {% endfor %}
+        </ul> 
+    {% else %}
+        <p>Не має машин</p>
+    {% endif %}
+    
+    {# СЛОМАННЫЕ МАШИНЫ #}
+    {% if my_machines_broken %}
+        <h3>Машини які зламані і знаходяться в ремонті:</h3>
+        <ul>
+        {% for my_machine_broken in my_machines_broken %}
+            <li>
+                <p>{{ my_machine_broken.full_name }}  | 
+                    <a href="{% url 'machines:detail' my_machine_broken.id %}">детальніше</a></p>
+            </li>     
+        {% endfor %}
+        </ul>
+    {% endif %}
+
+
+{% endblock %}
