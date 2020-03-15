@@ -32,6 +32,7 @@ urlpatterns = [
     path('engineer/', include('engineer.urls')),
     path('director/', include('director.urls')),
 
+    path('administrator/', include('administrator.urls')),
 ]
 
 from django.conf import settings

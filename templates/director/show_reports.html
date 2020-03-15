@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block title %}Звіти{% endblock %}
+
+{% block content %}
+
+
+<nav class="navbar navbar-expand-md navbar-dark bg-dark">
+    <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="#">Привіт, {{ user.username }}!</a>
+            </li>
+            <li class="nav-item">
+                <a href="{% url 'director:home-page' %}" class="nav-link">Кабінет</a>
+            </li>
+            <li class="nav-item">
+                <a href="{% url 'mylogout' %}" class="nav-link">Вийти</a>
+            </li>
+           
+        </ul>
+    </div>
+</nav>
+
+    <br><br>
+    <h2>Звіти</h2><br>
+
+    {% if reports %}
+    
+    {% for report in reports %}
+        <p>Звіт за {{ report.date }}</p>
+        <p>Оформив: {{ report.filled_up.user.first_nama }} {{ report.filled_up.user.last_name }}</p>
+        <p>Машина {{ report.machine.full_name }}</p>
+        <p>Мотогодини: {{ report.motohour}}. Використано бензину: {{ report.fuel }} </p>
+        
+        {% if report.breakage %}
+            <br>    
+            <p>Поломка машини!</p>
+            <p>Інформація про поломку: ---- ДОБАВИТЬ ПОЛЕ В БД ----</p>
+        {% endif %}
+        <br>
+        <hr>
+        
+    {% endfor %}
+    <br><br>
+    {% endif%}
+    
+
+{% endblock %}

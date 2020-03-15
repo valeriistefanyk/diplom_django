@@ -3,7 +3,7 @@ from django.http import Http404
 
 from machines.models import Machine
 from engineer.models import Report
-
+import datetime
 
 def hello_mess(request):
 
@@ -54,7 +54,8 @@ def make_report(request):
         can_use_machines = Machine.objects.all()[:5]
         
     context = {
-        'can_use_machines': can_use_machines 
+        'can_use_machines': can_use_machines,
+        'date_today': datetime.date.today().strftime("%Y-%m-%d")
     }
 
     if request.method == "POST":

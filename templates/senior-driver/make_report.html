@@ -4,6 +4,25 @@
 
 {% block content %}
 
+
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark">
+        <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Привіт, {{ user.username }}!</a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'driver:home-page' %}" class="nav-link">Кабінет</a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'mylogout' %}" class="nav-link">Вийти</a>
+                </li>
+            
+            </ul>
+        </div>
+    </nav>
+
+
     <h2>Створення звіту</h2>
     <form action="{% url 'driver:report' %}" method="POST">
         {% csrf_token %}
@@ -15,10 +34,8 @@
         <input type="number" step="0.1" name="fuel" id="fuel" required></p>
 
         <p><label for="date">Дата:</label>
-        <input type="date" name="date" id="date" required></p>
+        <input type="date" value="{{ date_today }}" name="date" id="date" required></p>
     
-        
-        
         <select id="machine" name="machine">
             {% for machine in can_use_machines %}
             <option value="{{machine.id}}">
@@ -26,14 +43,12 @@
             </option>
             {% endfor %}
         </select>
+
         <br><br>
         <p><label for="breakage">Була поломка:</label>
             <input type="checkbox" name="breakage" id="breakage"></p>
 
         <input type="submit" value="Submit">
     </form>
-    <br><br><br><br><br>
-
-    <a href="{% url 'driver:home-page' %}">В особистий кабінет</a>
 
 {% endblock %}

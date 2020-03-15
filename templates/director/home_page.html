@@ -6,7 +6,28 @@
 
 {% block content %}
 
-<h1>HOME PAGE DIRECTOR</h1>
-<p><a href="/logout">LOGOUT</a></p>
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark">
+        <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Привіт, {{ user.username }}!</a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'mylogout' %}" class="nav-link">Вийти</a>
+                </li>
+            
+            </ul>
+        </div>
+    </nav>
+
+    <h1>HOME PAGE DIRECTOR</h1>
+    <h1>HOME PAGE DIRECTOR</h1>
+    <h1>HOME PAGE DIRECTOR</h1>
+    <h1>HOME PAGE DIRECTOR</h1>
+    <h1>HOME PAGE DIRECTOR</h1>
+
+    <h2><a href="{% url 'director:reports' %}">Звіти</a></h2>
+    <h2><a href="{% url 'director:statistics' %}">Статистика</a></h2>
+    <h2><a href="{% url 'director:employees' %}">Працівники</a></h2>
 
 {% endblock %}

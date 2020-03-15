@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}Driver page{% endblock %}
+{% block title %}Звіти{% endblock %}
 
 {% block content %}
 
@@ -10,18 +10,26 @@
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
                     <a class="nav-link" href="#">Привіт, {{ user.username }}!</a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'director:home-page' %}" class="nav-link">Кабінет</a>
+                </li>
                 <li class="nav-item">
                     <a href="{% url 'mylogout' %}" class="nav-link">Вийти</a>
                 </li>
+            
             </ul>
         </div>
     </nav>
 
-
-    <h1>HOME PAGE SENIOR DRIVER</h1>
-    <p><a href="{% url 'driver:report' %}">Создать отчет</a></p>
-
     <br><br>
-    <p><a href="{% url 'driver:about'%}">about me</a></p>
+    <h2>Статистика</h2><br>
+
+    <h3>Графики Графики Графики</h3>
+    <h3>Графики Графики Графики</h3>
+    <h3>Графики Графики Графики</h3>
+    <h3>Графики Графики Графики</h3>
+    <h3>Графики Графики Графики</h3>
+    
 
 {% endblock %}
