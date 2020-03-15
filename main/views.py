@@ -29,6 +29,11 @@ def redirect_on_right_page(request):
 
 def mylogin(request):
     
+    # login and permission check start
+    if request.user.is_authenticated:
+        return redirect_on_right_page(request)
+
+
     if request.method == 'POST':
 
         utxt = request.POST.get('username')

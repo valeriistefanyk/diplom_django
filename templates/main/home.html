@@ -29,8 +29,13 @@
         <div>
           <h5 class="text-warning"> VMM Core</h5>
           <h3 class="card-title pt-2"><strong>Главная</strong></h3>
-          <p>Нажмите кнопку "Войти" что-бы попасть на страницу авторизации</p>
-          <a class="btn btn-warning mt-4">Войти</a>
+
+          {% if user.is_authenticated %}
+            <p>Добрий день, {% if user.first_name %}{{ user.first_name }}{% else %}{{ user.username }}{% endif %}</p>
+          {% else %}
+            <p>Ви не авторизовані, увійдіть у власний акаунт</p>
+          {% endif %}
+          <a class="btn btn-warning mt-4" href="{% url 'mylogin' %}">Увійти</a>
         </div>
       </div>
     </div>
