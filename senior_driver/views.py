@@ -122,7 +122,12 @@ def show_machines(request):
     # login and permission check end
     
 
-    my_machines = Machine.objects.filter(brigade=request.user.seniordriver)
+    if not request.user.is_superuser:
+        my_machines = Machine.objects.filter(brigade=request.user.seniordriver)
+    else:
+        my_machines = Machine.objects.all()
+
+    
     context = {
         'my_machines': my_machines.filter(breakage=False),
         'my_machines_broken': my_machines.filter(breakage=True),

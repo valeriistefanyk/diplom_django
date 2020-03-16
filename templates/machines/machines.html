@@ -17,7 +17,7 @@
         </tr>
         {% for machine in latest_machines %}
         <tr>
-            <td>{{ machine.name }}</td>
+            <td>{{ machine.machine.name }}</td>
             <td>{{ machine.inventory_number }}</td>
             <td>{{ machine.number_machine }}</td>
             <td><a href="{% url 'machines:detail' machine.id %}">детальніше</a></td>

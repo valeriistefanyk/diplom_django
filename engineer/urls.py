@@ -7,4 +7,5 @@ app_name = 'engineer'
 urlpatterns = [
     path('', views.hello_mess, name='home-page'),
     path('reports/', views.showRaports, name='reports'),
+    path('drivers/', views.show_drivers, name='drivers'),
 ]

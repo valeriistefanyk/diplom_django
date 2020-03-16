@@ -46,5 +46,15 @@ def showRaports(request):
         'reports_forwarded': reports.filter(checked=True),
         'reports_unforwarded': reports.filter(checked=False),
     }
-    
     return render(request, 'engineer/show_reports.html', context)
+
+
+def show_drivers(request):
+
+    from senior_driver.models import SeniorDriver
+
+    drivers = SeniorDriver.objects.all()
+    context = {
+        'drivers': drivers
+    }
+    return render(request, 'engineer/show_drivers.html', context)

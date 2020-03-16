@@ -4,8 +4,9 @@ from senior_driver.models import SeniorDriver
 class Machine(models.Model):
     """Опис колійних машин"""
     
+    machine = models.ForeignKey('MachineName', on_delete=models.CASCADE)
+
     inventory_number = models.IntegerField()
-    name = models.CharField(max_length=40)
     number_machine = models.IntegerField()
     year_of_commissioning = models.DateField()
     
@@ -55,11 +56,18 @@ class Machine(models.Model):
     breakage = models.BooleanField(default=False)
     brigade = models.ForeignKey(SeniorDriver, on_delete=models.CASCADE)
 
-
     def full_name(self):
-        return f"{self.name} №{self.number_machine} [IN {self.inventory_number}]" 
+        return f"{self.machine.name} №{self.number_machine} [IN {self.inventory_number}]" 
 
     def __str__(self):
-        return f"{self.name} № {self.number_machine} [{self.inventory_number}]"
+        return f"{self.machine.name} № {self.number_machine} [{self.inventory_number}]"
 
-    # district = models.ForeignKey(Brigade, null = True, on_delete=models.CASCADE)
+
+class MachineName(models.Model):
+
+    name = models.CharField(max_length=50)
+    description = models.TextField(default='')
+    image = models.ImageField(blank=True, upload_to="machines")
+    
+    def __str__(self):
+        return f"{self.name}"
