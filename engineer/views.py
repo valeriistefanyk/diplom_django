@@ -58,3 +58,9 @@ def show_drivers(request):
         'drivers': drivers
     }
     return render(request, 'engineer/show_drivers.html', context)
+
+
+def work_days(request):
+
+    context = {}
+    return render(request, 'engineer/work_days.html', context)
