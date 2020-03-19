@@ -28,10 +28,10 @@
     <br>
     <h2><a href="{% url 'engineer:reports' %}">Звіти</a></h2>
     <h2><a href="{% url 'engineer:drivers' %}">Старші водії</a></h2>
+    <h2><a href="{% url 'engineer:fix_machines' %}">Інформація про ремонт машин</a></h2>
     <h2><a href="{% url 'engineer:work_days' %}">Графік роботи</a></h2>
     
     {# ДОБАВИТЬ: ИНЖЕНЕР МОЖЕТ ПОМЕЧАТЬ МАШИНЫ КАК "ПОЧИНЕНА" #}
     {# ТО ЕСТЬ --> MACHINE.BREAKAGE = FALSE #}
-    <h2><a href="#">Ремонт машин</a></h2>
 
 {% endblock %}

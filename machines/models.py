@@ -54,6 +54,9 @@ class Machine(models.Model):
     hydraulic_fluid_volume = models.CharField(max_length=30, blank=True)
 
     breakage = models.BooleanField(default=False)
+    breakage_date = models.DateField(blank=True)
+    breakage_info = models.TextField(default='', blank=True)
+
     brigade = models.ForeignKey(SeniorDriver, on_delete=models.CASCADE)
 
     def full_name(self):

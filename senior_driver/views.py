@@ -6,17 +6,14 @@ from engineer.models import Report
 import datetime
 
 
-
 def home_page(request):
 
-    # login check start
+    # login and permission check start
     if not request.user.is_authenticated:
         return redirect('mylogin')
-    # login check end
-
     if not ('senior_driver.view_seniordriver' in request.user.get_group_permissions()):
-        # return redirect(reverse('home', kwargs={ 'message': FooBar }))
         raise Http404("У Вас не має прав на перегляд цієї сторінки")
+    # login and permission check end
 
     return render(request, 'senior-driver/home_page.html', context={})
 
@@ -24,29 +21,24 @@ def home_page(request):
 
 def about(request):
 
-# login check start
+    # login and permission check start
     if not request.user.is_authenticated:
         return redirect('mylogin')
-    # login check end
-
     if not ('senior_driver.view_seniordriver' in request.user.get_group_permissions()):
-        # return redirect(reverse('home', kwargs={ 'message': FooBar }))
         raise Http404("У Вас не має прав на перегляд цієї сторінки")
+    # login and permission check end
 
     return render(request, 'senior-driver/about_page.html')
 
 
-
 def make_report(request):
 
-    # login check start
+    # login and permission check start
     if not request.user.is_authenticated:
         return redirect('mylogin')
-    # login check end
-
     if not ('senior_driver.view_seniordriver' in request.user.get_group_permissions()):
-        # return redirect(reverse('home', kwargs={ 'message': FooBar }))
         raise Http404("У Вас не має прав на перегляд цієї сторінки")
+    # login and permission check end
 
     machines = Machine.objects.all()
 
@@ -73,31 +65,27 @@ def make_report(request):
             machine = Machine.objects.get(pk=machine_id)
             
             breakage = True if request.POST.get('breakage') == 'on' else False
-
-            # print(
-            #     f"filled up: {filled_up}\ndate: {date}\nmotohour: {motohour}\nfuel: {fuel}\nmachine id: {machine_id}\nbreakage: {breakage}"
-            # )
-
-            if breakage:
-                machine.breakage = True
-                machine.save()
+            breakage_info = request.POST.get('breakage_info') if request.POST.get('breakage_info') else ''
 
             report = Report.objects.create(filled_up=filled_up, date=date, motohour=motohour, fuel=fuel, machine=machine, breakage=breakage)
             
+            if breakage:
+                machine.breakage = True
+                machine.breakage_info = breakage_info
+                machine.breakage_date = report.date
+                machine.save()
 
         return redirect('driver:home-page')
 
     return render(request, 'senior-driver/make_report.html', context)
 
 
-
 def show_my_reports(request):
+
     # login and permission check start
     if not request.user.is_authenticated:
         return redirect('mylogin')
-    
     if not ('senior_driver.view_seniordriver' in request.user.get_group_permissions()):
-        # return redirect(reverse('home', kwargs={ 'message': FooBar }))
         raise Http404("У Вас не має прав на перегляд цієї сторінки")
     # login and permission check end
     
@@ -105,9 +93,7 @@ def show_my_reports(request):
     context = {
         'my_reports': my_reports
     }
-    
     return render(request, 'senior-driver/my_reports.html', context)
-
 
 
 def show_machines(request):
@@ -115,9 +101,7 @@ def show_machines(request):
     # login and permission check start
     if not request.user.is_authenticated:
         return redirect('mylogin')
-    
     if not ('senior_driver.view_seniordriver' in request.user.get_group_permissions()):
-        # return redirect(reverse('home', kwargs={ 'message': FooBar }))
         raise Http404("У Вас не має прав на перегляд цієї сторінки")
     # login and permission check end
     

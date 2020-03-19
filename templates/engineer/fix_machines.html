@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block title %}Ремонт машин{% endblock %}
+
+{% block content %}
+
+<nav class="navbar navbar-expand-md navbar-dark bg-dark">
+    <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="#">Привіт, {{ user.username }}!</a>
+            </li>
+            <li class="nav-item">
+                <a href="{% url 'engineer:home-page' %}" class="nav-link">Кабінет</a>
+            </li>
+            <li class="nav-item">
+                <a href="{% url 'mylogout' %}" class="nav-link">Вийти</a>
+            </li>
+           
+        </ul>
+    </div>
+</nav>
+
+    <br><br>
+    <h2>Машини які перебувають у ремонті:</h2><br>
+    {% if breakage_machines %}
+        <ul>
+            {% for breakage_machine in breakage_machines %}
+            <li>{{ breakage_machine.full_name }}<br>
+                Старший водій - {{ breakage_machine.brigade.full_name }} [бригада #{{ breakage_machine.brigade.brigade_name }}]<br>
+                {% if breakage_machine.breakage_info %}
+                    Інформація про поломку: {{breakage_machine.breakage_info}}. 
+                {% endif %}
+                Дата поломки: {{ breakage_machine.breakage_date}}<br>
+
+                <form action="{% url 'engineer:fix_machines' %}" method="POST">
+                    {% csrf_token %}
+                    <!-- можно добавить модально окно "уверены что хотите передать директору?" -->
+                    <input type="hidden" name="breakage" value="False" />
+                    <input type="hidden" name="breakage_machine" value="{{breakage_machine.id}}" />
+                    <button>Вивести машину з ремонту</button> 
+                </form>
+            </li><br>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Всі машини знаходяться в робочому стані!</p>
+    {% endif %}
+
+    
+    
+
+{% endblock %}

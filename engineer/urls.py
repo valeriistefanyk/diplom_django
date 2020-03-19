@@ -5,8 +5,9 @@ from engineer import views
 app_name = 'engineer'
 
 urlpatterns = [
-    path('', views.hello_mess, name='home-page'),
-    path('reports/', views.showRaports, name='reports'),
+    path('', views.hello_page, name='home-page'),
+    path('reports/', views.showReports, name='reports'),
     path('drivers/', views.show_drivers, name='drivers'),
     path('workdays/', views.work_days, name='work_days'),
+    path('fix-machines/', views.show_fix_machines, name='fix_machines'),
 ]
