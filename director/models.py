@@ -8,6 +8,7 @@ class Director(models.Model):
     date_of_birth = models.DateField(blank=True, null=False)
     telephone1 = models.CharField(max_length=15, blank=True, default='')
     telephone2 = models.CharField(max_length=15, blank=True, default='')
-    
+    avatar = models.ImageField(blank=True, upload_to="employees")
+
     def __str__(self):
         return f"{self.user.username}"

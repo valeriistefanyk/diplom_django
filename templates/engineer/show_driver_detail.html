@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+
+{% block title %}Старші водії{% endblock %}
+
+
+{% block content %}
+
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark">
+        <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Привіт, {{ user.username }}!</a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'engineer:home-page' %}" class="nav-link">Кабінет</a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'mylogout' %}" class="nav-link">Вийти</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    {% if driver %}
+        <div>
+            <h3>Інформація про водія</h3>
+            <p>Бригада №{{driver.brigade_name}}</p>
+            <p><img width="50px" src="{{driver.avatar.url}}" alt="{{driver.full_name}}"> {{driver.full_name}}</p>
+            <p>Username: {{driver.user.username}}</p>
+            <p>Дата народження: {{driver.date_of_birth}}</p>
+            <p>Email: {{driver.user.email}}</p>
+            <p>Телефон: {{driver.phones}}</p>
+        </div>
+            
+    {% endif %}
+    <br>
+    {% if reports_driver %}
+        <h3>Звіти водія</h3>
+        <div>
+            {% for report in reports_driver %}
+                <p>Звіт за {{ report.date }}</p>
+                <p>Машина {{ report.machine.full_name }}</p>
+                <p>Мотогодини: {{ report.motohour}}. Використано бензину: {{ report.fuel }} </p>
+
+                {% if report.breakage %}
+                    <br>    
+                    <p>Поломка машини!</p>
+                    <p>Інформація про поломку: ---- ДОБАВИТЬ ПОЛЕ В БД ----</p>
+                {% endif %}
+                <br><hr>
+            {% endfor %}
+        </div>
+    {% else%}
+        <p>У цього старшого водія звітів немає</p>
+    {% endif %}
+    
+    <p><a href="{% url 'engineer:drivers' %}">Назад до списку водіїв</a></p><hr>
+
+{% endblock %}

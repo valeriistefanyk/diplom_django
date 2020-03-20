@@ -45,7 +45,6 @@ def detail_machine(request, id):
     # login check end
 
     machine = get_object_or_404(models.Machine, pk=id)
-    
     context = {
         'machine': machine,
     }

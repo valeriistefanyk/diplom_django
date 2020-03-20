@@ -9,6 +9,7 @@ class SeniorDriver(models.Model):
     brigade_name = models.CharField(blank=True, max_length=50)
     telephone1 = models.CharField(max_length=15, blank=True, default='')
     telephone2 = models.CharField(max_length=15, blank=True, default='')
+    avatar = models.ImageField(blank=True, upload_to="employees")
 
     def full_name(self):
         return f"{self.user.last_name} {self.user.first_name}"

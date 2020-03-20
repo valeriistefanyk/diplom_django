@@ -1,8 +1,9 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import Http404
 
 from engineer import models
 from machines.models import Machine
+from senior_driver.models import SeniorDriver
 import datetime
 
 
@@ -61,13 +62,32 @@ def show_drivers(request):
         raise Http404("У Вас не має прав на перегляд цієї сторінки")
     # login and permission check end
 
-    from senior_driver.models import SeniorDriver
-
-    drivers = SeniorDriver.objects.all()
+    drivers = SeniorDriver.objects.all().order_by('brigade_name')
     context = {
         'drivers': drivers
     }
     return render(request, 'engineer/show_drivers.html', context)
+
+
+# Деталбна інформація про водія
+def show_drivers_detail(request, username):
+    
+    # login and permission check start
+    if not request.user.is_authenticated:
+        return redirect('mylogin')
+    if not ('engineer.view_engineer' in request.user.get_group_permissions()):
+        # return redirect(reverse('home', kwargs={ 'message': FooBar }))
+        raise Http404("У Вас не має прав на перегляд цієї сторінки")
+    # login and permission check end
+
+    driver = get_object_or_404(SeniorDriver, user__username=username)
+    reports_driver = models.Report.objects.filter(filled_up=driver)
+
+    context = {
+        'driver': driver,
+        'reports_driver': reports_driver, 
+    }
+    return render(request, 'engineer/show_driver_detail.html', context)
 
 
 # Графік роботи / звітність 

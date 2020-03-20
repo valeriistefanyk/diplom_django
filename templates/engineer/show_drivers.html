@@ -37,12 +37,13 @@
         {% for driver in drivers %}
         <tr>
             <td>№{{driver.brigade_name}}</td>
-            <td>{{driver.full_name}}</td>
+            <td><img width="50px" src="{{driver.avatar.url}}" alt="{{driver.full_name}}"> {{driver.full_name}}</td>
             <td>{{driver.user.email}}</td>
             <td>{{driver.phones}}</td>
             <td>
                 <p><a href="">машини</a></p>
                 <p><a href="">звіти</a></p>
+                <p><a href="{% url 'engineer:driver_detail' driver.user.username %}">інформація</a></p>
             </td>
         </tr>
         {% endfor %}
