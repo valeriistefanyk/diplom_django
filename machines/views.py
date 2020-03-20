@@ -51,10 +51,10 @@ def detail_machine(request, id):
     return render(request, 'machines/detail_machine.html', context)
 
 
-def show_machines_test(request):
+def show_machines_description(request):
     
     machines = models.MachineName.objects.all()
     context = {
         'machines': machines
     }
-    return render(request, 'machines/machines_test.html', context)
+    return render(request, 'machines/machines_description.html', context)

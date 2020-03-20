@@ -4,15 +4,124 @@
 
 {% block content %}
 
-<h2>Інформація про машину {{ machine.machine.name }} #{{ machine.number_machine}}:</h2>
-<p>some info</p>
-<p>some info</p>
-<ul>
-    <li>some info</li>
-    <li>some info</li>
-    <li>some info</li>
-    <li>some info</li>
-</ul>
+
+{% if machine %}
+    <h2>Інформація про машину {{ machine.machine.name }} #{{ machine.number_machine}}:</h2>
+    <p>Належить бригаді № {{ machine.brigade.brigade_name }}. Старший водій - {{ machine.brigade.full_name }}</p>
+
+    <table class="table">
+        <caption style="caption-side: top;">Таблиця з даними</caption>
+        <tr>
+            <th>Поле</th>
+            <th>Опис</th>
+        </tr>
+        <tr>
+            <td>Рік введення в експлуатацію</td>
+            <td>{{machine.year_of_commissioning}}</td>
+        </tr>
+        <tr>
+            <td>Років в експлуатації</td>
+            <td>ДОДАТИ</td>
+        </tr>
+        <tr>
+            <td>Марка та номер двигуна</td>
+            <td>{{ machine.engine_brand|default:"немає даних" }} {{ machine.engine_number|default:""}}</td>
+        </tr>
+        <tr>
+            <td>Номінальна потужність</td>
+            <td>{{ machine.capacity|default:"немає даних" }}</td>
+        </tr>
+        <tr>
+            <td>Витрати за нормою на 1 мот/год, кг</td>
+            <td>{{ machine.costs_at_rate|default:"немає даних" }}</td>
+        </tr>
+        <tr>
+            <td>Дизмасло, % від витрат палива</td>
+            <td>{{ machine.dizmaslo|default:"немає даних" }}</td>
+        </tr>
+        <tr>
+            <td>Марка та номер {% if machine.turbocharger_count > 1 %}турбонагнітачів{% else %}турбонагнітача{% endif %}</td>
+            <td>{{ machine.turbocharger_mark|default:"немає даних" }}</td>
+        </tr>
+        <tr>
+            <td>Фільтра</td>
+            <td>ДАНИХ НЕМАЄ</td>
+        </tr>
+        <tr>
+            <td>Марка підбивочних блоків</td>
+            <td>{{ machine.lining_blocks_mark|default:"немає даних" }}</td>
+        </tr>
+        <tr>
+            <td>Марка, креслення та кількість підпійок підбивочних блоків</td>
+            <td>{{ machine.lining_pidpiiki_mark|default:"немає даних" }} {{ machine.lining_pidpiiki_count|default:"" }}</td>
+        </tr>
+        <tr>
+            <td>Марка та кількість компресорів</td>
+            <td>{{ machine.compressor_mark|default:"немає даних" }}</td>
+        </tr>
+        <tr>
+            <td>Діаметр колісних пар</td>
+            <td>{{ machine.diametr_wheel_pairs|default:"немає даних" }}</td>
+        </tr>
+        <tr>
+            <td>Вид та кількість акумуляторів</td>
+            <td>{{ machine.battery_kind|default:"немає даних" }} {{ machine.battery_count }}</td>
+        </tr>
+        <tr>
+            <td>Остання заміна акумуляторів</td>
+            <td>{{ machine.battery_last_replacement|default:"немає даних" }}</td>
+        </tr>
+        <tr>
+            <td>Потрібно акумуляторів</td>
+            <td>{{ machine.battery_count_need|default:"немає даних" }}</td>
+        </tr>
+        <tr>
+            <td>Дата проведення ост. КР</td>
+            <td>{{ machine.date_ost_kr|default:"немає даних" }}</td>
+        </tr>
+        <tr>
+            <td>Первісна вартість, грн</td>
+            <td>{{ machine.initial_value|default:"немає даних" }}</td>
+        </tr>
+        <tr>
+            <td>Залишкова вартість, грн</td>
+            <td>{{ machine.residual_value|default:"немає даних" }}</td>
+        </tr>
+        <tr>
+            <td>Дата кінця амортизації</td>
+            <td>{{ machine.depreciation_end_date|default:"немає даних" }}</td>
+        </tr>
+        <tr>
+            <td>Марка дизельного мастила</td>
+            <td>{{ machine.dizmaslo_mark|default:"немає даних" }}</td>
+        </tr>
+        <tr>
+            <td>Об'єм дизельного мастила, л</td>
+            <td>{{ machine.dizmaslo_volume|default:"немає даних" }}</td>
+        </tr>
+        <tr>
+            <td>Марка трансмісійної рідини</td>
+            <td>{{ machine.transmission_fluid_mark|default:"немає даних" }}</td>
+        </tr>
+        <tr>
+            <td>Об'єм трансмісійної рідини, л</td>
+            <td>{{ machine.transmission_fluid_volume|default:"немає даних" }}</td>
+        </tr>
+        <tr>
+            <td>Марка гідравлічної рідини</td>
+            <td>{{ machine.hydraulic_fluid_mark|default:"немає даних" }}</td>
+        </tr>
+
+        <tr>
+            <td>Об'єм гідравлічної рідини, л</td>
+            <td>{{ machine.hydraulic_fluid_volume|default:"немає даних" }}</td>
+        </tr>
+    </table>
+{% else %}
+    <p>Некоректна назва машини</p>
+{% endif %}
+
+
 
     <br><br><br>
     <a href="{% url 'machines:all-machines' %}">До списку машин</a>

@@ -12,6 +12,7 @@ class Machine(models.Model):
     
     engine_brand = models.CharField(max_length=50, default=None, blank=True)
     engine_number = models.CharField(max_length=50, blank=True, default=None)
+    
     capacity = models.FloatField(blank=True, default=None)
     costs_at_rate = models.FloatField(blank=True, default=None)
     dizmaslo = models.FloatField(blank=True, default=None)
