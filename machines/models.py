@@ -142,6 +142,13 @@ class Machine(models.Model):
     def full_name(self):
         return f"{self.machine.name} №{self.number_machine} [IN {self.inventory_number}]" 
 
+
+    def years_comission(self):
+        from datetime import date
+        diff = date.today() - self.year_of_commissioning
+        return int(diff.days / 365)
+
+
     def __str__(self):
         return f"{self.machine.name} № {self.number_machine} [{self.inventory_number}]"
 
