@@ -6,28 +6,150 @@
 
 {% block content %}
 
-    <nav class="navbar navbar-expand-md navbar-dark bg-dark">
-        <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
-            <ul class="navbar-nav ml-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Привіт, {{ user.username }}!</a>
-                </li>
-                <li class="nav-item">
-                    <a href="{% url 'mylogout' %}" class="nav-link">Вийти</a>
-                </li>
-            
-            </ul>
-        </div>
-    </nav>
+<nav class="navbar navbar-expand-md navbar-dark bg-dark">
+    <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="#">Привіт, {{ user.username }}!</a>
+            </li>
 
-    <h1>HOME PAGE DIRECTOR</h1>
-    <h1>HOME PAGE DIRECTOR</h1>
-    <h1>HOME PAGE DIRECTOR</h1>
-    <h1>HOME PAGE DIRECTOR</h1>
-    <h1>HOME PAGE DIRECTOR</h1>
+        </ul>
+    </div>
+</nav>
 
-    <h2><a href="{% url 'director:reports' %}">Звіти</a></h2>
-    <h2><a href="{% url 'director:statistics' %}">Статистика</a></h2>
-    <h2><a href="{% url 'director:employees' %}">Працівники</a></h2>
+<div class="content">
+
+    <div class="sidebar">
+            <div class="col-md-3">
+                <div class="sidebar-menu">
+                    <h3 class="sidebar-title">VMM CORE Production</h3>
+                    <h5 class="sidebar-title_sec">API DATA</h5>
+                    <div class="links">
+                        <li><a href="{% url 'director:home-page' %}"><i class="fa fa-home"></i>Головна</a></li>
+                        <li><a href="{% url 'director:reports' %}"><i class="fa fa-table"></i>Звіти</a></li>
+                        <li><a href="{% url 'director:statistics' %}"><i class="fa fa-check"></i>Статистика</a></li>
+                        <li><a href="{% url 'director:employees' %}"><i class="fa fa-user"></i>Працівники</a></li>
+                    </div>
+                    <div class="link-exit">
+                        <a href="{% url 'mylogout' %}"><i class="fa fa-arrow-right"></i>Вийти</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-9">
+                <div class="content-info">
+                    <div class="content-title">
+                        Hello Director
+                    </div>
+                    <div class="content-text">
+
+                    </div>
+                </div>
+            </div>
+    </div>
+</div>
+
+<style>
+    body {
+        font-family: sans-serif;
+        width: 100%;
+        overflow-x: hidden;
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    .sidebar {
+        display: flex;
+
+    }
+
+    .sidebar-menu {
+        background: rgb(44, 44, 44);
+        background: linear-gradient(188deg, rgba(44, 44, 44, 1) 0%, rgba(44, 44, 44, 1) 35%, rgba(59, 63, 64, 1) 100%);
+        color: #ffffff;
+        height: 93vh;
+    }
+
+    .sidebar-title {
+        text-align: center;
+        font-size: 25px;
+        padding-top: 30px;
+        letter-spacing: 3px;
+    }
+
+    .sidebar-title_sec {
+        text-align: center;
+        margin-top: 10px;
+        color: #868686;
+    }
+
+    .links {
+        list-style: none;
+        margin-top: 30px;
+    }
+
+    .links li {
+
+        border: 1px solid #868686;
+        border-left: none;
+        background-color: #222222;
+    }
+
+    .links li a {
+        color: #ffffff;
+        text-decoration: none;
+        display: inline-block;
+        width: 100%;
+        padding: 20px 15px;
+        transition: .3s;
+    }
+
+    .links li a:active {
+        background-color: rgb(46, 134, 216);
+    }
+
+    .links li a:hover {
+        background-color: rgb(46, 134, 216);
+        color: #ffffff;
+    }
+
+    .link-exit {
+        position: absolute;
+        bottom: 20px;
+        right: 20px;
+    }
+
+    .link-exit a {
+        color: #ffffff;
+        text-decoration: none;
+        transition: .3s;
+        letter-spacing: 2px;
+    }
+
+    .link-exit a:hover {
+        color: #c20f0f;
+    }
+
+    i {
+        padding-right: 10px;
+    }
+
+    .content-title {
+        text-align: center;
+        font-size: 40px;
+        margin-bottom: 50px;
+    }
+
+    .content-info {
+        padding-right: 30px;
+        padding-top: 30px;
+    }
+    .col-md-3{
+        padding-left: 0;
+    }
+</style>
 
 {% endblock %}
