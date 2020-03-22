@@ -43,22 +43,29 @@
                     {% if reports %}
 
                     {% for report in reports %}
-                    <p>Звіт за {{ report.date }}</p>
-                    <p>Оформив: {{ report.filled_up.user.first_nama }} {{ report.filled_up.user.last_name }}</p>
-                    <p>Машина {{ report.machine.full_name }}</p>
-                    <p>Мотогодини: {{ report.motohour}}. Використано бензину: {{ report.fuel }} </p>
-
-                    {% if report.breakage %}
-                    <br>
-                    <p>Поломка машини!</p>
-                    <p>Інформація про поломку: ---- ДОБАВИТЬ ПОЛЕ В БД ----</p>
-                    {% endif %}
-                    <br>
-                    <hr>
-
-                    {% endfor %}
-                    <br><br>
+                    <table class="table_dark">
+                        <tr>
+                          <th>Дата звіту</th>
+                          <th>Оформив</th>
+                          <th>Машина</th>
+                          <th>Мотогодини</th>
+                          <th>Використано бензину</th>
+                          <th>Стан машини</th>
+                          </tr>
+                          {% if report.breakage %}
+                        <tr>
+                          <td>{{ report.date }}</td>
+                          <td>{{ report.filled_up.user.first_nama }} {{ report.filled_up.user.last_name }}</td>
+                          <td>{{ report.machine.full_name }}</td>
+                          <td>{{ report.motohour}}</td>
+                          <td>{{ report.fuel }}</td>
+                          <td>40.3</td>
+                          </tr>
+                          {% endif %}
+                        </table>
+                        {% endfor %}
                     {% endif%}
+
                 </div>
             </div>
         </div>
@@ -125,7 +132,7 @@
         transition: .3s;
     }
 
-    .links li a:active {
+    .links li:nth-child(2) {
         background-color: rgb(46, 134, 216);
     }
 
@@ -169,6 +176,36 @@
     .col-md-3 {
         padding-left: 0;
     }
+
+    /* TABLES ------------------------ */
+    .table_dark {
+  font-size: 14px;
+  width: 100%;
+  text-align: left;
+  border-collapse: collapse;
+  background: #252F48;
+  margin: 10px;
+}
+.table_dark th {
+  color: #EDB749;
+  border-bottom: 1px solid #37B5A5;
+  padding: 12px 17px;
+}
+.table_dark td {
+  color: #CAD4D6;
+  border-bottom: 1px solid #37B5A5;
+  border-right:1px solid #37B5A5;
+  padding: 7px 17px;
+}
+.table_dark tr:last-child td {
+  border-bottom: none;
+}
+.table_dark td:last-child {
+  border-right: none;
+}
+.table_dark tr:hover td {
+  text-decoration: underline;
+}
 </style>
 
 
