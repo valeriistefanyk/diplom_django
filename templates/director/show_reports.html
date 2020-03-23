@@ -41,31 +41,27 @@
                 </div>
                 <div class="content-text">
                     {% if reports %}
-
-                    {% for report in reports %}
-                    <table class="table_dark">
-                        <tr>
-                          <th>Дата звіту</th>
-                          <th>Оформив</th>
-                          <th>Машина</th>
-                          <th>Мотогодини</th>
-                          <th>Використано бензину</th>
-                          <th>Стан машини</th>
-                          </tr>
-                          {% if report.breakage %}
-                        <tr>
-                          <td>{{ report.date }}</td>
-                          <td>{{ report.filled_up.user.first_nama }} {{ report.filled_up.user.last_name }}</td>
-                          <td>{{ report.machine.full_name }}</td>
-                          <td>{{ report.motohour}}</td>
-                          <td>{{ report.fuel }}</td>
-                          <td>40.3</td>
-                          </tr>
-                          {% endif %}
+                        <table class="table_dark">
+                            <tr>
+                              <th>Дата звіту</th>
+                              <th>Оформив</th>
+                              <th>Машина</th>
+                              <th>Мотогодини</th>
+                              <th>Використано бензину</th>
+                              <th>Стан машини</th>
+                            </tr>
+                            {% for report in reports %}
+                                <tr>
+                                  <td>{{ report.date }}</td>
+                                  <td>{{ report.filled_up.user.first_nama }} {{ report.filled_up.user.last_name }}</td>
+                                  <td>{{ report.machine.full_name }}</td>
+                                  <td>{{ report.motohour}}</td>
+                                  <td>{{ report.fuel }}</td>
+                                  <td>{% if report.breakage %}В ремонті{% else %}Робоча{% endif %}</td>
+                                </tr>
+                            {% endfor %}
                         </table>
-                        {% endfor %}
                     {% endif%}
-
                 </div>
             </div>
         </div>

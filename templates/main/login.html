@@ -1,5 +1,12 @@
 {% extends 'base.html' %}
 
+{% load static %}
+
+{% block add_head_link %}
+  <link rel="stylesheet" href="{% static 'css/mdb.min.css' %}">
+{% endblock add_head_link %}
+
+
 {% block content %}
         <form class="text-center border border-dark rounded-lg p-5" action="{% url 'mylogin' %}" method="POST">
             {% csrf_token %}
