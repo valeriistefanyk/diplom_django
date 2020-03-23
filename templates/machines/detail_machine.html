@@ -16,6 +16,18 @@
             <th>Опис</th>
         </tr>
         <tr>
+            <td>Назва машини</td>
+            <td>{{machine.machine.name}}</td>
+        </tr>
+        <tr>
+            <td>Інвентарний номер</td>
+            <td>{{machine.inventory_number}}</td>
+        </tr>
+        <tr>
+            <td>Номер машини</td>
+            <td>№{{machine.number_machine}}</td>
+        </tr>
+        <tr>
             <td>Рік введення в експлуатацію</td>
             <td>{{machine.year_of_commissioning}}</td>
         </tr>
@@ -29,7 +41,7 @@
         </tr>
         <tr>
             <td>Номінальна потужність</td>
-            <td>{{ machine.capacity|default:"Дані відсутні" }}</td>
+            <td>{{ machine.rated_capacity|default:"Дані відсутні" }}</td>
         </tr>
         <tr>
             <td>Витрати за нормою на 1 мот/год, кг</td>
@@ -103,7 +115,7 @@
 
 
 
-    <br><br><br>
+    <br>
     <a href="{% url 'machines:all-machines' %}">До списку машин</a>
-
+    <br><br>
 {% endblock %}
