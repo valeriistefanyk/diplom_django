@@ -5,151 +5,138 @@
 
 
 {% block content %}
+<div class="d-flex" id="wrapper">
 
-<nav class="navbar navbar-expand-md navbar-dark bg-dark">
-    <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
-        <ul class="navbar-nav ml-auto">
-            <li class="nav-item">
-                <a class="nav-link" href="#">Привіт, {{ user.username }}!</a>
-            </li>
-
-        </ul>
+    <!-- Sidebar -->
+    <div class="bg-dark border-right" id="sidebar-wrapper">
+        <div class="sidebar-heading text-light py-5">VMM Core Production</div>
+        <div class="list-group list-group-flush">
+            <a href="{% url 'director:home-page' %}"
+                class="list-group-item list-group-item-action bg-dark text-light border-light border-top"><i
+                    class="fa fa-home"></i>Головна</a>
+            <a href="{% url 'director:reports' %}"
+                class="list-group-item list-group-item-action bg-dark text-light border-light"><i
+                    class="fa fa-table"></i>Звіти</a>
+            <a href="{% url 'director:statistics' %}"
+                class="list-group-item list-group-item-action bg-dark text-light border-light"><i
+                    class="fa fa-check"></i>Статистика</a>
+            <a href="{% url 'director:employees' %}"
+                class="list-group-item list-group-item-action bg-dark text-light border-light border-bottom"><i
+                    class="fa fa-user"></i>Працівники</a>
+        </div>
     </div>
-</nav>
+    <!-- /#sidebar-wrapper -->
 
-<div class="content">
+    <!-- Page Content -->
+    <div id="page-content-wrapper">
 
-    <div class="sidebar">
-            <div class="col-md-3">
-                <div class="sidebar-menu">
-                    <h3 class="sidebar-title">VMM CORE Production</h3>
-                    <h5 class="sidebar-title_sec">API DATA</h5>
-                    <div class="links">
-                        <li><a href="{% url 'director:home-page' %}"><i class="fa fa-home"></i>Головна</a></li>
-                        <li><a href="{% url 'director:reports' %}"><i class="fa fa-table"></i>Звіти</a></li>
-                        <li><a href="{% url 'director:statistics' %}"><i class="fa fa-check"></i>Статистика</a></li>
-                        <li><a href="{% url 'director:employees' %}"><i class="fa fa-user"></i>Працівники</a></li>
-                    </div>
-                    <div class="link-exit">
-                        <a href="{% url 'mylogout' %}"><i class="fa fa-arrow-right"></i>Вийти</a>
-                    </div>
-                </div>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark border-bottom">
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
+                    <a class="nav-link text-light" href="#">Привіт, {{ user.username }}!</a>
+                    <a class="nav-link text-warning" href="{% url 'mylogout' %}"><i
+                            class="fa fa-arrow-right"></i>Вийти</a>
+
+                </ul>
             </div>
-            <div class="col-md-9">
-                <div class="content-info">
-                    <div class="content-title">
-                        Hello Director
-                    </div>
-                    <div class="content-text">
+        </nav>
 
-                    </div>
-                </div>
-            </div>
+        <div class="container-fluid">
+            <h1 class="mt-4 text-center">Головна</h1>
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Laudantium tempore tenetur harum minus
+                temporibus possimus, error quisquam repellat numquam nostrum aliquid? Molestias laborum mollitia
+                voluptatum, inventore sed voluptatem adipisci perferendis. Ratione sit cum dignissimos qui vitae,
+                doloremque aperiam itaque, ipsa exercitationem unde accusantium dolorum in animi, culpa rerum ea
+                expedita dolores explicabo deleniti laboriosam voluptatem! Facilis ipsa, id amet consectetur incidunt
+                numquam culpa impedit dolorem voluptatem illum tempora sequi recusandae harum dolore, laudantium error
+                iure praesentium fugiat. Obcaecati sequi corporis dolores magni consequatur itaque quo earum. Corporis
+                harum debitis ipsam magnam, eaque autem, hic quisquam nam neque maiores iure! Cupiditate voluptatem
+                dignissimos earum. Doloribus fugit quod natus libero aut. Animi, quas est neque, possimus laborum
+                commodi eligendi totam, amet dolorem accusamus recusandae beatae nulla in facere modi repellendus
+                laudantium culpa. Rem aperiam possimus non, est eos explicabo esse vitae iste? Eaque laborum dicta
+                accusamus aut, animi ullam distinctio itaque iure ducimus, debitis cupiditate ex suscipit optio omnis
+                quod necessitatibus assumenda, nam praesentium amet fugiat! Recusandae aperiam quaerat nesciunt maiores
+                laborum eum quis porro, hic nobis facere harum quia cumque impedit, laboriosam accusantium facilis
+                explicabo nihil rem reprehenderit inventore earum maxime quam architecto autem? Adipisci aperiam
+                distinctio officiis! Eum expedita minus eius qui blanditiis fugiat nisi aliquam alias minima, sint odit
+                similique nihil adipisci praesentium doloribus enim possimus velit non aliquid a? Dolor consequatur,
+                impedit, accusamus veniam aliquid quam id iste non quia commodi, tenetur est qui molestias nam. Non eius
+                veniam distinctio repellat totam! Quisquam ea similique impedit tempore inventore rem quo possimus ex
+                minus eum. Illo, repellendus. Alias vitae maiores ea quos libero quia eos earum error culpa repellendus
+                odit, delectus ab reprehenderit voluptatibus asperiores aperiam aut, minima quam voluptates sed odio
+                nihil! Culpa quia perspiciatis quidem, nesciunt similique id repellat aliquam quos eveniet quae voluptas
+                numquam. Harum, nisi nobis totam quod ratione, quas sit dolores laboriosam libero aliquam nihil,
+                doloremque hic officiis unde voluptatem amet exercitationem sequi voluptas aperiam deserunt beatae!
+                Nulla reiciendis accusantium blanditiis nihil repellendus in repellat, perspiciatis, at provident qui
+                non culpa earum eligendi architecto, alias voluptas incidunt vel. Voluptatibus provident quisquam magni
+                numquam vitae consequatur rem cum soluta repudiandae excepturi quidem architecto quaerat, corrupti earum
+                tenetur vero blanditiis, mollitia eum possimus. Sunt, exercitationem inventore omnis praesentium
+                explicabo rem cum incidunt dolor blanditiis repellat labore cumque itaque tempora recusandae in eaque
+                officiis quis nulla beatae enim sed! Voluptatum vitae similique impedit voluptas dolores iusto qui nemo
+                cupiditate animi assumenda sit nesciunt rerum fuga, amet neque aliquid enim adipisci repellendus harum
+                aspernatur mollitia placeat iure atque! Aliquam ut autem totam deserunt dolorem saepe maiores labore
+                illo, fuga tempora possimus consectetur ad incidunt et laborum tempore id provident fugit adipisci! Quod
+                quia voluptatibus pariatur sit et necessitatibus voluptate officia, accusantium asperiores, laboriosam,
+                repudiandae quis illo tempore nostrum! Quas, ad? Similique itaque minus repudiandae expedita
+                voluptatibus, sint at nihil quibusdam obcaecati rem quod dicta. Earum illum necessitatibus modi dolores
+                aspernatur, quia, minus quod exercitationem veniam quas voluptatum quos reprehenderit dolor magni
+                voluptate ad error id iure delectus at!</p>
+        </div>
+        <!-- /#page-content-wrapper -->
+
     </div>
-</div>
 
-<style>
-    body {
-        font-family: sans-serif;
-        width: 100%;
-        overflow-x: hidden;
-    }
+    <style>
+        body {
+            overflow-x: hidden;
+        }
 
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-    }
+        .fa {
+            margin-right: 10px;
+        }
 
-    .sidebar {
-        display: flex;
-    }
+        #sidebar-wrapper {
+            min-height: 100vh;
+            margin-left: -15rem;
+            -webkit-transition: margin .25s ease-out;
+            -moz-transition: margin .25s ease-out;
+            -o-transition: margin .25s ease-out;
+            transition: margin .25s ease-out;
+        }
 
-    .sidebar-menu {
-        background: rgb(44, 44, 44);
-        background: linear-gradient(188deg, rgba(44, 44, 44, 1) 0%, rgba(44, 44, 44, 1) 35%, rgba(59, 63, 64, 1) 100%);
-        color: #ffffff;
-        position: relative;
-        height: 93vh;
-    }
+        #sidebar-wrapper .sidebar-heading {
+            padding: 0.875rem 1.25rem;
+            font-size: 1.2rem;
+        }
 
-    .sidebar-title {
-        text-align: center;
-        font-size: 25px;
-        padding-top: 30px;
-        letter-spacing: 3px;
-    }
+        #sidebar-wrapper .list-group {
+            width: 15rem;
+        }
 
-    .sidebar-title_sec {
-        text-align: center;
-        margin-top: 10px;
-        color: #868686;
-    }
+        #page-content-wrapper {
+            min-width: 100vw;
+        }
 
-    .links {
-        list-style: none;
-        margin-top: 30px;
-    }
+        #wrapper.toggled #sidebar-wrapper {
+            margin-left: 0;
+        }
 
-    .links li {
+        @media (min-width: 768px) {
+            #sidebar-wrapper {
+                margin-left: 0;
+            }
 
-        border: 1px solid #868686;
-        border-left: none;
-        background-color: #222222;
-    }
+            #page-content-wrapper {
+                min-width: 0;
+                width: 100%;
+            }
 
-    .links li a {
-        color: #ffffff;
-        text-decoration: none;
-        display: inline-block;
-        width: 100%;
-        padding: 20px 15px;
-        transition: .3s;
-    }
+            #wrapper.toggled #sidebar-wrapper {
+                margin-left: -15rem;
+            }
+        }
+    </style>
 
-    .links li:first-child {
-        background-color: rgb(46, 134, 216);
-    }
 
-    .links li a:hover {
-        background-color: rgb(46, 134, 216);
-        color: #ffffff;
-    }
 
-    .link-exit {
-        position: absolute;
-        bottom: 20px;
-        right: 20px;
-    }
-
-    .link-exit a {
-        color: #ffffff;
-        text-decoration: none;
-        transition: .3s;
-        letter-spacing: 2px;
-    }
-
-    .link-exit a:hover {
-        color: #c20f0f;
-    }
-
-    i {
-        padding-right: 10px;
-    }
-
-    .content-title {
-        text-align: center;
-        font-size: 40px;
-        margin-bottom: 50px;
-    }
-
-    .content-info {
-        padding-right: 30px;
-        padding-top: 30px;
-    }
-    .col-md-3{
-        padding-left: 0;
-    }
-</style>
-
-{% endblock %}
+    {% endblock %}

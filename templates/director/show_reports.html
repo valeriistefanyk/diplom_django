@@ -1,212 +1,163 @@
 {% extends 'base.html' %}
 
-{% block title %}Звіти{% endblock %}
+
+{% block title %}Сторінка директора{% endblock %}
+
 
 {% block content %}
+<div class="d-flex" id="wrapper">
 
-
-<nav class="navbar navbar-expand-md navbar-dark bg-dark">
-    <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
-        <ul class="navbar-nav ml-auto">
-            <li class="nav-item">
-                <a class="nav-link" href="#">Привіт, {{ user.username }}!</a>
-            </li>
-
-        </ul>
-    </div>
-</nav>
-
-<div class="content">
-
-    <div class="sidebar">
-        <div class="col-md-3">
-            <div class="sidebar-menu">
-                <h3 class="sidebar-title">VMM CORE Production</h3>
-                <h5 class="sidebar-title_sec">API DATA</h5>
-                <div class="links">
-                    <li><a href="{% url 'director:home-page' %}"><i class="fa fa-home"></i>Головна</a></li>
-                    <li><a href="{% url 'director:reports' %}"><i class="fa fa-table"></i>Звіти</a></li>
-                    <li><a href="{% url 'director:statistics' %}"><i class="fa fa-check"></i>Статистика</a></li>
-                    <li><a href="{% url 'director:employees' %}"><i class="fa fa-user"></i>Працівники</a></li>
-                </div>
-                <div class="link-exit">
-                    <a href="{% url 'mylogout' %}"><i class="fa fa-arrow-right"></i>Вийти</a>
-                </div>
-            </div>
+    <!-- Sidebar -->
+    <div class="bg-dark border-right" id="sidebar-wrapper">
+        <div class="sidebar-heading text-light py-5">VMM Core Production</div>
+        <div class="list-group list-group-flush">
+            <a href="{% url 'director:home-page' %}"
+                class="list-group-item list-group-item-action bg-dark text-light border-light border-top"><i
+                    class="fa fa-home"></i>Головна</a>
+            <a href="{% url 'director:reports' %}"
+                class="list-group-item list-group-item-action bg-dark text-light border-light"><i
+                    class="fa fa-table"></i>Звіти</a>
+            <a href="{% url 'director:statistics' %}"
+                class="list-group-item list-group-item-action bg-dark text-light border-light"><i
+                    class="fa fa-check"></i>Статистика</a>
+            <a href="{% url 'director:employees' %}"
+                class="list-group-item list-group-item-action bg-dark text-light border-light border-bottom"><i
+                    class="fa fa-user"></i>Працівники</a>
         </div>
-        <div class="col-md-9">
-            <div class="content-info">
-                <div class="content-title">
-                    Звіти
-                </div>
-                <div class="content-text">
-                    {% if reports %}
+    </div>
+    <!-- /#sidebar-wrapper -->
 
+    <!-- Page Content -->
+    <div id="page-content-wrapper">
+
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark border-bottom">
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
+                    <a class="nav-link text-light" href="#">Привіт, {{ user.username }}!</a>
+                    <a class="nav-link text-warning" href="{% url 'mylogout' %}"><i
+                            class="fa fa-arrow-right"></i>Вийти</a>
+
+                </ul>
+            </div>
+        </nav>
+
+        <div class="container-fluid">
+            <h1 class="mt-4 text-center">Звіти</h1>
+            <div class="content-text">
+                {% if reports %}
+                <table class="table_dark">
+                    <tr>
+                        <th>Дата звіту</th>
+                        <th>Оформив</th>
+                        <th>Машина</th>
+                        <th>Мотогодини</th>
+                        <th>Використано бензину</th>
+                        <th>Стан машини</th>
+                    </tr>
                     {% for report in reports %}
-                    <table class="table_dark">
-                        <tr>
-                          <th>Дата звіту</th>
-                          <th>Оформив</th>
-                          <th>Машина</th>
-                          <th>Мотогодини</th>
-                          <th>Використано бензину</th>
-                          <th>Стан машини</th>
-                          </tr>
-                          {% if report.breakage %}
-                        <tr>
-                          <td>{{ report.date }}</td>
-                          <td>{{ report.filled_up.user.first_nama }} {{ report.filled_up.user.last_name }}</td>
-                          <td>{{ report.machine.full_name }}</td>
-                          <td>{{ report.motohour}}</td>
-                          <td>{{ report.fuel }}</td>
-                          <td>40.3</td>
-                          </tr>
-                          {% endif %}
-                        </table>
-                        {% endfor %}
-                    {% endif%}
-
-                </div>
+                    <tr>
+                        <td>{{ report.date }}</td>
+                        <td>{{ report.filled_up.user.first_nama }} {{ report.filled_up.user.last_name }}</td>
+                        <td>{{ report.machine.full_name }}</td>
+                        <td>{{ report.motohour}}</td>
+                        <td>{{ report.fuel }}</td>
+                        <td>{% if report.breakage %}В ремонті{% else %}Робоча{% endif %}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+                {% endif%}
             </div>
         </div>
+        <!-- /#page-content-wrapper -->
+
     </div>
-</div>
 
-<style>
-    body {
-        font-family: sans-serif;
-        width: 100%;
-        overflow-x: hidden;
-    }
+    <style>
+        body {
+            overflow-x: hidden;
+        }
 
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-    }
+        .fa {
+            margin-right: 10px;
+        }
 
-    .sidebar {
-        display: flex;
+        #sidebar-wrapper {
+            min-height: 100vh;
+            margin-left: -15rem;
+            -webkit-transition: margin .25s ease-out;
+            -moz-transition: margin .25s ease-out;
+            -o-transition: margin .25s ease-out;
+            transition: margin .25s ease-out;
+        }
 
-    }
+        #sidebar-wrapper .sidebar-heading {
+            padding: 0.875rem 1.25rem;
+            font-size: 1.2rem;
+        }
 
-    .sidebar-menu {
-        background: rgb(44, 44, 44);
-        background: linear-gradient(188deg, rgba(44, 44, 44, 1) 0%, rgba(44, 44, 44, 1) 35%, rgba(59, 63, 64, 1) 100%);
-        color: #ffffff;
-        height: 93vh;
-        position: relative;
-    }
+        #sidebar-wrapper .list-group {
+            width: 15rem;
+        }
 
-    .sidebar-title {
-        text-align: center;
-        font-size: 25px;
-        padding-top: 30px;
-        letter-spacing: 3px;
-    }
+        #page-content-wrapper {
+            min-width: 100vw;
+        }
 
-    .sidebar-title_sec {
-        text-align: center;
-        margin-top: 10px;
-        color: #868686;
-    }
+        #wrapper.toggled #sidebar-wrapper {
+            margin-left: 0;
+        }
 
-    .links {
-        list-style: none;
-        margin-top: 30px;
-    }
+        @media (min-width: 768px) {
+            #sidebar-wrapper {
+                margin-left: 0;
+            }
 
-    .links li {
+            #page-content-wrapper {
+                min-width: 0;
+                width: 100%;
+            }
 
-        border: 1px solid #868686;
-        border-left: none;
-        background-color: #222222;
-    }
+            #wrapper.toggled #sidebar-wrapper {
+                margin-left: -15rem;
+            }
+        }
 
-    .links li a {
-        color: #ffffff;
-        text-decoration: none;
-        display: inline-block;
-        width: 100%;
-        padding: 20px 15px;
-        transition: .3s;
-    }
+        /* TABLE----------------------- */
+        .table_dark {
+            font-size: 14px;
+            width: 100%;
+            text-align: left;
+            border-collapse: collapse;
+            background: #252F48;
+            margin: 10px;
+        }
 
-    .links li:nth-child(2) {
-        background-color: rgb(46, 134, 216);
-    }
+        .table_dark th {
+            color: #EDB749;
+            border-bottom: 1px solid #37B5A5;
+            padding: 12px 17px;
+        }
 
-    .links li a:hover {
-        background-color: rgb(46, 134, 216);
-        color: #ffffff;
-    }
+        .table_dark td {
+            color: #CAD4D6;
+            border-bottom: 1px solid #37B5A5;
+            border-right: 1px solid #37B5A5;
+            padding: 7px 17px;
+        }
 
-    .link-exit {
-        position: absolute;
-        bottom: 20px;
-        right: 20px;
-    }
+        .table_dark tr:last-child td {
+            border-bottom: none;
+        }
 
-    .link-exit a {
-        color: #ffffff;
-        text-decoration: none;
-        transition: .3s;
-        letter-spacing: 2px;
-    }
+        .table_dark td:last-child {
+            border-right: none;
+        }
 
-    .link-exit a:hover {
-        color: #c20f0f;
-    }
-
-    i {
-        padding-right: 10px;
-    }
-
-    .content-title {
-        text-align: center;
-        font-size: 40px;
-        margin-bottom: 50px;
-    }
-
-    .content-info {
-        padding-right: 30px;
-        padding-top: 30px;
-    }
-
-    .col-md-3 {
-        padding-left: 0;
-    }
-
-    /* TABLES ------------------------ */
-    .table_dark {
-  font-size: 14px;
-  width: 100%;
-  text-align: left;
-  border-collapse: collapse;
-  background: #252F48;
-  margin: 10px;
-}
-.table_dark th {
-  color: #EDB749;
-  border-bottom: 1px solid #37B5A5;
-  padding: 12px 17px;
-}
-.table_dark td {
-  color: #CAD4D6;
-  border-bottom: 1px solid #37B5A5;
-  border-right:1px solid #37B5A5;
-  padding: 7px 17px;
-}
-.table_dark tr:last-child td {
-  border-bottom: none;
-}
-.table_dark td:last-child {
-  border-right: none;
-}
-.table_dark tr:hover td {
-  text-decoration: underline;
-}
-</style>
+        .table_dark tr:hover td {
+            text-decoration: underline;
+        }
+    </style>
 
 
-{% endblock %}
+
+    {% endblock %}
