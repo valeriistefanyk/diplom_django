@@ -51,6 +51,38 @@ def detail_machine(request, id):
     return render(request, 'machines/detail_machine.html', context)
 
 
+def show_detail_machines(request):
+
+    # login check start
+    if not request.user.is_authenticated:
+        return redirect('mylogin')
+    # login check end
+
+    machiness = models.Machine.objects.all()
+    
+    query = request.GET.get('q')
+    if query:
+        machiness = machiness.filter(
+            Q(machine__name__icontains=query) | Q(inventory_number__icontains=query) |
+            Q(number_machine__icontains=query)
+        ).distinct()
+    
+    paginator = Paginator(machiness, 10)
+    page = request.GET.get('page')
+    try:
+        machines = paginator.page(page)
+    except EmptyPage:
+        machines = paginator.page(paginator.num_pages)
+    except PageNotAnInteger:
+        machines = paginator.page(1)
+
+    context = {
+        'machines': machines
+    }
+    return render(request, 'machines/detail_machines.html', context=context)
+
+
+
 def show_machines_description(request):
     
     machines = models.MachineName.objects.all()

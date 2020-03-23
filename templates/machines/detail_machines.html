@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
-
+{% load humanize %}
 {% block title %}All machines{% endblock %}
 
 {% block content %}
@@ -22,16 +22,46 @@
     <table class="table">
         <tr>
             <td>Назва машини</td>
-            <td>Інвентарний номер</td>
-            <td>Номер машини</td>
-            <td>&nbsp;</td>
+            <td>Років в експлуатації</td>
+            <td>Двигун</td>
+            <td>Номінальна потужність</td>
+            <td>Витрати за нормою на 1 мот/год, кг</td>
+            <td>Дизмасло, % від витрат палива</td>
+            <td>Турбонагнітачі</td>
+            <td>Підбивочні блоки</td>
+            <td>Підпійки підбивочних блоків</td>
+            <td>Компресори</td>
+            <td>Діаметр колісних пар</td>
+            <td>Акумулятори</td>
+            <td>Дата проведення ост. КР</td>
+            <td>Первісна вартість, грн</td>
+            <td>Залишкова вартість, грн</td>
+            <td>Дата кінця амортизації</td>
+            <td>Дизельне мастило</td>
+            <td>Трансмісійна рідина</td>
+            <td>Гідравлічна рідина</td>
         </tr>
         {% for machine in machines %}
         <tr>
-            <td>{{ machine.machine.name }}</td>
-            <td>{{ machine.inventory_number }}</td>
-            <td>{{ machine.number_machine }}</td>
-            <td><a href="{% url 'machines:detail' machine.id %}">детальніше</a></td>
+            <td>{{ machine.full_name }}</td>
+            <td>{{machine.years_comission}}</td>
+            <td>{{ machine.engine_list|join:"<br>"|default:"-" }}</td>
+            <td>{{ machine.rated_capacity|default:"-" }}</td>
+            <td>{{ machine.costs_at_rate|default:"-" }}</td>
+            <td>{{ machine.dizmaslo|default:"-" }}</td>
+            <td>{{ machine.turbocharger_list|join:"<br>"|default:"-" }}</td>
+            <td>{{ machine.lining_blocks_list|join:"<br>"|default:"-" }}</td>
+            <td>{{ machine.lining_pidpiiki_list|join:"<br>"|default:"-" }}</td>
+            <td>{{ machine.compressor_list|join:"<br>"|default:"-" }}</td>
+            <td>{{ machine.diametr_wheel_pairs|default:"-" }}</td>
+            <td>{{ machine.battery_list|join:"<br>"|default:"-" }}</td>
+            <td>{{ machine.date_ost_kr|date:"d.m.y"|default:"-" }}</td>
+            <td>{{ machine.initial_value|intcomma|default:"-" }}</td>
+            <td>{{ machine.residual_value|intcomma|default:"-" }}</td>
+            <td>{{ machine.depreciation_end_date|date:"d.m.y"|default:"-" }}</td>
+            <td>{{ machine.dizmaslo_list|join:"<br>"|default:"-" }}</td>
+            <td>{{ machine.transmission_fluid_list|join:"<br>"|default:"-" }}</td>
+            <td>{{ machine.hydraulic_fluid_list|join:"<br>"|default:"-" }}</td>
         </tr>
         {% endfor %}
     </table>
@@ -90,8 +120,8 @@
         <p>NO MACHINES LIST</p>
     {% endif %}
     <br><br>
-      <p><a href="{% url 'machines:detail_machines' %}">Всі машини детально</a></p>  
-      <p><a href="{% url 'machines:show_machine_description' %}">Опис машин</a></p>
+      <p><a href="{% url 'machines:all-machines' %}">Назад до списку машин</a></p>
     
+
     {% include 'parts_element/_footer.html' %}
 {% endblock %}

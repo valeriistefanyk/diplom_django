@@ -1,4 +1,9 @@
 {% extends 'base.html' %}
+{% load static %}
+
+{% block add_head_link %}
+  <link rel="stylesheet" href="{% static 'css/mdb.min.css' %}">
+{% endblock add_head_link %}
 
 {% block title %}Railway Machines{% endblock %}
 
