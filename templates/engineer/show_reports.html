@@ -110,6 +110,7 @@
                                 <th>Мотогодини</th>
                                 <th>Використано бензину</th>
                                 <th>Стан машини</th>
+                                <th>Статус</th>
                             </tr>
                             {% for report_unforwarded in reports_unforwarded %}
                             <tr>
@@ -120,6 +121,7 @@
                                 <td>{{ report_unforwarded.motohour}}</td>
                                 <td>{{ report_unforwarded.fuel }}</td>
                                 <td>Поломка машини!</td>
+                                <td><button class="btn_send btn btn-warning text-dark text-center">Відправити</button>
                             </tr>
                             {% endfor %}
                         </table>
@@ -139,7 +141,6 @@
                                 <th>Мотогодини</th>
                                 <th>Використано бензину</th>
                                 <th>Стан машини</th>
-                                <th>Статус</th>
                             </tr>
                             {% for report_forwarded in reports_forwarded %}
                             <tr>
@@ -150,7 +151,6 @@
                                 <td>{{ report_forwarded.motohour}}</td>
                                 <td>{{ report_forwarded.fuel }}</td>
                                 <td>Поломка машини!</td>
-                                <td><button class="btn_send btn btn-warning text-dark text-center">Відправити</button>
                                 </td>
                             </tr>
                             {% endfor %}
@@ -160,8 +160,6 @@
                 </div>
             </div>
         </div>
-
-
         <style>
             body {
                 overflow-x: hidden;
@@ -247,7 +245,5 @@
                 text-decoration: underline;
             }
         </style>
-        <script>
-
-        </script>
+        
         {% endblock %}
