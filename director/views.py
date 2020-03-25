@@ -27,9 +27,27 @@ def show_reports(request):
     if not ('director.view_director' in request.user.get_group_permissions()):
         raise Http404("У Вас не має прав на перегляд цієї сторінки")
     # login and permission check end
+    
+    reports = Report.objects.filter(checked=True)
+    from_date = request.GET.get('from')
+    to_date = request.GET.get('to')
+    
+    if from_date and not to_date:
+        pass
+    
+    if not from_date and to_date:
+        pass
 
+    if from_date and to_date:
+        from_date_correct = correct_date(from_date)
+        to_date_correct = correct_date(to_date)
+        reports = reports.filter(date__range = [from_date_correct, to_date_correct])
+        print(reports)
+    
     context = {
-        'reports': Report.objects.filter(checked=True)
+        'from_date': from_date,
+        'to_date' : to_date,
+        'reports': reports.order_by('date'),
     }
     return render(request, 'director/show_reports.html', context=context)
 
@@ -74,3 +92,11 @@ def show_employees(request):
         'drivers': drivers_info,
     }
     return render(request, 'director/employees.html', context)
+
+
+
+# ПРАВИЛЬНА ДАТА
+def correct_date(date):
+    date_list = date.split('/')
+    date_correct = f"{date_list[2]}-{date_list[0]}-{date_list[1]}"
+    return date_correct
