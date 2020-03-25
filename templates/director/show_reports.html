@@ -66,93 +66,94 @@
                     {% endfor %}
                 </table>
                 {% endif%}
+            </div>
         </div>
-    <style>
-        body {
-            overflow-x: hidden;
-        }
+        <style>
+            body {
+                overflow-x: hidden;
+            }
 
-        .fa {
-            margin-right: 10px;
-        }
+            .fa {
+                margin-right: 10px;
+            }
 
-        #sidebar-wrapper {
-            min-height: 100vh;
-            margin-left: -15rem;
-            -webkit-transition: margin .25s ease-out;
-            -moz-transition: margin .25s ease-out;
-            -o-transition: margin .25s ease-out;
-            transition: margin .25s ease-out;
-        }
-
-        #sidebar-wrapper .sidebar-heading {
-            padding: 0.875rem 1.25rem;
-            font-size: 1.2rem;
-        }
-
-        #sidebar-wrapper .list-group {
-            width: 15rem;
-        }
-
-        #page-content-wrapper {
-            min-width: 100vw;
-        }
-
-        #wrapper.toggled #sidebar-wrapper {
-            margin-left: 0;
-        }
-
-        @media (min-width: 768px) {
             #sidebar-wrapper {
-                margin-left: 0;
+                min-height: 100vh;
+                margin-left: -15rem;
+                -webkit-transition: margin .25s ease-out;
+                -moz-transition: margin .25s ease-out;
+                -o-transition: margin .25s ease-out;
+                transition: margin .25s ease-out;
+            }
+
+            #sidebar-wrapper .sidebar-heading {
+                padding: 0.875rem 1.25rem;
+                font-size: 1.2rem;
+            }
+
+            #sidebar-wrapper .list-group {
+                width: 15rem;
             }
 
             #page-content-wrapper {
-                min-width: 0;
-                width: 100%;
+                min-width: 100vw;
             }
 
             #wrapper.toggled #sidebar-wrapper {
-                margin-left: -15rem;
+                margin-left: 0;
             }
-        }
 
-        /* TABLE----------------------- */
-        .table_dark {
-            font-size: 14px;
-            width: 100%;
-            text-align: left;
-            border-collapse: collapse;
-            background: #252F48;
-            margin: 10px;
-        }
+            @media (min-width: 768px) {
+                #sidebar-wrapper {
+                    margin-left: 0;
+                }
 
-        .table_dark th {
-            color: #EDB749;
-            border-bottom: 1px solid #37B5A5;
-            padding: 12px 17px;
-        }
+                #page-content-wrapper {
+                    min-width: 0;
+                    width: 100%;
+                }
 
-        .table_dark td {
-            color: #CAD4D6;
-            border-bottom: 1px solid #37B5A5;
-            border-right: 1px solid #37B5A5;
-            padding: 7px 17px;
-        }
+                #wrapper.toggled #sidebar-wrapper {
+                    margin-left: -15rem;
+                }
+            }
 
-        .table_dark tr:last-child td {
-            border-bottom: none;
-        }
+            /* TABLE----------------------- */
+            .table_dark {
+                font-size: 14px;
+                width: 100%;
+                text-align: left;
+                border-collapse: collapse;
+                background: #252F48;
+                margin: 10px;
+            }
 
-        .table_dark td:last-child {
-            border-right: none;
-        }
+            .table_dark th {
+                color: #EDB749;
+                border-bottom: 1px solid #37B5A5;
+                padding: 12px 17px;
+            }
 
-        .table_dark tr:hover td {
-            text-decoration: underline;
-        }
-    </style>
+            .table_dark td {
+                color: #CAD4D6;
+                border-bottom: 1px solid #37B5A5;
+                border-right: 1px solid #37B5A5;
+                padding: 7px 17px;
+            }
+
+            .table_dark tr:last-child td {
+                border-bottom: none;
+            }
+
+            .table_dark td:last-child {
+                border-right: none;
+            }
+
+            .table_dark tr:hover td {
+                text-decoration: underline;
+            }
+        </style>
 
 
 
-    {% endblock %}
+        {% endblock %}

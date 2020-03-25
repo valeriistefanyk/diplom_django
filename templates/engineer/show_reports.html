@@ -97,52 +97,70 @@
                 </form>
                 <hr>
 
-                {% if reports_unforwarded %}
-    <h4>Звіти які ще не передані керівництву:</h4>
-    {% for report_unforwarded in reports_unforwarded %}
-        <p>Звіт за {{ report_unforwarded.date }}</p>
-        <p>Оформив: {{ report_unforwarded.filled_up.user.first_nama }} {{ report_unforwarded.filled_up.user.last_name }}</p>
-        <p>Машина {{ report_unforwarded.machine.full_name }}</p>
-        <p>Мотогодини: {{ report_unforwarded.motohour}}. Використано бензину: {{ report_unforwarded.fuel }} </p>
-        
-        {% if reports_unforwarded.breakage %}
-            <br>    
-            <p>Поломка машини!</p>
-            <p>Інформація про поломку: ---- ДОБАВИТЬ ПОЛЕ В БД ----</p>
-        {% endif %}
-        <br>
-        <form action="{% url 'engineer:reports' %}" method="POST">
-            {% csrf_token %}
-            <!-- можно добавить модально окно "уверены что хотите передать директору?" -->
-            <input type="hidden" name="checked" value="True" />
-            <input type="hidden" name="report_id" value="{{report_unforwarded.id}}" />
-            <button>Передати керівництву</button> 
-        </form>
-        <hr>
-        
-    {% endfor %}
-    <br><br>
-    {% endif%}
 
-    {% if reports_forwarded %}
-    <h4>Звіти які передані керівництву:</h4>
-    {% for report_forwarded in reports_forwarded %}
-        <p>Звіт за {{ report_forwarded.date }}</p>
-        <p>Оформив: {{ report_forwarded.filled_up.user.first_nama }} {{ report_forwarded.filled_up.user.last_name }}</p>
-        <p>Машина {{ report_forwarded.machine.full_name }}</p>
-        <p>Мотогодини: {{ report_forwarded.motohour}}. Використано бензину: {{ report_forwarded.fuel }} </p>
-        
-        {% if report_forwarded.breakage %}
-            <br>    
-            <p>Поломка машини!</p>
-            <p>Інформація про поломку: ---- ДОБАВИТЬ ПОЛЕ В БД ----</p>
-        {% endif %}
-        
-        <hr>
-    {% endfor %}
-    {% endif%}
+                <div class="container-fluid">
+                    <h1 class="mt-4 text-center">Звіти які не передані керівництву:</h1>
+                    <div class="content-text">
+                        {% if reports_unforwarded %}
+                        <table class="table_dark">
+                            <tr>
+                                <th>Дата звіту</th>
+                                <th>Оформив</th>
+                                <th>Машина</th>
+                                <th>Мотогодини</th>
+                                <th>Використано бензину</th>
+                                <th>Стан машини</th>
+                            </tr>
+                            {% for report_unforwarded in reports_unforwarded %}
+                            <tr>
+                                <td>{{ report_unforwarded.date }}</td>
+                                <td>{{ report_unforwarded.filled_up.user.first_nama }}
+                                    {{ report_unforwarded.filled_up.user.last_name }}</td>
+                                <td>{{ report_unforwarded.machine.full_name }}</td>
+                                <td>{{ report_unforwarded.motohour}}</td>
+                                <td>{{ report_unforwarded.fuel }}</td>
+                                <td>Поломка машини!</td>
+                            </tr>
+                            {% endfor %}
+                        </table>
+                        <hr>
+                        {% endif%}
+                    </div>
+
+
+                    <h1 class="mt-4 text-center">Звіти які передані керівництву:</h1>
+                    <div class="content-text">
+                        {% if reports_forwarded %}
+                        <table class="table_dark">
+                            <tr>
+                                <th>Дата звіту</th>
+                                <th>Оформив</th>
+                                <th>Машина</th>
+                                <th>Мотогодини</th>
+                                <th>Використано бензину</th>
+                                <th>Стан машини</th>
+                                <th>Статус</th>
+                            </tr>
+                            {% for report_forwarded in reports_forwarded %}
+                            <tr>
+                                <td>{{ report_forwarded.date }}</td>
+                                <td>{{ report_forwarded.filled_up.user.first_nama }}
+                                    {{ report_forwarded.filled_up.user.last_name }}</td>
+                                <td>{{ report_forwarded.machine.full_name }}</td>
+                                <td>{{ report_forwarded.motohour}}</td>
+                                <td>{{ report_forwarded.fuel }}</td>
+                                <td>Поломка машини!</td>
+                                <td><button class="btn_send btn btn-warning text-dark text-center">Відправити</button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </table>
+                        {% endif%}
+                    </div>
+                </div>
             </div>
         </div>
+
 
         <style>
             body {
@@ -214,7 +232,7 @@
                 color: #CAD4D6;
                 border-bottom: 1px solid #37B5A5;
                 border-right: 1px solid #37B5A5;
-                padding: 7px 17px;
+                padding: 20px 27px;
             }
 
             .table_dark tr:last-child td {
@@ -229,7 +247,6 @@
                 text-decoration: underline;
             }
         </style>
-
         <script>
 
         </script>
