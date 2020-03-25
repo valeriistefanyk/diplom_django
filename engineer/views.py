@@ -41,12 +41,23 @@ def showReports(request):
             report.checked = True
             report.save()
 
+
     reports = models.Report.objects.all()
+    from_date = request.GET.get('from')
+    to_date = request.GET.get('to')
+
+    if from_date and to_date:
+        from_date_correct = correct_date(from_date)
+        to_date_correct = correct_date(to_date)
+        reports = reports.filter(date__range = [from_date_correct, to_date_correct])
+        print(reports)
 
     context = {
+        'from_date': from_date,
+        'to_date' : to_date,
         'reports': reports,
-        'reports_forwarded': reports.filter(checked=True),
-        'reports_unforwarded': reports.filter(checked=False),
+        'reports_forwarded': reports.filter(checked=True).order_by('date'),
+        'reports_unforwarded': reports.filter(checked=False).order_by('date'),
     }
     return render(request, 'engineer/show_reports.html', context)
 
@@ -131,3 +142,10 @@ def show_fix_machines(request):
         'breakage_machines': breakage_machines
     }
     return render(request, 'engineer/fix_machines.html', context)
+
+
+# ПРАВИЛЬНА ДАТА
+def correct_date(date):
+    date_list = date.split('/')
+    date_correct = f"{date_list[2]}-{date_list[0]}-{date_list[1]}"
+    return date_correct
