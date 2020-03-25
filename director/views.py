@@ -67,9 +67,57 @@ def show_statistics(request):
     data_report = {
         'names': drivers.values_list('brigade_name', flat=True)
     }
+
+    ########## DATA FOR CHARTS START ##########
+    
+    
+    # higonov (№5)
+    values_data = []
+    higonov = SeniorDriver.objects.get(user__username='higonov')
+    reports_higonov = Report.objects.filter(filled_up=higonov)
+
+    m1 = reports_higonov[11].machine
+    m2 = reports_higonov[10].machine
+
+    reports_higonov_m1 = reports_higonov.filter(machine=m1)
+    reports_higonov_m2 = reports_higonov.filter(machine=m2)
+
+    reports_higonov_m1.filter(date__range = ['2020-02-23', '2020-03-30'])
+    reports_higonov_m2.filter(date__range = ['2020-02-23', '2020-03-30'])
+    
+    
+    addColumns = [m1.machine.name + ' #' + m1.number_machine, m2.machine.name + ' #' + m2.number_machine]
+    addRows = []
+    for i in range(0, reports_higonov_m1.count()):
+        addRows.append([reports_higonov_m1[i].date, 
+                        reports_higonov_m1[i].motohour, 
+                        reports_higonov_m2[i].motohour, 
+                        [
+                            reports_higonov_m1[i].machine.machine.name + ' #' + reports_higonov_m1[i].machine.number_machine,
+                            reports_higonov_m1[i].date.strftime('%b %d, %Y'),
+                            reports_higonov_m1[i].fuel,
+                            reports_higonov_m1[i].motohour
+                        ],
+                        [
+                            reports_higonov_m2[i].machine.machine.name + ' #' + reports_higonov_m2[i].machine.number_machine,
+                            reports_higonov_m2[i].date.strftime('%b %d, %Y'),
+                            reports_higonov_m2[i].fuel,
+                            reports_higonov_m2[i].motohour
+                        ],
+                    ])
+
+    
+    # addRows = [['12-02-2020', 20, 30], ["new Date(2020, 0)", 0, 0], ...]
+
+    ########## DATA FOR CHARTS END ##########
+
+
     context = {
         'reports': reports,
         'drivers': drivers,
+        
+        'addColumns': addColumns,
+        'addRows': addRows
     }
     return render(request, 'director/statistics.html', context=context)
 
@@ -85,7 +133,7 @@ def show_employees(request):
     # login and permission check end
 
     engineers_info = [{'avatar': eng.avatar, 'full_name': eng.full_name(), 'email': eng.user.email, 'phones': eng.phones()} for eng in Engineer.objects.all()]
-    drivers_info = [{'avatar': drvr.avatar, 'brigade': drvr.brigade_name, 'full_name': drvr.full_name(), 'email': drvr.user.email, 'phones': drvr.phones()} for drvr in SeniorDriver.objects.all()]
+    drivers_info = [{'avatar': drvr.avatar, 'brigade': drvr.brigade_name, 'full_name': drvr.full_name(), 'email': drvr.user.email, 'phones': drvr.phones()} for drvr in SeniorDriver.objects.all().order_by('brigade_name')]
 
     context = {
         'engineers': engineers_info,
