@@ -118,3 +118,123 @@ def show_machines(request):
     }
 
     return render(request, 'senior-driver/my_machines.html', context)
+
+
+
+
+######### TESTING #########
+def make_report_2(request):
+    
+    # login and permission check start
+    if not request.user.is_authenticated:
+        return redirect('mylogin')
+    if not ('senior_driver.view_seniordriver' in request.user.get_group_permissions()):
+        raise Http404("У Вас не має прав на перегляд цієї сторінки")
+    # login and permission check end
+
+    if not request.user.is_superuser:
+        can_use_machines = Machine.objects.filter(
+            brigade=request.user.seniordriver).exclude(breakage=True)
+    else:
+        can_use_machines = Machine.objects.all()[:5]
+
+    for obj in can_use_machines:
+        obj.el = False
+
+    if request.method == "POST":
+        
+        # if not request.user.is_superuser:
+        #     filled_up = request.user.seniordriver
+        #     date = request.POST.get('date')
+        #     motohour = request.POST.get('motohour')
+        #     fuel = request.POST.get('fuel')
+
+        #     machine_id = request.POST.get('machine')
+        #     machine = Machine.objects.get(pk=machine_id)
+            
+        #     breakage = True if request.POST.get('breakage') == 'on' else False
+        #     breakage_info = request.POST.get('breakage_info') if request.POST.get('breakage_info') else ''
+
+        #     report = Report.objects.create(filled_up=filled_up, date=date, motohour=motohour, fuel=fuel, machine=machine, breakage=breakage)
+            
+        #     if breakage:
+        #         machine.breakage = True
+        #         machine.breakage_info = breakage_info
+        #         machine.breakage_date = report.date
+        #         machine.save()
+
+        # return redirect('driver:home-page')
+        data_str = ""
+        data_str += f"\nDate:       {request.POST.get('date')}" if request.POST.get('date') else ""
+        
+        date = request.POST.get('date')
+        pass_btn_select = False
+
+        # when passed selectMahines submit_button
+        if 'selectMachines' in request.POST:
+            print('BUTTON SELECT MACHINES CLICKED')
+            
+            machine_id_list = list(map(lambda el: int(el), request.POST.getlist('choices')))
+            machine_list = Machine.objects.filter(id__in=machine_id_list)
+            
+            for machine in can_use_machines:
+                    if machine.id in machine_id_list:
+                        machine.el = True
+
+            print(data_str)
+            print(machine_list)
+            print(len(machine_list))
+            
+            context = {
+                'selected_machine_bool': True,
+                'date_today': date,
+                'can_use_machines': can_use_machines,
+                'selected_machine_list': machine_list, 
+            }
+            return render(request, 'senior-driver/test_make_report.html', context)
+
+        # when passed sendData submit_button
+        if 'sendData' in request.POST:
+            print('BUTTON SEND DATA CLICKED')
+
+            
+
+            machine_id_list = list(map(lambda el: int(el), request.POST.getlist('choices')))
+            machine_list = Machine.objects.filter(id__in=machine_id_list)
+            
+            for machine in can_use_machines:
+                    if machine.id in machine_id_list:
+                        machine.el = True
+
+
+            machine_fuel_list = list(map(lambda el: float(el), request.POST.getlist('fuel')))
+            machine_motohour_list = list(map(lambda el: int(el), request.POST.getlist('motohour')))
+            machine_breakage_list = request.POST.getlist('breakage')
+            machine_breakage_info_list = request.POST.getlist('breakage_info')
+
+            for i in range(len(machine_breakage_list)):
+                if machine_breakage_list[i] == 'on':
+                    machine_breakage_list[i-1] = "del"
+            machine_breakage_list = list(filter(lambda el: el == 'on' or el == 'off', machine_breakage_list))
+
+
+            print("Список машин: ", machine_list)
+            print("Список мотогодин: ", machine_motohour_list)
+            print("Список бензин: ", machine_fuel_list)
+            print("Список поломки: ", machine_breakage_list)
+            print("Список информации о поломках: ", machine_breakage_info_list)
+            
+            context = {
+                'selected_machine_bool': True,
+                'date_today': date,
+                'can_use_machines': can_use_machines,
+            }
+            return render(request, 'senior-driver/test_make_report.html', context)
+        
+    context = {
+        'can_use_machines': can_use_machines,
+        'date_today': datetime.date.today().strftime("%Y-%m-%d")
+    }
+
+
+    return render(request, 'senior-driver/test_make_report.html', context)

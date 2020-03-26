@@ -32,7 +32,8 @@ class Engineer(models.Model):
 class Report(models.Model):
     
     filled_up = models.ForeignKey(SeniorDriver, on_delete=models.CASCADE)
-    date_of_completion = models.DateTimeField(auto_now=True)
+    date_of_completion = models.DateTimeField(auto_now_add=True)
+    updated_data = models.DateTimeField(auto_now=True)
     date = models.DateField()
 
     motohour = models.FloatField()
@@ -45,3 +46,13 @@ class Report(models.Model):
 
     def __str__(self):
         return f"{self.filled_up} - {self.date}"
+
+class MahineReport(models.Model):
+
+    report = models.ForeignKey(Report, on_delete=models.CASCADE)
+
+    motohour = models.FloatField()
+    fuel = models.FloatField()
+    machine = models.ForeignKey(Machine, on_delete=models.CASCADE)
+    breakage = models.BooleanField(default=False)
+    
