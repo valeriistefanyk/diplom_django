@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import Http404
 
 from machines.models import Machine
-from engineer.models import Report
+from engineer.models import Report, MachineReport
 import datetime
 
 
@@ -143,30 +143,6 @@ def make_report_2(request):
 
     if request.method == "POST":
         
-        # if not request.user.is_superuser:
-        #     filled_up = request.user.seniordriver
-        #     date = request.POST.get('date')
-        #     motohour = request.POST.get('motohour')
-        #     fuel = request.POST.get('fuel')
-
-        #     machine_id = request.POST.get('machine')
-        #     machine = Machine.objects.get(pk=machine_id)
-            
-        #     breakage = True if request.POST.get('breakage') == 'on' else False
-        #     breakage_info = request.POST.get('breakage_info') if request.POST.get('breakage_info') else ''
-
-        #     report = Report.objects.create(filled_up=filled_up, date=date, motohour=motohour, fuel=fuel, machine=machine, breakage=breakage)
-            
-        #     if breakage:
-        #         machine.breakage = True
-        #         machine.breakage_info = breakage_info
-        #         machine.breakage_date = report.date
-        #         machine.save()
-
-        # return redirect('driver:home-page')
-        data_str = ""
-        data_str += f"\nDate:       {request.POST.get('date')}" if request.POST.get('date') else ""
-        
         date = request.POST.get('date')
         pass_btn_select = False
 
@@ -181,7 +157,6 @@ def make_report_2(request):
                     if machine.id in machine_id_list:
                         machine.el = True
 
-            print(data_str)
             print(machine_list)
             print(len(machine_list))
             
@@ -216,14 +191,55 @@ def make_report_2(request):
                 if machine_breakage_list[i] == 'on':
                     machine_breakage_list[i-1] = "del"
             machine_breakage_list = list(filter(lambda el: el == 'on' or el == 'off', machine_breakage_list))
+            date = request.POST.get('date')
 
-
+            
+            print("Дата: ", date)
             print("Список машин: ", machine_list)
             print("Список мотогодин: ", machine_motohour_list)
             print("Список бензин: ", machine_fuel_list)
             print("Список поломки: ", machine_breakage_list)
             print("Список информации о поломках: ", machine_breakage_info_list)
             
+    
+            # создать отчеты
+            if not request.user.is_superuser:
+                filled_up = request.user.seniordriver
+                date = request.POST.get('date')
+
+                report = Report.objects.create(
+                    filled_up=filled_up, 
+                    date=date, 
+                    
+                    # потом удалить 
+                    motohour=32, 
+                    fuel=32, 
+                    machine=machine_list[0], 
+                    breakage=False)
+                
+                all_info = list(zip(machine_list, machine_motohour_list, machine_fuel_list, machine_breakage_list, machine_breakage_info_list))
+                for el in all_info:
+                    
+                    breakage = False
+                    if el[3] == 'on':
+                        breakage = True
+                        machine = Machine.objects.get(pk=el[0].id)
+                        machine.breakage = breakage
+                        machine.breakage_info = el[4]
+                        machine.breakage_date = date
+                        machine.save()
+
+
+                    MachineReport.objects.create(
+                        report = report,
+                        machine = el[0],
+                        motohour = el[1],
+                        fuel = el[2],
+                        breakage = breakage
+                    )
+                return redirect('driver:home-page')
+
+
             context = {
                 'selected_machine_bool': True,
                 'date_today': date,

@@ -47,12 +47,13 @@ class Report(models.Model):
     def __str__(self):
         return f"{self.filled_up} - {self.date}"
 
-class MahineReport(models.Model):
+class MachineReport(models.Model):
 
     report = models.ForeignKey(Report, on_delete=models.CASCADE)
 
+    machine = models.ForeignKey(Machine, on_delete=models.CASCADE)
     motohour = models.FloatField()
     fuel = models.FloatField()
-    machine = models.ForeignKey(Machine, on_delete=models.CASCADE)
+    
     breakage = models.BooleanField(default=False)
     

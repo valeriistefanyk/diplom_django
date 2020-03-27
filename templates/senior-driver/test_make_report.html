@@ -1,6 +1,10 @@
 {% extends 'base.html' %}
 
 {% block title %}Зробити звіт{% endblock %}
+{% block add_head_link %}
+  <script></script>
+{% endblock add_head_link %}
+
 
 {% block content %}
 
@@ -29,10 +33,8 @@
         <p><label for="date">Дата:</label>
         <input type="date" value="{{ date_today }}" name="date" id="date" required></p>
         
-
-        
-
         <p>Які машини оберете для звітності:</p>
+        
         {% for machine in can_use_machines %}
             <p><input type="checkbox" name="choices" value="{{machine.id}}" id="machine{{machine.id}}" {% if machine.el %}checked{% endif %}>
                 <label for="machine{{machine.id}}"> {{machine.full_name}}</label>
@@ -40,11 +42,18 @@
         {% endfor %}
 
             <input type="submit" name="selectMachines" value="Обрати ці машини">
-        
+    </form>
 
+      <form action="{% url 'driver:test_report' %}" method="POST">
+        {% csrf_token %}
         {% if selected_machine_list %}
             {% for machine in selected_machine_list %}
                 
+                {# Скрытые поля для передачи на бек | start #}
+                <input type="hidden" name="date"      value="{{ date_today }}">
+                <input type="hidden" name="choices"   value="{{machine.id}}">
+                {# Скрытые поля для передачи на бек | end #}
+
                 <div class="form-row bg-light col-md-6 mx-auto">
                     
                     <div class="form-group col-md-12">
@@ -59,31 +68,23 @@
                       <input type="number" step="0.1" name="fuel" class="form-control" id="fuel{{machine.id}}" placeholder="Бензин (у літрах)" required>
                     </div>
 
-
-                    <!-- <div class="form-check">
-                        <input class="form-check-input" type="radio" name="breakage" id="exampleRadios1" value="False" checked>
-                        <label class="form-check-label" for="exampleRadios1">
-                          Поломок немає
-                        </label>
-                      </div>
-                      <div class="form-check">
-                        <input class="form-check-input" type="radio" name="breakage" id="exampleRadios2" value="True">
-                        <label class="form-check-label" for="exampleRadios2">
-                          Поломка є (якщо є інформація - вказати)
-                        </label>
-                      </div> -->
-
                     <div class="custom-control custom-checkbox my-1 mr-sm-2">
-                        <input type="hidden" value="off" name="breakage">
-                        <input type="checkbox" value="on" name="breakage" class="custom-control-input" id="breakage{{machine.id}}">
                         
+                        {#  костыль, но работает. Hidden поле - для передачи на бек, #}
+                        {#  должно идти перед основным чекбоксом. #}
+                        {#  div с классом breakage_info - в одном диве с чекбоксом (для jquery) #}
+                        
+                        <input type="hidden" value="off" name="breakage">  
+                        <input type="checkbox" value="on" name="breakage" class="breakage custom-control-input" id="breakage{{machine.id}}">
                         <label class="custom-control-label" for="breakage{{machine.id}}">Поломка?</label>
-                    </div>
+                      
+                        <div class="breakage_info form-group col-md-12">
+                          <label for="info_breakage{{machine.id}}">Інформація про поломку</label>
+                          <textarea class="form-control" name="breakage_info" id="info_breakage{{machine.id}}" rows="3"></textarea>
+                        </div>
+                      </div>
+                      
                   
-                  <div class="form-group col-md-12">
-                    <label for="info_breakage{{machine.id}}">Інформація про поломку</label>
-                    <textarea class="form-control" name="breakage_info" id="info_breakage{{machine.id}}" rows="3"></textarea>
-                  </div>
                 </div>
             {% endfor %}
             <div class="form-row bg-light col-md-6 mx-auto">
@@ -100,5 +101,17 @@
         
         
     </form>
+    <script>
+      $(document).ready(function($) {
+        $('input.breakage').change(function(){
 
+          if ($(this).is(':checked')) {
+            $(this).nextAll('div.breakage_info').show();
+          }
+          else {
+            $(this).nextAll('div.breakage_info').hide();
+          }
+         }).change();
+      });
+    </script>
 {% endblock %}
