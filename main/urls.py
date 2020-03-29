@@ -47,5 +47,3 @@ if settings.DEBUG:
 
 from django.contrib.staticfiles.urls import static
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-
-# todo: add mediaroot

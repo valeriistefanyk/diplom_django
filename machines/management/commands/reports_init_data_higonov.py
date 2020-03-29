@@ -1,24 +1,3 @@
-def read_data_xls(*argv):
-    import xlrd
-    import datetime
-    loc = ("static_files/other_data/machines_bd.xls") 
-  
-    wb = xlrd.open_workbook(loc) 
-    sheet = wb.sheet_by_index(0) 
-    
-    row_array = []
-    for i in range(5, sheet.nrows - 1):
-        row_array.append(sheet.row_values(i))
-    for i in range(len(row_array)):
-        for j in (3, 26, 29):
-            if isinstance(row_array[i][j], float):
-                row_array[i][j] = datetime.datetime(*xlrd.xldate_as_tuple(row_array[i][j], wb.datemode)) 
-    for i in row_array:
-        i.pop()
-
-    return row_array
-
-
 from django.core.management.base import BaseCommand
 from machines.models import Machine
 from senior_driver.models import SeniorDriver
@@ -40,6 +19,7 @@ class Command(BaseCommand):
         machines = Machine.objects.filter(brigade=driver)
         machine1 = machines[1]
         machine10 = machines[10]
+
 
         for i in range(0, len(date_list)):
             Report.objects.create(

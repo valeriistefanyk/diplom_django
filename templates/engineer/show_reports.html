@@ -121,7 +121,12 @@
                                 <td>{{ report_unforwarded.motohour}}</td>
                                 <td>{{ report_unforwarded.fuel }}</td>
                                 <td>Поломка машини!</td>
-                                <td><button class="btn_send btn btn-warning text-dark text-center">Відправити</button>
+                                <form action="{% url 'engineer:reports' %}" method="POST">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="checked" value="True" />
+                                    <input type="hidden" name="report_id" value="{{report_unforwarded.id}}" />
+                                    <td><button class="btn_send btn btn-warning text-dark text-center">Відправити</button></td>
+                                </form>
                             </tr>
                             {% endfor %}
                         </table>
