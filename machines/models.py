@@ -141,6 +141,9 @@ class Machine(models.Model):
 
     def full_name(self):
         return f"{self.machine.name} №{self.number_machine} [IN {self.inventory_number}]" 
+    
+    def short_name(self):
+        return f"{self.machine.name} №{self.number_machine}" 
 
 
     def years_comission(self):

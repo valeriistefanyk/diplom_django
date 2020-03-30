@@ -169,13 +169,13 @@ def test_show_reports(request):
     
 
 
-
+    machines_all = Machine.objects.values('id', 'machine__name', 'number_machine', 'inventory_number', 'breakage_info')
     # попробуем сортировку по дням (начало кода)
     date_report_set = []
     reports_date = reports.values('date').annotate(total=Count('id'))
     for report_date in reports_date:
-        date = report_date['date']
-        queryset_rep = reports.filter(date=date)
+        date = report_date['date'].strftime("%Y-%m-%d")
+        queryset_rep = reports.filter(date=date).select_related('filled_up')
         reports_set = []
         for query in queryset_rep:
             report_id = query.id
@@ -183,65 +183,37 @@ def test_show_reports(request):
             brigade_name = query.filled_up.brigade_name
             machines = []
             for machine in query.machinereport_set.values():
-                m = Machine.objects.get(pk=machine['machine_id'])
-                machines.append(f'{m.machine.name} #{m.number_machine}')
+                m = machines_all.get(id=machine['machine_id'])
+                machine_short_name =  f"{m['machine__name']} #{m['number_machine']}"
+                machine_full_name =  f"{m['machine__name']} #{m['number_machine']} [IN{m['inventory_number']}] "
+                fuel = machine['fuel']
+                motohour = machine['motohour']
+                breakage = "True" if machine['breakage'] else "False"
+                breakage_info = m['breakage_info']
+                
+                machines_info = {
+                    'machine_short_name': machine_short_name,
+                    'machine_full_name': machine_full_name,
+                    'fuel': fuel,
+                    'motohour': motohour,
+                    'breakage': breakage,
+                    'breakage_info': breakage_info
+                }
+
+                machines.append(machines_info)
+
             reports_set.append({'report_id': report_id, 'driver': driver, 'brigade_name': brigade_name, 'machines': machines})
         date_report_set.append({'date': date, 'report_info': reports_set})
     # попробуем сортировку по дням (конец кода)
-    
-    data = get_data_json_reports(reports)
 
     context = {
         'from_date': from_date,
         'to_date' : to_date,
-        'reports_json': data,
         'date_report_set': date_report_set,
     }
     return render(request, 'director/test_show_reports.html', context=context)
 
 #### TEST SHOW REPORTS END ####
-
-
-# ДЛЯ МОДАЛЬНОГО ОКНА
-def get_data_json_reports(reports):
-    from machines.models import Machine
-    from django.core import serializers
-    
-    reports_object = []
-    
-    for report in reports:
-        id = report.id
-        filled_up = report.filled_up.full_name()
-        brigade_name = report.filled_up.brigade_name
-        date = report.date
-        machinereports_set = list(report.machinereport_set.values())
-        machinereport = []
-        for machinereport_set in machinereports_set:
-            machine = Machine.objects.get(pk=machinereport_set['machine_id'])
-            
-            breakage = 'True' if machine.breakage == True and machinereport_set['breakage'] == True else 'False'
-            breakage_info = machine.breakage_info
-            machinereport.append(
-                {
-                    'machine': machine.full_name(),
-                    'fuel': machinereport_set['fuel'],
-                    'motohour': machinereport_set['motohour'],
-                    'breakage': breakage,
-                    'breakage_info': breakage_info
-                }
-            )
-        elements = {
-            'id': id,
-            'date': date.strftime("%Y-%m-%d"),
-            'filled_up': filled_up,
-            'brigade_name': brigade_name,
-            'machines': machinereport,
-        }
-        
-        reports_object.append(elements)
-
-    return reports_object
-
 
 
 # ПРАВИЛЬНА ДАТА

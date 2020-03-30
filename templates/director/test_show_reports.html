@@ -47,9 +47,12 @@
                                 </td>
                             {% endif %}
                             <td>{{ info.driver }} [Бригада №{{info.brigade_name}}]</td>
-                            <td>{{ info.machines|join:", " }}</td>
+                            <td>{%for machine in info.machines %}
+                                    {{ machine.machine_short_name }}<br/>
+                                {% endfor %}
+                            </td>
                             <td><button class="btn_modal btn_send btn btn-warning text-dark text-center"
-                                    data-id_report="{{info.report_id}}">Детальна інформація</button>    
+                                    data-id_report="{{info.report_id}}" data-date_report="{{ report.date }}">Детальна інформація</button>    
                             </td>
                         </tr>
                     {% endfor %}
@@ -88,33 +91,47 @@
     $(document).ready(function($) {
         $('.btn_modal').on('click', function (e) {
             
-            response = {{ reports_json | safe}};
+            response = {{ date_report_set | safe}};
             
             id_report = parseInt($(this).data("id_report")) 
-            data = response[0]
+            date = $(this).data("date_report")
+                        
+            var report;
+            for (let i = 0; i < response.length; i++) {
+                if (response[i]['date'] == date){
+                    console.log(response[i].report_info)
+                    rep_info = response[i].report_info
+                    for (let j = 0; j < rep_info.length; j++) {
+                        if (id_report == rep_info[j].report_id){
+                            report = rep_info[j];
+                            break;
+                        }
+                    }
+                    break;
+                }
+            }
+            console.log(report)
             
-            var element = response.filter(function(val) {
-                return val.id == id_report;
-              })[0];
             
-            $('.report_date').html(element.date);
-            $('.report_filled_up').html(element.filled_up);
-            $('.report_brigade_name').html(element.brigade_name)
-            machines_html = ''
-            $('.machines').html(machines_html);
-            
-            machines = element.machines
+            $('.report_date').html(date);
+            $('.report_filled_up').html(report.driver);
+            $('.report_brigade_name').html(report.brigade_name)
+
+            $('.machines').html('');
+            machines = report.machines
             var cList = $('ul.machines')
+            
             $.each(machines, function(i)
             {
-                var info = `Машина: ${machines[i].machine}. 
+                console.log(machines[i].breakage)
+                var info = `Машина: ${machines[i].machine_full_name}. 
                     <table class='table'>
                         <tr>
                             <th>Бензин</th>
                             <td>${machines[i].fuel} л.</td>
                         </tr>
                         <tr>
-                            
+
                             <th>Мотогодини</th>
                             <td>${machines[i].motohour} мото/год</td>
                         </tr>
@@ -137,6 +154,10 @@
                     .html(info)
                     .appendTo(li);
             });
+
+            
+            
+            
 
             $('.popup-fade').fadeIn();
         });  
