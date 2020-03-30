@@ -48,16 +48,28 @@
             <h1 class="mt-4 text-center">Інформація про ремонт машини</h1>
             <div class="content-text">
                 <h4 class="my-4 text-danger">Машини які перебувають у ремонті:</h4>
+                {% if breakage_machines %}
                 <div class="card">
-                    <h5 class="card-header">{{ breakage_machine.full_name }}</h5>
+                    {% for breakage_machine in breakage_machines %}
+                    <h5 class="card-header"><i class="fa fa-times"></i> {{ breakage_machine.full_name }} <i class="fa fa-times"></i></h5>
                     <div class="card-body">
-                      <p class="card-text"><span class="font-weight-bold">Водій</span> {{ breakage_machine.brigade.full_name }}</p>
-                      <p class="card-text"><span class="font-weight-bold">Водій</span> {{ breakage_machine.brigade.full_name }}</p>
-                      <a href="#" class="btn btn-primary">Go somewhere</a>
+                        <p class="card-text"><span class="font-weight-bold">Водій - </span>
+                            {{ breakage_machine.brigade.full_name }}</p>
+                        <p class="card-text"><span class="font-weight-bold">Бригада №</span>
+                            {{ breakage_machine.brigade.brigade_name }}</p>
+                        <p class="card-text"><span class="font-weight-bold">Дата поломки: </span>
+                            {{ breakage_machine.breakage_date}}</p>
+                        <p class="card-text"><span class="font-weight-bold">Інформація про поломку: </span>
+                            {{breakage_machine.breakage_info}}</p>
+                        <a href="#" class="btn btn-warning">Вивести машину з ремонту</a>
                     </div>
-                  </div>
                 </div>
+                {% endfor %}
             </div>
+            {% else %}
+            <h4 class="my-4 text-success">Всі машини знаходяться в робочому стані!</h4>
+            {% endif %}
+        </div>
         <style>
             body {
                 overflow-x: hidden;
@@ -143,5 +155,5 @@
                 text-decoration: underline;
             }
         </style>
-        
+
         {% endblock %}
