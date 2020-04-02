@@ -5,62 +5,63 @@
 
 
 {% block content_page %}
-    
-    <div class="container-fluid">
-        <h1 class="mt-4 text-center">Звіти</h1>
-        <div class="container">
-            <form class="form-inline" method="GET">
-                    <div class="form-group mb-2">
-                       <div class="input-group date" id="datetimepicker7" data-target-input="nearest">
-                            <input type="text" value="{{ from_date }}" class="form-control datetimepicker-input" data-target="#datetimepicker7" name="from"/>
-                            <div class="input-group-append" data-target="#datetimepicker7" data-toggle="datetimepicker">
-                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                            </div>
-                        </div>
+
+<div class="container-fluid">
+    <h1 class="mt-4 text-center">Звіти</h1>
+    <div class="content-text">
+        <form class="form-inline" method="GET">
+            <div class="form-group mb-2">
+                <div class="input-group date" id="datetimepicker7" data-target-input="nearest">
+                    <input type="text" value="{{ from_date }}" class="form-control datetimepicker-input"
+                        data-target="#datetimepicker7" name="from" />
+                    <div class="input-group-append" data-target="#datetimepicker7" data-toggle="datetimepicker">
+                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                    </div>
                 </div>
-                    <div class="form-group mx-sm-3 mb-2">
-                       <div class="input-group date" id="datetimepicker8" data-target-input="nearest">
-                            <input type="text" value="{{ to_date }}" class="form-control datetimepicker-input" data-target="#datetimepicker8"/ name="to">
-                            <div class="input-group-append" data-target="#datetimepicker8" data-toggle="datetimepicker">
-                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                            </div>
-                        </div>
+            </div>
+            <div class="form-group mx-sm-3 mb-2">
+                <div class="input-group date" id="datetimepicker8" data-target-input="nearest">
+                    <input type="text" value="{{ to_date }}" class="form-control datetimepicker-input"
+                        data-target="#datetimepicker8" name="to">
+                    <div class="input-group-append" data-target="#datetimepicker8" data-toggle="datetimepicker">
+                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                    </div>
                 </div>
-                <button type="submit" class="btn btn-primary mb-2">Вибрати</button>
-            </form>
-        </div>
-        <div class="content-text">
-            {% if date_report_set %}
-            <table class="table_dark">
-                <tr>
-                    <th>Дата звіту</th>
-                    <th>Оформив [бригада №]</th>
-                    <th>Машини</th>
-                    <th>Детальніше</th>
-                </tr>
-                {% for report in date_report_set %}
-                    {% with True as flag %}
-                    {% for info in report.report_info %}
-                        <tr>{% if flag %}
-                                <td rowspan="5">{{ report.date }}
-                                    {% update_variable False as flag %}
-                                </td>
-                            {% endif %}
-                            <td>{{ info.driver }} [Бригада №{{info.brigade_name}}]</td>
-                            <td>{%for machine in info.machines %}
-                                    {{ machine.machine_short_name }}<br/>
-                                {% endfor %}
-                            </td>
-                            <td><button class="btn_modal btn_send btn btn-warning text-dark text-center"
-                                    data-id_report="{{info.report_id}}" data-date_report="{{ report.date }}">Детальна інформація</button>    
-                            </td>
-                        </tr>
+            </div>
+            <button type="submit" class="btn btn-primary mb-2">Вибрати</button>
+        </form>
+        {% if date_report_set %}
+        <table class="table_dark">
+            <tr>
+                <th>Дата звіту</th>
+                <th>Оформив [бригада №]</th>
+                <th>Машини</th>
+                <th>Детальніше</th>
+            </tr>
+            {% for report in date_report_set %}
+            {% with True as flag %}
+            {% for info in report.report_info %}
+            <tr>{% if flag %}
+                <td>{{ report.date }}
+                    {% update_variable False as flag %}
+                </td>
+                {% endif %}
+                <td>{{ info.driver }} [Бригада №{{info.brigade_name}}]</td>
+                <td>{%for machine in info.machines %}
+                    {{ machine.machine_short_name }}
                     {% endfor %}
-                    {% endwith %}
-                {% endfor %}
+                </td>
+                <td><button class="btn_modal btn_send btn btn-warning text-dark text-center"
+                        data-id_report="{{info.report_id}}" data-date_report="{{ report.date }}">Детальна
+                        інформація</button>
+                </td>
+            </tr>
+            {% endfor %}
+            {% endwith %}
+            {% endfor %}
             {% endif%}
-        </div>       
     </div>
+</div>
 {% endblock content_page %}
 
 
@@ -72,13 +73,13 @@
         <a class="popup-close" href="#">Закрыть</a>
         <div class="popup-content">
             <p>Дата: <span class="report_date">(невідома)</span></p>
-            <p>Водій: <span class="report_filled_up">(невідомий)</span> 
+            <p>Водій: <span class="report_filled_up">(невідомий)</span>
                 [бригада №<span class="report_brigade_name">(невідомо)</span>]</p>
             <p>
                 <ul class="machines"></ul>
             </p>
         </div>
-    </div>	
+    </div>
 </div>
 {# модальное окно (конец) #}
 {% endblock add_another_html %}
@@ -88,43 +89,43 @@
 {% block add_js %}
 {# код модального окна (начало) #}
 <script>
-    $(document).ready(function($) {
+    $(document).ready(function ($) {
         $('.btn_modal').on('click', function (e) {
-            
-            response = {{ date_report_set | safe}};
-            
-            id_report = parseInt($(this).data("id_report")) 
-            date = $(this).data("date_report")
-                        
-            var report;
-            for (let i = 0; i < response.length; i++) {
-                if (response[i]['date'] == date){
-                    console.log(response[i].report_info)
-                    rep_info = response[i].report_info
-                    for (let j = 0; j < rep_info.length; j++) {
-                        if (id_report == rep_info[j].report_id){
-                            report = rep_info[j];
-                            break;
-                        }
-                    }
-                    break;
-                }
-            }
-            console.log(report)
-            
-            
-            $('.report_date').html(date);
-            $('.report_filled_up').html(report.driver);
-            $('.report_brigade_name').html(report.brigade_name)
 
-            $('.machines').html('');
-            machines = report.machines
-            var cList = $('ul.machines')
-            
-            $.each(machines, function(i)
-            {
-                console.log(machines[i].breakage)
-                var info = `Машина: ${machines[i].machine_full_name}. 
+            response = {{ date_report_set | safe }
+        };
+
+        id_report = parseInt($(this).data("id_report"))
+        date = $(this).data("date_report")
+
+        var report;
+        for (let i = 0; i < response.length; i++) {
+            if (response[i]['date'] == date) {
+                console.log(response[i].report_info)
+                rep_info = response[i].report_info
+                for (let j = 0; j < rep_info.length; j++) {
+                    if (id_report == rep_info[j].report_id) {
+                        report = rep_info[j];
+                        break;
+                    }
+                }
+                break;
+            }
+        }
+        console.log(report)
+
+
+        $('.report_date').html(date);
+        $('.report_filled_up').html(report.driver);
+        $('.report_brigade_name').html(report.brigade_name)
+
+        $('.machines').html('');
+        machines = report.machines
+        var cList = $('ul.machines')
+
+        $.each(machines, function (i) {
+            console.log(machines[i].breakage)
+            var info = `Машина: ${machines[i].machine_full_name}. 
                     <table class='table'>
                         <tr>
                             <th>Бензин</th>
@@ -137,51 +138,51 @@
                         </tr>
                     </table>
                     `
-                if (machines[i].breakage == 'True'){
-                    info += `<p>Була поломка.<br/>
+            if (machines[i].breakage == 'True') {
+                info += `<p>Була поломка.<br/>
                         Інформація про поломку: 
                         <span><span></p>`
-                }
-                else {
-                    info += '<p>Поломок не було</p>'
-                }
-                var li = $('<li/>')
-                    .addClass('ui-menu-item')
-                    .attr('role', 'menuitem')
-                    .appendTo(cList);
-                var aaa = $('<p/>')
-                    .addClass('ui-all')
-                    .html(info)
-                    .appendTo(li);
-            });
-
-            
-            
-            
-
-            $('.popup-fade').fadeIn();
-        });  
-
-        // Клик по ссылке "Закрыть".
-        $('.popup-close').click(function() {
-            $(this).parents('.popup-fade').fadeOut();
-            return false;
-        });        
-     
-        // Закрытие по клавише Esc.
-        $(document).keydown(function(e) {
-            if (e.keyCode === 27) {
-                e.stopPropagation();
-                $('.popup-fade').fadeOut();
             }
+            else {
+                info += '<p>Поломок не було</p>'
+            }
+            var li = $('<li/>')
+                .addClass('ui-menu-item')
+                .attr('role', 'menuitem')
+                .appendTo(cList);
+            var aaa = $('<p/>')
+                .addClass('ui-all')
+                .html(info)
+                .appendTo(li);
         });
-            
-                // Клик по фону, но не по окну.
-        $('.popup-fade').click(function(e) {
-            if ($(e.target).closest('.popup').length == 0) {
-                $(this).fadeOut();					
-            }
-        });	
+
+
+
+
+
+        $('.popup-fade').fadeIn();
+    });
+
+    // Клик по ссылке "Закрыть".
+    $('.popup-close').click(function () {
+        $(this).parents('.popup-fade').fadeOut();
+        return false;
+    });
+
+    // Закрытие по клавише Esc.
+    $(document).keydown(function (e) {
+        if (e.keyCode === 27) {
+            e.stopPropagation();
+            $('.popup-fade').fadeOut();
+        }
+    });
+
+    // Клик по фону, но не по окну.
+    $('.popup-fade').click(function (e) {
+        if ($(e.target).closest('.popup').length == 0) {
+            $(this).fadeOut();
+        }
+    });	
     });
 </script>
 {# код модального окна (конец) #}
@@ -218,37 +219,40 @@
     .popup-fade {
         display: none;
     }
+
     .popup-fade:before {
         content: '';
         background: #000;
-        position: fixed; 
+        position: fixed;
         left: 0;
         top: 0;
-        width: 100%; 
+        width: 100%;
         height: 100%;
         opacity: 0.7;
         z-index: 9999;
     }
+
     .popup {
         position: fixed;
         top: 20%;
         left: 50%;
         padding: 20px;
         width: 900px;
-        margin-left: -200px;	
+        margin-left: -200px;
         background: #fff;
         border: 1px solid orange;
-        border-radius: 4px; 
+        border-radius: 4px;
         z-index: 99999;
-        opacity: 1;	
+        opacity: 1;
     }
+
     .popup-close {
         position: absolute;
         top: 10px;
         right: 10px;
     }
-    
-    
+
+
     /* TABLE----------------------- */
     .table_dark {
         font-size: 14px;
@@ -258,25 +262,30 @@
         background: #252F48;
         margin: 10px;
     }
+
     .table_dark th {
         color: #EDB749;
         border-bottom: 1px solid #37B5A5;
         padding: 12px 17px;
     }
+
     .table_dark td {
         color: #CAD4D6;
         border-bottom: 1px solid #37B5A5;
         border-right: 1px solid #37B5A5;
         padding: 7px 17px;
     }
+
     .table_dark tr:last-child td {
         border-bottom: none;
     }
+
     .table_dark td:last-child {
         border-right: none;
     }
+
     .table_dark tr:hover td {
         text-decoration: underline;
     }
-</style>  
-{% endblock add_style %}  
+</style>
+{% endblock add_style %}

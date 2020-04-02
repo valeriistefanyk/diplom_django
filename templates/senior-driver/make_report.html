@@ -1,57 +1,167 @@
 {% extends 'base.html' %}
 
-{% block title %}Зробити звіт{% endblock %}
+
+{% block title %}Сторінка Старшого водія{% endblock %}
+
 
 {% block content %}
+<div class="d-flex" id="wrapper">
 
-
-    <nav class="navbar navbar-expand-md navbar-dark bg-dark">
-        <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
-            <ul class="navbar-nav ml-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Привіт, {{ user.username }}!</a>
-                </li>
-                <li class="nav-item">
-                    <a href="{% url 'driver:home-page' %}" class="nav-link">Кабінет</a>
-                </li>
-                <li class="nav-item">
-                    <a href="{% url 'mylogout' %}" class="nav-link">Вийти</a>
-                </li>
-            
-            </ul>
+    <!-- Sidebar -->
+    <div class="bg-dark border-right" id="sidebar-wrapper">
+        <div class="sidebar-heading text-light py-5">VMM Core Production</div>
+        <div class="list-group list-group-flush">
+            <a href="{% url 'engineer:home-page' %}"
+                class="list-group-item list-group-item-action bg-dark text-light border-light border-top"><i
+                    class="fa fa-home"></i>Головна</a>
+            <a href="{% url 'driver:test_report' %}"
+                class="list-group-item list-group-item-action bg-dark text-light border-light"><i
+                    class="fa fa-table"></i>Створити звіт</a>
+            <a href="{% url 'driver:my_reports' %}"
+                class="list-group-item list-group-item-action bg-dark text-light border-light"><i
+                    class="fa fa-truck"></i>Мої звіти</a>
+            <a href="{% url 'driver:machines' %}"
+                class="list-group-item list-group-item-action bg-dark text-light border-light border-bottom"><i
+                    class="fa fa-wrench"></i>Мої машини</a>
+            <a href="{% url 'driver:about'%}"
+                class="list-group-item list-group-item-action bg-dark text-light border-light border-bottom"><i
+                    class="fa fa-calendar"></i>Про нас</a>
         </div>
-    </nav>
+    </div>
+    <!-- /#sidebar-wrapper -->
 
+    <!-- Page Content -->
+    <div id="page-content-wrapper">
 
-    <h2>Створення звіту</h2>
-    <form action="{% url 'driver:report' %}" method="POST">
-        {% csrf_token %}
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark border-bottom">
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
+                    <a class="nav-link text-light" href="#">Привіт, {{ user.username }}!</a>
+                    <a class="nav-link text-warning" href="{% url 'mylogout' %}"><i
+                            class="fa fa-arrow-right"></i>Вийти</a>
 
-        <p><label for="motohour">Мотогини:</label>
-        <input type="number" step="0.1" name="motohour" id="motohour" required></p>
-    
-        <p><label for="fuel">Використано бензину:</label>
-        <input type="number" step="0.1" name="fuel" id="fuel" required></p>
+                </ul>
+            </div>
+        </nav>
 
-        <p><label for="date">Дата:</label>
-        <input type="date" value="{{ date_today }}" name="date" id="date" required></p>
-    
-        <select id="machine" name="machine">
-            {% for machine in can_use_machines %}
-            <option value="{{machine.id}}">
-                {{machine.full_name}}
-            </option>
-            {% endfor %}
-        </select>
+        <div class="container-fluid">
+            <h1 class="mt-4 text-center">Створення звіту</h1>
+            <div class="content-text">
+                <form action="{% url 'driver:report' %}" method="POST">
+                    {% csrf_token %}
 
-        <br><br>
-        <p><label for="breakage">Була поломка:</label>
-            <input type="checkbox" name="breakage" id="breakage"></p>
-            
-        <p><label for="breakage_info">Інформація про поломку:</label>
-            <textarea name="breakage_info" id="breakage_info" cols="30" rows="10"></textarea></p>
+                    <p><label for="motohour">Мотогини:</label>
+                        <input type="number" step="0.1" name="motohour" id="motohour" required></p>
 
-        <input type="submit" value="Submit">
-    </form>
+                    <p><label for="fuel">Використано бензину:</label>
+                        <input type="number" step="0.1" name="fuel" id="fuel" required></p>
 
-{% endblock %}
+                    <p><label for="date">Дата:</label>
+                        <input type="date" value="{{ date_today }}" name="date" id="date" required></p>
+
+                    <select id="machine" name="machine">
+                        {% for machine in can_use_machines %}
+                        <option value="{{machine.id}}">
+                            {{machine.full_name}}
+                        </option>
+                        {% endfor %}
+                    </select>
+
+                    <br><br>
+                    <p><label for="breakage">Була поломка:</label>
+                        <input type="checkbox" name="breakage" id="breakage"></p>
+
+                    <p><label for="breakage_info">Інформація про поломку:</label>
+                        <textarea name="breakage_info" id="breakage_info" cols="30" rows="10"></textarea></p>
+
+                    <input type="submit" value="Submit">
+                </form>
+            </div>
+        </div>
+        <style>
+            body {
+                overflow-x: hidden;
+            }
+
+            .fa {
+                margin-right: 10px;
+            }
+
+            #sidebar-wrapper {
+                min-height: 100vh;
+                margin-left: -15rem;
+                -webkit-transition: margin .25s ease-out;
+                -moz-transition: margin .25s ease-out;
+                -o-transition: margin .25s ease-out;
+                transition: margin .25s ease-out;
+            }
+
+            #sidebar-wrapper .sidebar-heading {
+                padding: 0.875rem 1.25rem;
+                font-size: 1.2rem;
+            }
+
+            #sidebar-wrapper .list-group {
+                width: 15rem;
+            }
+
+            #page-content-wrapper {
+                min-width: 100vw;
+            }
+
+            #wrapper.toggled #sidebar-wrapper {
+                margin-left: 0;
+            }
+
+            @media (min-width: 768px) {
+                #sidebar-wrapper {
+                    margin-left: 0;
+                }
+
+                #page-content-wrapper {
+                    min-width: 0;
+                    width: 100%;
+                }
+
+                #wrapper.toggled #sidebar-wrapper {
+                    margin-left: -15rem;
+                }
+            }
+
+            /* TABLE----------------------- */
+            .table_dark {
+                font-size: 14px;
+                width: 100%;
+                text-align: left;
+                border-collapse: collapse;
+                background: #252F48;
+                margin: 10px;
+            }
+
+            .table_dark th {
+                color: #EDB749;
+                border-bottom: 1px solid #37B5A5;
+                padding: 12px 17px;
+            }
+
+            .table_dark td {
+                color: #CAD4D6;
+                border-bottom: 1px solid #37B5A5;
+                border-right: 1px solid #37B5A5;
+                padding: 20px 27px;
+            }
+
+            .table_dark tr:last-child td {
+                border-bottom: none;
+            }
+
+            .table_dark td:last-child {
+                border-right: none;
+            }
+
+            .table_dark tr:hover td {
+                text-decoration: underline;
+            }
+        </style>
+
+        {% endblock %}
