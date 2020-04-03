@@ -21,6 +21,7 @@
                     <th>Працівник</th>
                     <th>Email</th>
                     <th>Телефон</th>
+                    <th>Статистика</th>
                 </tr>
                 {% for driver in drivers %}
                 <tr>
@@ -29,6 +30,9 @@
                         {{driver.full_name}}</td>
                     <td>{{driver.user.email}}</td>
                     <td>{{driver.phones}}</td>
+                    <td><button class="btn_modal btn_send btn btn-warning text-dark text-center"
+                        data-driver_id="{{driver.id}}" data-date_report="">Детальна інформація</button>    
+                </td>
                 </tr>
                 {% endfor %}
             </table>
@@ -40,6 +44,27 @@
     </div>
 {% endblock content_page %}
     
+
+{% block add_another_html %}
+{# модальное окно начало #}
+<div class="popup-fade">
+    <div class="popup">
+        <a class="popup-close" href="#">Закрыть</a>
+        <div class="popup-content">
+            <p>Данные: <span class="data">(невідома)</span></p>
+            <p>Водій: <span class="report_filled_up">(невідомий)</span> 
+                [бригада №<span class="report_brigade_name">(невідомо)</span>]</p>
+            <p>
+                <ul class="machines"></ul>
+            </p>
+            <div id="some_chart" style="width: 100%; height: 500px;"></div>
+        </div>
+    </div>	
+</div>
+{# модальное окно (конец) #}
+{% endblock add_another_html %}
+
+
 
 {% block add_style %}
     <style>
@@ -82,6 +107,67 @@
 
 
 {% block add_js %}
+{# код модального окна (начало) #}
+<script>
+    $(document).ready(function($) {
+        $('.btn_modal').on('click', function (e) {
+            driver_id = $(this).data("driver_id")
+            console.log(driver_id)
+
+            google.charts.load('current', { 'packages': ['bar'] });
+            google.charts.setOnLoadCallback(drawChart);
+            function drawChart() {
+                let data = google.visualization.arrayToDataTable([
+                    ['Рік', 'Бригада_1', 'Бригада_2', 'Бригада_3'],
+                    ['2017', 1000, 400, driver_id],
+                    ['2018', 1170, 23, driver_id],
+                    ['2019', 660, 1120, driver_id],
+                    ['2020', 110, 1200, 350]
+                ]);
+                let options = {
+                    chart: {
+                        title: 'Company Performance',
+                        subtitle: 'Статистика кожної бригади 2017-2020',
+                    }
+                };
+                let chart = new google.charts.Bar(document.getElementById('some_chart'));
+                chart.draw(data, google.charts.Bar.convertOptions(options));
+            }
+
+            data = 'some data'
+            $('.data').html(data);
+            
+
+            $('.popup-fade').fadeIn();
+        });  
+
+        // Клик по ссылке "Закрыть".
+        $('.popup-close').click(function() {
+            $(this).parents('.popup-fade').fadeOut();
+            return false;
+        });        
+     
+        // Закрытие по клавише Esc.
+        $(document).keydown(function(e) {
+            if (e.keyCode === 27) {
+                e.stopPropagation();
+                $('.popup-fade').fadeOut();
+            }
+        });
+            
+                // Клик по фону, но не по окну.
+        $('.popup-fade').click(function(e) {
+            if ($(e.target).closest('.popup').length == 0) {
+                $(this).fadeOut();					
+            }
+        });	
+    });
+</script>
+{# код модального окна (конец) #}
+
+
+
+
 <script>
     google.charts.load('current', { 'packages': ['bar'] });
     google.charts.setOnLoadCallback(drawChart);

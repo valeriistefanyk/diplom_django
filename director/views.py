@@ -74,6 +74,41 @@ def show_statistics(request):
     ########## DATA FOR CHARTS START ##########
     
     
+    #######
+    # g_drivers = SeniorDriver.objects.all()
+    # g_reports_driver = []
+    # for g_driver in g_drivers:
+    #     g_reports_driver.append(Report.objects.filter(filled_up=g_driver))
+    # g_machines = []
+    # for g_report_driver in g_reports_driver:
+    #     g_machines.append(g_report_driver)
+
+    ## названия всех машин
+    # def machines_of_driver(reports_of_drivers):
+    #     machines = []
+    #     for report in reports_of_drivers:
+    #         machines_set = report.machinereport_set.values()
+    #         for machine in machines_set:
+    #             machine_concrete = Machine.objects.get(pk=machine['machine_id'])
+    #             machine_name = machine_concrete.machine.name + machine_concrete.number_machine
+    #             if not machine_name in machines:
+    #                 machines.append(machine_name)
+    #     return machines
+    
+    # g_reports_drivers = []
+    # g_drivers = SeniorDriver.objects.all()
+    # for g_driver in g_drivers:
+    #     g_reports_driver.append(Report.objects.filter(filled_up=g_driver))
+
+    # data = []   
+    # for reports_driver in g_reports_drivers:
+    #     data.append(machines_of_driver(reports_driver))
+
+
+    # addColumns_list = [machine for machine in machines_of_driver(reports_of_drivers)]
+    #######
+
+    
     # higonov (№5)
     values_data = []
     higonov = SeniorDriver.objects.get(user__username='higonov')
@@ -124,6 +159,79 @@ def show_statistics(request):
         'addRows': addRows
     }
     return render(request, 'director/statistics.html', context=context)
+
+
+#### TEST STATISTICS SHOW (END) ####
+def test_show_statistics(request):
+    
+    # login and permission check start
+    if not request.user.is_authenticated:
+        return redirect('mylogin')
+    if not ('director.view_director' in request.user.get_group_permissions()):
+        raise Http404("У Вас не має прав на перегляд цієї сторінки")
+    # login and permission check end
+    
+    reports = Report.objects.all()
+    drivers = SeniorDriver.objects.all().order_by('brigade_name')
+    data_report = {
+        'names': drivers.values_list('brigade_name', flat=True)
+    }
+
+    ########## DATA FOR CHARTS START ##########
+    
+    
+    # higonov (№5)
+    values_data = []
+    higonov = SeniorDriver.objects.get(user__username='higonov')
+    reports_higonov = Report.objects.filter(filled_up=higonov)
+
+    m1 = reports_higonov[0].machine
+    m2 = reports_higonov[0].machine
+    
+    reports_higonov_m1 = reports_higonov.filter(machine=m1)
+    reports_higonov_m2 = reports_higonov.filter(machine=m2)
+
+    reports_higonov_m1.filter(date__range = ['2020-02-23', '2020-03-30'])
+    reports_higonov_m2.filter(date__range = ['2020-02-23', '2020-03-30'])
+    
+    
+    addColumns = [m1.machine.name + ' #' + m1.number_machine, m2.machine.name + ' #' + m2.number_machine]
+    addRows = []
+    
+    for i in range(0, reports_higonov_m1.count()):
+        addRows.append([reports_higonov_m1[i].date, 
+                        reports_higonov_m1[i].motohour, 
+                        reports_higonov_m2[i].motohour, 
+                        [
+                            reports_higonov_m1[i].machine.machine.name + ' #' + reports_higonov_m1[i].machine.number_machine,
+                            reports_higonov_m1[i].date.strftime('%b %d, %Y'),
+                            reports_higonov_m1[i].fuel,
+                            reports_higonov_m1[i].motohour
+                        ],
+                        [
+                            reports_higonov_m2[i].machine.machine.name + ' #' + reports_higonov_m2[i].machine.number_machine,
+                            reports_higonov_m2[i].date.strftime('%b %d, %Y'),
+                            reports_higonov_m2[i].fuel,
+                            reports_higonov_m2[i].motohour
+                        ],
+                    ])
+
+    
+    # addRows = [['12-02-2020', 20, 30], ["new Date(2020, 0)", 0, 0], ...]
+
+    ########## DATA FOR CHARTS END ##########
+
+
+    context = {
+        'reports': reports,
+        'drivers': drivers,
+        
+        'addColumns': addColumns,
+        'addRows': addRows
+    }
+    return render(request, 'director/test_statistics.html', context=context)
+#### TEST STATISTICS SHOW (END) ####
+
 
 
 # Інформація про працівників

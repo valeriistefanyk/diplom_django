@@ -1,0 +1,166 @@
+{% extends 'director/_base_page_director.html'%}
+
+
+{% block title %}Статистика{% endblock %}
+
+
+{% block add_head_link_2 %}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+{% endblock add_head_link_2 %}
+
+
+{% block content_page %}
+    <div class="container-fluid">
+        <h1 class="mt-4 text-center">Статистика</h1>
+        <div class="content-text">
+            <h2>Старші водії:</h2>
+            {% if drivers %}
+            {% for driver in drivers %}
+            <div>
+                    <!-- Информация о водителе -->
+                    <table class="table_dark">
+                        <tr>
+                            <th>Бригада</th>
+                            <th>Працівник</th>
+                            <th>Email</th>
+                            <th>Телефон</th>
+                        </tr>
+                        <tr>
+                            <td>№{{driver.brigade_name}}</td>
+                            <td><img width="50px" src="{{driver.avatar.url}}" alt="{{driver.full_name}}">
+                                {{driver.full_name}}</td>
+                            <td>{{driver.user.email}}</td>
+                            <td>{{driver.phones}}</td>
+                        </tr>
+                    </table>
+                    <!-- Диаграмма для каждой бригады -->
+                    <div class="chart_div" id="chart_div" style="width: 100%; height: 500px;"></div><br><br><br>
+                    <div class="some" style="width: 100%; height: 500px;"></div><br><br><br>
+                    
+            </div>
+            {% endfor %}
+            {% endif %}
+            
+            <div id="columnchart_material0" style="width: 100%; height: 500px;"></div>
+            <div id="columnchart_material1" style="width: 100%; height: 500px;"></div>
+            <div id="columnchart_material2" style="width: 100%; height: 500px;"></div>
+        </div>
+    </div>
+{% endblock content_page %}
+    
+
+{% block add_style %}
+    <style>
+        /* TABLE----------------------- */
+        .table_dark {
+            font-size: 14px;
+            width: 100%;
+            text-align: left;
+            border-collapse: collapse;
+            background: #252F48;
+            margin: 10px;
+        }
+
+        .table_dark th {
+            color: #EDB749;
+            border-bottom: 1px solid #37B5A5;
+            padding: 12px 17px;
+        }
+
+        .table_dark td {
+            color: #CAD4D6;
+            border-bottom: 1px solid #37B5A5;
+            border-right: 1px solid #37B5A5;
+            padding: 7px 17px;
+        }
+
+        .table_dark tr:last-child td {
+            border-bottom: none;
+        }
+
+        .table_dark td:last-child {
+            border-right: none;
+        }
+
+        .table_dark tr:hover td {
+            text-decoration: underline;
+        }
+    </style>
+{% endblock add_style %}
+
+
+{% block add_js %}
+<script>
+    
+    
+    for (let i = 0; i < 3; i++) { // выведет 0, затем 1, затем 2
+        google.charts.load('current', { 'packages': ['bar'] });
+        google.charts.setOnLoadCallback(drawChart);
+    
+        function drawChart() {
+            let data = google.visualization.arrayToDataTable([
+                ['Рік', 'Бригада_1', 'Бригада_2', 'Бригада_3'],
+                ['2017', 1000, 400, 200 + i],
+                ['2018', 1170, 23, 250],
+                ['2019', 660, 1120, 300],
+                ['2020', 110, 1200, 350]])
+            let options = {
+                chart: {
+                    title: 'Company Performance',
+                    subtitle: 'Статистика кожної бригади 2017-2020',
+                }
+            };
+            let chart = new google.charts.Bar(document.getElementById('columnchart_material' + i));
+            chart.draw(data, google.charts.Bar.convertOptions(options));
+        }
+
+
+        
+    }
+
+    google.charts.load('current', {packages: ['corechart', 'line']});
+    google.charts.setOnLoadCallback(drawLineColors);
+    
+    function drawLineColors() {
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Month');
+        data.addColumn('number', "{{addColumns.0}}");
+        data.addColumn({type: 'string', role: 'tooltip', 'p': { 'html': true }});
+        data.addColumn('number', "{{addColumns.1}}");
+        data.addColumn({type: 'string', role: 'tooltip', 'p': { 'html': true }});
+        
+        data.addRows([
+            {% for i in addRows %}
+                ["{{i.0}}", {{i.1}}, createCustomHTMLContent("{{i.3.0}}", "{{i.3.1}}", "{{i.3.2}}", "{{i.3.3}}"), {{i.2}}, createCustomHTMLContent("{{i.4.0}}", "{{i.4.1}}", "{{i.4.2}}", "{{i.4.3}}")],
+            {% endfor %}
+        ]);
+
+        var options = {
+            
+            hAxis: {
+                title: 'Дата'
+            },
+            vAxis: {
+                title: 'Мото/години'
+            },
+            focusTarget: 'category',
+            tooltip: { isHtml: true,
+                        trigger: 'selection',        
+            },
+        };
+
+        var chart = new google.visualization.LineChart(document.getElementsByClassName('chart_div')[0]);
+        chart.draw(data, options);
+
+    }
+
+    function createCustomHTMLContent(name, date, fuel, motohour) {
+        return '<div style="padding:5px 5px 5px 5px;">' +
+            '<table class="">' +
+            '<tr><td>Бензин:</td>' + '<td><b>' + fuel + '</b></td></tr>' + 
+            '<tr><td>Мотогини:</td>' + '<td><b>' + motohour + '</b></td></tr>' + 
+            '</table>' + '</div>';
+    }
+
+</script>
+{% endblock add_js %}

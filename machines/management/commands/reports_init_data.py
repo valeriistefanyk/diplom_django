@@ -44,4 +44,4 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         print("Initializes data for machine model")
-        self.init_data(3, 2)
+        self.init_data(5, 3)

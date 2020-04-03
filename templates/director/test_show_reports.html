@@ -42,7 +42,7 @@
             {% with True as flag %}
             {% for info in report.report_info %}
             <tr>{% if flag %}
-                <td>{{ report.date }}
+                <td rowspan="5">{{ report.date }}
                     {% update_variable False as flag %}
                 </td>
                 {% endif %}
@@ -92,97 +92,92 @@
     $(document).ready(function ($) {
         $('.btn_modal').on('click', function (e) {
 
-            response = {{ date_report_set | safe }
-        };
+            response = {{ date_report_set | safe }};
 
-        id_report = parseInt($(this).data("id_report"))
-        date = $(this).data("date_report")
+            id_report = parseInt($(this).data("id_report"))
+            date = $(this).data("date_report")
 
-        var report;
-        for (let i = 0; i < response.length; i++) {
-            if (response[i]['date'] == date) {
-                console.log(response[i].report_info)
-                rep_info = response[i].report_info
-                for (let j = 0; j < rep_info.length; j++) {
-                    if (id_report == rep_info[j].report_id) {
-                        report = rep_info[j];
-                        break;
+            var report;
+            for (let i = 0; i < response.length; i++) {
+                if (response[i]['date'] == date) {
+                    console.log(response[i].report_info)
+                    rep_info = response[i].report_info
+                    for (let j = 0; j < rep_info.length; j++) {
+                        if (id_report == rep_info[j].report_id) {
+                            report = rep_info[j];
+                            break;
+                        }
                     }
+                    break;
                 }
-                break;
             }
-        }
-        console.log(report)
+            console.log(report)
 
 
-        $('.report_date').html(date);
-        $('.report_filled_up').html(report.driver);
-        $('.report_brigade_name').html(report.brigade_name)
+            $('.report_date').html(date);
+            $('.report_filled_up').html(report.driver);
+            $('.report_brigade_name').html(report.brigade_name)
 
-        $('.machines').html('');
-        machines = report.machines
-        var cList = $('ul.machines')
+            $('.machines').html('');
+            machines = report.machines
+            var cList = $('ul.machines')
 
-        $.each(machines, function (i) {
-            console.log(machines[i].breakage)
-            var info = `Машина: ${machines[i].machine_full_name}. 
-                    <table class='table'>
-                        <tr>
-                            <th>Бензин</th>
-                            <td>${machines[i].fuel} л.</td>
-                        </tr>
-                        <tr>
+            $.each(machines, function (i) {
+                console.log(machines[i].breakage)
+                var info = `Машина: ${machines[i].machine_full_name}. 
+                        <table class='table'>
+                            <tr>
+                                <th>Бензин</th>
+                                <td>${machines[i].fuel} л.</td>
+                            </tr>
+                            <tr>
 
-                            <th>Мотогодини</th>
-                            <td>${machines[i].motohour} мото/год</td>
-                        </tr>
-                    </table>
-                    `
-            if (machines[i].breakage == 'True') {
-                info += `<p>Була поломка.<br/>
-                        Інформація про поломку: 
-                        <span><span></p>`
-            }
-            else {
-                info += '<p>Поломок не було</p>'
-            }
-            var li = $('<li/>')
-                .addClass('ui-menu-item')
-                .attr('role', 'menuitem')
-                .appendTo(cList);
-            var aaa = $('<p/>')
-                .addClass('ui-all')
-                .html(info)
-                .appendTo(li);
+                                <th>Мотогодини</th>
+                                <td>${machines[i].motohour} мото/год</td>
+                            </tr>
+                        </table>
+                        `
+                if (machines[i].breakage == 'True') {
+                    info += `<p>Була поломка.<br/>
+                            Інформація про поломку: 
+                            <span><span></p>`
+                }
+                else {
+                    info += '<p>Поломок не було</p>'
+                }
+                var li = $('<li/>')
+                    .addClass('ui-menu-item')
+                    .attr('role', 'menuitem')
+                    .appendTo(cList);
+                var aaa = $('<p/>')
+                    .addClass('ui-all')
+                    .html(info)
+                    .appendTo(li);
+            });
+
+            $('.popup-fade').fadeIn();
         });
 
-
-
-
-
-        $('.popup-fade').fadeIn();
-    });
-
-    // Клик по ссылке "Закрыть".
-    $('.popup-close').click(function () {
-        $(this).parents('.popup-fade').fadeOut();
-        return false;
-    });
-
-    // Закрытие по клавише Esc.
-    $(document).keydown(function (e) {
-        if (e.keyCode === 27) {
-            e.stopPropagation();
-            $('.popup-fade').fadeOut();
-        }
-    });
-
-    // Клик по фону, но не по окну.
-    $('.popup-fade').click(function (e) {
-        if ($(e.target).closest('.popup').length == 0) {
-            $(this).fadeOut();
-        }
-    });	
+        // Клик по ссылке "Закрыть".
+        $('.popup-close').click(function () {
+            $(this).parents('.popup-fade').fadeOut();
+            return false;
+        });
+    
+        // Закрытие по клавише Esc.
+        $(document).keydown(function (e) {
+            if (e.keyCode === 27) {
+                e.stopPropagation();
+                $('.popup-fade').fadeOut();
+            }
+        });
+    
+        // Клик по фону, но не по окну.
+        $('.popup-fade').click(function (e) {
+            if ($(e.target).closest('.popup').length == 0) {
+                $(this).fadeOut();
+            }
+        });	
     });
 </script>
 {# код модального окна (конец) #}
