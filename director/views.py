@@ -23,7 +23,7 @@ def home_page(request):
 
 # Звіти які передані від інженера
 def show_reports(request):
-
+    
     # login and permission check start
     if not request.user.is_authenticated:
         return redirect('mylogin')
@@ -34,12 +34,6 @@ def show_reports(request):
     reports = Report.objects.filter(checked=True)
     from_date = request.GET.get('from')
     to_date = request.GET.get('to')
-    
-    if from_date and not to_date:
-        pass
-    
-    if not from_date and to_date:
-        pass
 
     if from_date and to_date:
         from_date_correct = correct_date(from_date)
@@ -47,12 +41,52 @@ def show_reports(request):
         reports = reports.filter(date__range = [from_date_correct, to_date_correct])
         print(reports)
     
+
+
+    machines_all = Machine.objects.values('id', 'machine__name', 'number_machine', 'inventory_number', 'breakage_info')
+    # попробуем сортировку по дням (начало кода)
+    date_report_set = []
+    reports_date = reports.values('date').annotate(total=Count('id'))
+    for report_date in reports_date:
+        date = report_date['date'].strftime("%Y-%m-%d")
+        queryset_rep = reports.filter(date=date).select_related('filled_up')
+        reports_set = []
+        for query in queryset_rep:
+            report_id = query.id
+            driver = query.filled_up.full_name()
+            brigade_name = query.filled_up.brigade_name
+            machines = []
+            for machine in query.machinereport_set.values():
+                m = machines_all.get(id=machine['machine_id'])
+                machine_short_name =  f"{m['machine__name']} #{m['number_machine']}"
+                machine_full_name =  f"{m['machine__name']} #{m['number_machine']} [IN{m['inventory_number']}] "
+                fuel = machine['fuel']
+                motohour = machine['motohour']
+                breakage = "True" if machine['breakage'] else "False"
+                breakage_info = m['breakage_info']
+                
+                machines_info = {
+                    'machine_short_name': machine_short_name,
+                    'machine_full_name': machine_full_name,
+                    'fuel': fuel,
+                    'motohour': motohour,
+                    'breakage': breakage,
+                    'breakage_info': breakage_info
+                }
+
+                machines.append(machines_info)
+
+            reports_set.append({'report_id': report_id, 'driver': driver, 'brigade_name': brigade_name, 'machines': machines})
+        date_report_set.append({'date': date, 'report_info': reports_set})
+    # попробуем сортировку по дням (конец кода)
+
     context = {
         'from_date': from_date,
         'to_date' : to_date,
-        'reports': reports.order_by('date'),
+        'date_report_set': date_report_set,
     }
     return render(request, 'director/show_reports.html', context=context)
+
 
 
 # Графіки
@@ -254,74 +288,6 @@ def show_employees(request):
     return render(request, 'director/employees.html', context)
 
 
-
-#### TEST SHOW REPORTS START####
-def test_show_reports(request):
-    
-    # login and permission check start
-    if not request.user.is_authenticated:
-        return redirect('mylogin')
-    if not ('director.view_director' in request.user.get_group_permissions()):
-        raise Http404("У Вас не має прав на перегляд цієї сторінки")
-    # login and permission check end
-    
-    reports = Report.objects.filter(checked=True)
-    from_date = request.GET.get('from')
-    to_date = request.GET.get('to')
-
-    if from_date and to_date:
-        from_date_correct = correct_date(from_date)
-        to_date_correct = correct_date(to_date)
-        reports = reports.filter(date__range = [from_date_correct, to_date_correct])
-        print(reports)
-    
-
-
-    machines_all = Machine.objects.values('id', 'machine__name', 'number_machine', 'inventory_number', 'breakage_info')
-    # попробуем сортировку по дням (начало кода)
-    date_report_set = []
-    reports_date = reports.values('date').annotate(total=Count('id'))
-    for report_date in reports_date:
-        date = report_date['date'].strftime("%Y-%m-%d")
-        queryset_rep = reports.filter(date=date).select_related('filled_up')
-        reports_set = []
-        for query in queryset_rep:
-            report_id = query.id
-            driver = query.filled_up.full_name()
-            brigade_name = query.filled_up.brigade_name
-            machines = []
-            for machine in query.machinereport_set.values():
-                m = machines_all.get(id=machine['machine_id'])
-                machine_short_name =  f"{m['machine__name']} #{m['number_machine']}"
-                machine_full_name =  f"{m['machine__name']} #{m['number_machine']} [IN{m['inventory_number']}] "
-                fuel = machine['fuel']
-                motohour = machine['motohour']
-                breakage = "True" if machine['breakage'] else "False"
-                breakage_info = m['breakage_info']
-                
-                machines_info = {
-                    'machine_short_name': machine_short_name,
-                    'machine_full_name': machine_full_name,
-                    'fuel': fuel,
-                    'motohour': motohour,
-                    'breakage': breakage,
-                    'breakage_info': breakage_info
-                }
-
-                machines.append(machines_info)
-
-            reports_set.append({'report_id': report_id, 'driver': driver, 'brigade_name': brigade_name, 'machines': machines})
-        date_report_set.append({'date': date, 'report_info': reports_set})
-    # попробуем сортировку по дням (конец кода)
-
-    context = {
-        'from_date': from_date,
-        'to_date' : to_date,
-        'date_report_set': date_report_set,
-    }
-    return render(request, 'director/test_show_reports.html', context=context)
-
-#### TEST SHOW REPORTS END ####
 
 
 # ПРАВИЛЬНА ДАТА

@@ -1,0 +1,49 @@
+<form>
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label>Звіт за</label>
+            <input type="datetime-local" class="form-control" id="datetime-local">
+        </div>
+        <div class="form-group col-md-6">
+            <label>Оформив</label>
+            <input type="text" class="form-control" id="name">
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label>Машина</label>
+            <input type="text" class="form-control" id="machine">
+        </div>
+        <div class="form-group col-md-3">
+            <label>Мотогодини</label>
+            <input type="number" value="12" step="0.1" class="form-control" id="time"
+                placeholder="Apartment, studio, or floor">
+        </div>
+        <div class="form-group col-md-3">
+            <label>Використано бензину</label>
+            <input type="number" value="50" step="0.1" class="form-control" id="fill">
+        </div>
+    </div>
+
+    <div class="form-check">
+        <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1"
+            value="option1" checked>
+        <label class="form-check-label" for="exampleRadios1">
+            Поломок немає
+        </label>
+    </div>
+    <div class="form-check">
+        <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios2"
+            value="option2">
+        <label class="form-check-label" for="exampleRadios2">
+            Є поломки
+        </label>
+    </div>
+    <div class="form-group">
+        <label></label>
+        <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"
+            placeholder="Інформація про поломку"></textarea>
+    </div>
+    <button type="submit" class="btn btn-warning text-dark text-center">Відправити</button>
+</form>
+<hr>

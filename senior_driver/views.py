@@ -31,55 +31,6 @@ def about(request):
     return render(request, 'senior-driver/about_page.html')
 
 
-def make_report(request):
-
-    # login and permission check start
-    if not request.user.is_authenticated:
-        return redirect('mylogin')
-    if not ('senior_driver.view_seniordriver' in request.user.get_group_permissions()):
-        raise Http404("У Вас не має прав на перегляд цієї сторінки")
-    # login and permission check end
-
-    machines = Machine.objects.all()
-
-    if not request.user.is_superuser:
-        can_use_machines = Machine.objects.filter(
-            brigade=request.user.seniordriver).exclude(breakage=True)
-    else:
-        can_use_machines = Machine.objects.all()[:5]
-        
-    context = {
-        'can_use_machines': can_use_machines,
-        'date_today': datetime.date.today().strftime("%Y-%m-%d")
-    }
-
-    if request.method == "POST":
-        
-        if not request.user.is_superuser:
-            filled_up = request.user.seniordriver
-            date = request.POST.get('date')
-            motohour = request.POST.get('motohour')
-            fuel = request.POST.get('fuel')
-
-            machine_id = request.POST.get('machine')
-            machine = Machine.objects.get(pk=machine_id)
-            
-            breakage = True if request.POST.get('breakage') == 'on' else False
-            breakage_info = request.POST.get('breakage_info') if request.POST.get('breakage_info') else ''
-
-            report = Report.objects.create(filled_up=filled_up, date=date, motohour=motohour, fuel=fuel, machine=machine, breakage=breakage)
-            
-            if breakage:
-                machine.breakage = True
-                machine.breakage_info = breakage_info
-                machine.breakage_date = report.date
-                machine.save()
-
-        return redirect('driver:home-page')
-
-    return render(request, 'senior-driver/make_report.html', context)
-
-
 def show_my_reports(request):
 
     # login and permission check start
@@ -120,10 +71,7 @@ def show_machines(request):
     return render(request, 'senior-driver/my_machines.html', context)
 
 
-
-
-######### TESTING #########
-def make_report_2(request):
+def make_report(request):
     
     # login and permission check start
     if not request.user.is_authenticated:
@@ -166,7 +114,7 @@ def make_report_2(request):
                 'can_use_machines': can_use_machines,
                 'selected_machine_list': machine_list, 
             }
-            return render(request, 'senior-driver/test_make_report.html', context)
+            return render(request, 'senior-driver/make_report.html', context)
 
         # when passed sendData submit_button
         if 'sendData' in request.POST:
@@ -245,7 +193,7 @@ def make_report_2(request):
                 'date_today': date,
                 'can_use_machines': can_use_machines,
             }
-            return render(request, 'senior-driver/test_make_report.html', context)
+            return render(request, 'senior-driver/make_report.html', context)
         
     context = {
         'can_use_machines': can_use_machines,
@@ -253,4 +201,4 @@ def make_report_2(request):
     }
 
 
-    return render(request, 'senior-driver/test_make_report.html', context)
+    return render(request, 'senior-driver/make_report.html', context)

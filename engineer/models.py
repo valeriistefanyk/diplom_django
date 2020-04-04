@@ -30,6 +30,7 @@ class Engineer(models.Model):
 
 
 class Report(models.Model):
+    """ Таблиця Report - звіти від старших водіїв """
     
     filled_up = models.ForeignKey(SeniorDriver, on_delete=models.CASCADE)
     date_of_completion = models.DateTimeField(auto_now_add=True)
@@ -48,7 +49,8 @@ class Report(models.Model):
         return f"{self.filled_up} - {self.date}"
 
 class MachineReport(models.Model):
-
+    """ Ьаблиця MachineReport - які машини були використані в ході робочого дня """
+    
     report = models.ForeignKey(Report, on_delete=models.CASCADE)
 
     machine = models.ForeignKey(Machine, on_delete=models.CASCADE)

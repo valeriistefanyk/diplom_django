@@ -1,254 +1,111 @@
-{% extends 'base.html' %}
+{% extends 'engineer/_base_page_engineer.html' %}
 
+{% block title %}Звіти{% endblock title %}
 
-{% block title %}Сторінка інженера{% endblock %}
-
-
-{% block content %}
-<div class="d-flex" id="wrapper">
-
-    <!-- Sidebar -->
-    <div class="bg-dark border-right" id="sidebar-wrapper">
-        <div class="sidebar-heading text-light py-5">VMM Core Production</div>
-        <div class="list-group list-group-flush">
-            <a href="{% url 'engineer:home-page' %}"
-                class="list-group-item list-group-item-action bg-dark text-light border-light border-top"><i
-                    class="fa fa-home"></i>Головна</a>
-            <a href="{% url 'engineer:reports' %}"
-                class="list-group-item list-group-item-action bg-dark text-light border-light"><i
-                    class="fa fa-table"></i>Звіти</a>
-            <a href="{% url 'engineer:drivers' %}"
-                class="list-group-item list-group-item-action bg-dark text-light border-light"><i
-                    class="fa fa-truck"></i>Старші водії</a>
-            <a href="{% url 'engineer:fix_machines' %}"
-                class="list-group-item list-group-item-action bg-dark text-light border-light border-bottom"><i
-                    class="fa fa-wrench"></i>Інформація про ремонт машин</a>
-            <a href="{% url 'engineer:work_days' %}"
-                class="list-group-item list-group-item-action bg-dark text-light border-light border-bottom"><i
-                    class="fa fa-calendar"></i>Графік роботи</a>
-        </div>
-    </div>
-    <!-- /#sidebar-wrapper -->
-
-    <!-- Page Content -->
-    <div id="page-content-wrapper">
-
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark border-bottom">
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
-                    <a class="nav-link text-light" href="#">Привіт, {{ user.username }}!</a>
-                    <a class="nav-link text-warning" href="{% url 'mylogout' %}"><i
-                            class="fa fa-arrow-right"></i>Вийти</a>
-
-                </ul>
-            </div>
-        </nav>
+{% block content_page %}
 
         <div class="container-fluid">
-            <h1 class="mt-4 text-center">Звіти</h1>
+            <h1 class="mt-4 text-center">Звіти які не передані керівництву:</h1>
             <div class="content-text">
-                <form>
-                    <div class="form-row">
-                        <div class="form-group col-md-6">
-                            <label>Звіт за</label>
-                            <input type="datetime-local" class="form-control" id="datetime-local">
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label>Оформив</label>
-                            <input type="text" class="form-control" id="name">
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group col-md-6">
-                            <label>Машина</label>
-                            <input type="text" class="form-control" id="machine">
-                        </div>
-                        <div class="form-group col-md-3">
-                            <label>Мотогодини</label>
-                            <input type="number" value="12" step="0.1" class="form-control" id="time"
-                                placeholder="Apartment, studio, or floor">
-                        </div>
-                        <div class="form-group col-md-3">
-                            <label>Використано бензину</label>
-                            <input type="number" value="50" step="0.1" class="form-control" id="fill">
-                        </div>
-                    </div>
-
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1"
-                            value="option1" checked>
-                        <label class="form-check-label" for="exampleRadios1">
-                            Поломок немає
-                        </label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios2"
-                            value="option2">
-                        <label class="form-check-label" for="exampleRadios2">
-                            Є поломки
-                        </label>
-                    </div>
-                    <div class="form-group">
-                        <label></label>
-                        <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"
-                            placeholder="Інформація про поломку"></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-warning text-dark text-center">Відправити</button>
-                </form>
+                {% if reports_unforwarded %}
+                <table class="table_dark">
+                    <tr>
+                        <th>Дата звіту</th>
+                        <th>Оформив</th>
+                        <th>Машина</th>
+                        <th>Мотогодини</th>
+                        <th>Використано бензину</th>
+                        <th>Стан машини</th>
+                        <th>Статус</th>
+                    </tr>
+                    {% for report_unforwarded in reports_unforwarded %}
+                    <tr>
+                        <td>{{ report_unforwarded.date }}</td>
+                        <td>{{ report_unforwarded.filled_up.user.first_nama }}
+                            {{ report_unforwarded.filled_up.user.last_name }}</td>
+                        <td>{{ report_unforwarded.machine.full_name }}</td>
+                        <td>{{ report_unforwarded.motohour}}</td>
+                        <td>{{ report_unforwarded.fuel }}</td>
+                        <td>Поломка машини!</td>
+                        <form action="{% url 'engineer:reports' %}" method="POST">
+                            {% csrf_token %}
+                            <input type="hidden" name="checked" value="True" />
+                            <input type="hidden" name="report_id" value="{{report_unforwarded.id}}" />
+                            <td><button class="btn_send btn btn-warning text-dark text-center">Відправити</button></td>
+                        </form>
+                    </tr>
+                    {% endfor %}
+                </table>
                 <hr>
-
-
-                <div class="container-fluid">
-                    <h1 class="mt-4 text-center">Звіти які не передані керівництву:</h1>
-                    <div class="content-text">
-                        {% if reports_unforwarded %}
-                        <table class="table_dark">
-                            <tr>
-                                <th>Дата звіту</th>
-                                <th>Оформив</th>
-                                <th>Машина</th>
-                                <th>Мотогодини</th>
-                                <th>Використано бензину</th>
-                                <th>Стан машини</th>
-                                <th>Статус</th>
-                            </tr>
-                            {% for report_unforwarded in reports_unforwarded %}
-                            <tr>
-                                <td>{{ report_unforwarded.date }}</td>
-                                <td>{{ report_unforwarded.filled_up.user.first_nama }}
-                                    {{ report_unforwarded.filled_up.user.last_name }}</td>
-                                <td>{{ report_unforwarded.machine.full_name }}</td>
-                                <td>{{ report_unforwarded.motohour}}</td>
-                                <td>{{ report_unforwarded.fuel }}</td>
-                                <td>Поломка машини!</td>
-                                <form action="{% url 'engineer:reports' %}" method="POST">
-                                    {% csrf_token %}
-                                    <input type="hidden" name="checked" value="True" />
-                                    <input type="hidden" name="report_id" value="{{report_unforwarded.id}}" />
-                                    <td><button class="btn_send btn btn-warning text-dark text-center">Відправити</button></td>
-                                </form>
-                            </tr>
-                            {% endfor %}
-                        </table>
-                        <hr>
-                        {% endif%}
-                    </div>
-
-
-                    <h1 class="mt-4 text-center">Звіти які передані керівництву:</h1>
-                    <div class="content-text">
-                        {% if reports_forwarded %}
-                        <table class="table_dark">
-                            <tr>
-                                <th>Дата звіту</th>
-                                <th>Оформив</th>
-                                <th>Машина</th>
-                                <th>Мотогодини</th>
-                                <th>Використано бензину</th>
-                                <th>Стан машини</th>
-                            </tr>
-                            {% for report_forwarded in reports_forwarded %}
-                            <tr>
-                                <td>{{ report_forwarded.date }}</td>
-                                <td>{{ report_forwarded.filled_up.user.first_nama }}
-                                    {{ report_forwarded.filled_up.user.last_name }}</td>
-                                <td>{{ report_forwarded.machine.full_name }}</td>
-                                <td>{{ report_forwarded.motohour}}</td>
-                                <td>{{ report_forwarded.fuel }}</td>
-                                <td>Поломка машини!</td>
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </table>
-                        {% endif%}
-                    </div>
-                </div>
+                {% endif%}
+            </div>
+            <h1 class="mt-4 text-center">Звіти які передані керівництву:</h1>
+            <div class="content-text">
+                {% if reports_forwarded %}
+                <table class="table_dark">
+                    <tr>
+                        <th>Дата звіту</th>
+                        <th>Оформив</th>
+                        <th>Машина</th>
+                        <th>Мотогодини</th>
+                        <th>Використано бензину</th>
+                        <th>Стан машини</th>
+                    </tr>
+                    {% for report_forwarded in reports_forwarded %}
+                    <tr>
+                        <td>{{ report_forwarded.date }}</td>
+                        <td>{{ report_forwarded.filled_up.user.first_nama }}
+                            {{ report_forwarded.filled_up.user.last_name }}</td>
+                        <td>{{ report_forwarded.machine.full_name }}</td>
+                        <td>{{ report_forwarded.motohour}}</td>
+                        <td>{{ report_forwarded.fuel }}</td>
+                        <td>Поломка машини!</td>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </table>
+                {% endif%}
             </div>
         </div>
-        <style>
-            body {
-                overflow-x: hidden;
-            }
+    </div>
+{% endblock content_page %}
+    
 
-            .fa {
-                margin-right: 10px;
-            }
+{% block add_style %}
+    <style> 
+        /* TABLE----------------------- */
+        .table_dark {
+            font-size: 14px;
+            width: 100%;
+            text-align: left;
+            border-collapse: collapse;
+            background: #252F48;
+            margin: 10px;
+        }
 
-            #sidebar-wrapper {
-                min-height: 100vh;
-                margin-left: -15rem;
-                -webkit-transition: margin .25s ease-out;
-                -moz-transition: margin .25s ease-out;
-                -o-transition: margin .25s ease-out;
-                transition: margin .25s ease-out;
-            }
+        .table_dark th {
+            color: #EDB749;
+            border-bottom: 1px solid #37B5A5;
+            padding: 12px 17px;
+        }
 
-            #sidebar-wrapper .sidebar-heading {
-                padding: 0.875rem 1.25rem;
-                font-size: 1.2rem;
-            }
+        .table_dark td {
+            color: #CAD4D6;
+            border-bottom: 1px solid #37B5A5;
+            border-right: 1px solid #37B5A5;
+            padding: 20px 27px;
+        }
 
-            #sidebar-wrapper .list-group {
-                width: 15rem;
-            }
+        .table_dark tr:last-child td {
+            border-bottom: none;
+        }
 
-            #page-content-wrapper {
-                min-width: 100vw;
-            }
+        .table_dark td:last-child {
+            border-right: none;
+        }
 
-            #wrapper.toggled #sidebar-wrapper {
-                margin-left: 0;
-            }
-
-            @media (min-width: 768px) {
-                #sidebar-wrapper {
-                    margin-left: 0;
-                }
-
-                #page-content-wrapper {
-                    min-width: 0;
-                    width: 100%;
-                }
-
-                #wrapper.toggled #sidebar-wrapper {
-                    margin-left: -15rem;
-                }
-            }
-
-            /* TABLE----------------------- */
-            .table_dark {
-                font-size: 14px;
-                width: 100%;
-                text-align: left;
-                border-collapse: collapse;
-                background: #252F48;
-                margin: 10px;
-            }
-
-            .table_dark th {
-                color: #EDB749;
-                border-bottom: 1px solid #37B5A5;
-                padding: 12px 17px;
-            }
-
-            .table_dark td {
-                color: #CAD4D6;
-                border-bottom: 1px solid #37B5A5;
-                border-right: 1px solid #37B5A5;
-                padding: 20px 27px;
-            }
-
-            .table_dark tr:last-child td {
-                border-bottom: none;
-            }
-
-            .table_dark td:last-child {
-                border-right: none;
-            }
-
-            .table_dark tr:hover td {
-                text-decoration: underline;
-            }
-        </style>
-        
-        {% endblock %}
+        .table_dark tr:hover td {
+            text-decoration: underline;
+        }
+    </style>       
+{% endblock add_style %}

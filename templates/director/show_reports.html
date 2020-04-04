@@ -1,202 +1,286 @@
-{% extends 'base.html' %}
-{% load static %}
-{% block add_head_link %}
-<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
-<script src="{% static 'js/jquery.min.js' %}"></script>
-<script type="text/javascript"
-    src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/js/tempusdominus-bootstrap-4.min.js"></script>
-<link rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/css/tempusdominus-bootstrap-4.min.css" />
-{% endblock add_head_link %}
+{% extends 'director/_base_page_director.html'%}
+{% load update_variable %}
 
-{% block title %}Сторінка директора{% endblock %}
+{% block title %}Звіти{% endblock %}
 
 
-{% block content %}
-<div class="d-flex" id="wrapper">
+{% block content_page %}
 
-    <!-- Sidebar -->
-    <div class="bg-dark border-right" id="sidebar-wrapper">
-        <div class="sidebar-heading text-light py-5">VMM Core Production</div>
-        <div class="list-group list-group-flush">
-            <a href="{% url 'director:home-page' %}"
-                class="list-group-item list-group-item-action bg-dark text-light border-light border-top"><i
-                    class="fa fa-home"></i>Головна</a>
-            <a href="{% url 'director:reports' %}"
-                class="list-group-item list-group-item-action bg-dark text-light border-light"><i
-                    class="fa fa-table"></i>Звіти</a>
-            <a href="{% url 'director:statistics' %}"
-                class="list-group-item list-group-item-action bg-dark text-light border-light"><i
-                    class="fa fa-check"></i>Статистика</a>
-            <a href="{% url 'director:employees' %}"
-                class="list-group-item list-group-item-action bg-dark text-light border-light border-bottom"><i
-                    class="fa fa-user"></i>Працівники</a>
-        </div>
-    </div>
-    <!-- /#sidebar-wrapper -->
-
-    <!-- Page Content -->
-    <div id="page-content-wrapper">
-
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark border-bottom">
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
-                    <a class="nav-link text-light" href="#">Привіт, {{ user.username }}!</a>
-                    <a class="nav-link text-warning" href="{% url 'mylogout' %}"><i
-                            class="fa fa-arrow-right"></i>Вийти</a>
-
-                </ul>
+<div class="container-fluid">
+    <h1 class="mt-4 text-center">Звіти</h1>
+    <div class="content-text">
+        <form class="form-inline" method="GET">
+            <div class="form-group mb-2">
+                <div class="input-group date" id="datetimepicker7" data-target-input="nearest">
+                    <input type="text" value="{{ from_date }}" class="form-control datetimepicker-input"
+                        data-target="#datetimepicker7" name="from" />
+                    <div class="input-group-append" data-target="#datetimepicker7" data-toggle="datetimepicker">
+                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                    </div>
+                </div>
             </div>
-        </nav>
-        <div class="content-text">
-            <form class="form-inline" method="GET">
-                <div class="form-group mb-2">
-                    <div class="input-group date" id="datetimepicker7" data-target-input="nearest">
-                        <input type="text" value="{{ from_date }}" class="form-control datetimepicker-input"
-                            data-target="#datetimepicker7" name="from" />
-                        <div class="input-group-append" data-target="#datetimepicker7" data-toggle="datetimepicker">
-                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                        </div>
+            <div class="form-group mx-sm-3 mb-2">
+                <div class="input-group date" id="datetimepicker8" data-target-input="nearest">
+                    <input type="text" value="{{ to_date }}" class="form-control datetimepicker-input"
+                        data-target="#datetimepicker8" name="to">
+                    <div class="input-group-append" data-target="#datetimepicker8" data-toggle="datetimepicker">
+                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                     </div>
                 </div>
-                <div class="form-group mx-sm-3 mb-2">
-                    <div class="input-group date" id="datetimepicker8" data-target-input="nearest">
-                        <input type="text" value="{{ to_date }}" class="form-control datetimepicker-input"
-                            data-target="#datetimepicker8" name="to">
-                        <div class="input-group-append" data-target="#datetimepicker8" data-toggle="datetimepicker">
-                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                        </div>
-                    </div>
-                </div>
-                <button type="submit" class="btn btn-primary mb-2">Вибрати</button>
-            </form>
-            {% if reports %}
-            <table class="table_dark">
-                <tr>
-                    <th>Дата звіту</th>
-                    <th>Оформив</th>
-                    <th>Машина</th>
-                    <th>Мотогодини</th>
-                    <th>Використано бензину</th>
-                    <th>Стан машини</th>
-                </tr>
-                {% for report in reports %}
-                <tr>
-                    <td>{{ report.date }}</td>
-                    <td>{{ report.filled_up.user.first_nama }} {{ report.filled_up.user.last_name }}</td>
-                    <td>{{ report.machine.full_name }}</td>
-                    <td>{{ report.motohour}}</td>
-                    <td>{{ report.fuel }}</td>
-                    <td>{% if report.breakage %}В ремонті{% else %}Робоча{% endif %}</td>
-                </tr>
-                {% endfor %}
-            </table>
+            </div>
+            <button type="submit" class="btn btn-primary mb-2">Вибрати</button>
+        </form>
+        {% if date_report_set %}
+        <table class="table_dark">
+            <tr>
+                <th>Дата звіту</th>
+                <th>Оформив [бригада №]</th>
+                <th>Машини</th>
+                <th>Детальніше</th>
+            </tr>
+            {% for report in date_report_set %}
+            {% with True as flag %}
+            {% for info in report.report_info %}
+            <tr>{% if flag %}
+                <td rowspan="5">{{ report.date }}
+                    {% update_variable False as flag %}
+                </td>
+                {% endif %}
+                <td>{{ info.driver }} [Бригада №{{info.brigade_name}}]</td>
+                <td>{%for machine in info.machines %}
+                    {{ machine.machine_short_name }}
+                    {% endfor %}
+                </td>
+                <td><button class="btn_modal btn_send btn btn-warning text-dark text-center"
+                        data-id_report="{{info.report_id}}" data-date_report="{{ report.date }}">Детальна
+                        інформація</button>
+                </td>
+            </tr>
+            {% endfor %}
+            {% endwith %}
+            {% endfor %}
             {% endif%}
+    </div>
+</div>
+{% endblock content_page %}
+
+
+
+{% block add_another_html %}
+{# модальное окно начало #}
+<div class="popup-fade">
+    <div class="popup">
+        <a class="popup-close" href="#">Закрыть</a>
+        <div class="popup-content">
+            <p>Дата: <span class="report_date">(невідома)</span></p>
+            <p>Водій: <span class="report_filled_up">(невідомий)</span>
+                [бригада №<span class="report_brigade_name">(невідомо)</span>]</p>
+            <p>
+                <ul class="machines"></ul>
+            </p>
         </div>
     </div>
-    <style>
-        body {
-            overflow-x: hidden;
-        }
+</div>
+{# модальное окно (конец) #}
+{% endblock add_another_html %}
 
-        .fa {
-            margin-right: 10px;
-        }
 
-        #sidebar-wrapper {
-            min-height: 100vh;
-            margin-left: -15rem;
-            -webkit-transition: margin .25s ease-out;
-            -moz-transition: margin .25s ease-out;
-            -o-transition: margin .25s ease-out;
-            transition: margin .25s ease-out;
-        }
 
-        #sidebar-wrapper .sidebar-heading {
-            padding: 0.875rem 1.25rem;
-            font-size: 1.2rem;
-        }
+{% block add_js %}
+{# код модального окна (начало) #}
+<script>
+    $(document).ready(function ($) {
+        $('.btn_modal').on('click', function (e) {
 
-        #sidebar-wrapper .list-group {
-            width: 15rem;
-        }
+            response = {{ date_report_set | safe }};
 
-        #page-content-wrapper {
-            min-width: 100vw;
-        }
+            id_report = parseInt($(this).data("id_report"))
+            date = $(this).data("date_report")
 
-        #wrapper.toggled #sidebar-wrapper {
-            margin-left: 0;
-        }
-
-        @media (min-width: 768px) {
-            #sidebar-wrapper {
-                margin-left: 0;
+            var report;
+            for (let i = 0; i < response.length; i++) {
+                if (response[i]['date'] == date) {
+                    console.log(response[i].report_info)
+                    rep_info = response[i].report_info
+                    for (let j = 0; j < rep_info.length; j++) {
+                        if (id_report == rep_info[j].report_id) {
+                            report = rep_info[j];
+                            break;
+                        }
+                    }
+                    break;
+                }
             }
+            console.log(report)
 
-            #page-content-wrapper {
-                min-width: 0;
-                width: 100%;
-            }
 
-            #wrapper.toggled #sidebar-wrapper {
-                margin-left: -15rem;
-            }
-        }
+            $('.report_date').html(date);
+            $('.report_filled_up').html(report.driver);
+            $('.report_brigade_name').html(report.brigade_name)
 
-        /* TABLE----------------------- */
-        .table_dark {
-            font-size: 14px;
-            width: 100%;
-            text-align: left;
-            border-collapse: collapse;
-            background: #252F48;
-            margin: 10px;
-        }
+            $('.machines').html('');
+            machines = report.machines
+            var cList = $('ul.machines')
 
-        .table_dark th {
-            color: #EDB749;
-            border-bottom: 1px solid #37B5A5;
-            padding: 12px 17px;
-        }
+            $.each(machines, function (i) {
+                console.log(machines[i].breakage)
+                var info = `Машина: ${machines[i].machine_full_name}. 
+                        <table class='table'>
+                            <tr>
+                                <th>Бензин</th>
+                                <td>${machines[i].fuel} л.</td>
+                            </tr>
+                            <tr>
 
-        .table_dark td {
-            color: #CAD4D6;
-            border-bottom: 1px solid #37B5A5;
-            border-right: 1px solid #37B5A5;
-            padding: 7px 17px;
-        }
-
-        .table_dark tr:last-child td {
-            border-bottom: none;
-        }
-
-        .table_dark td:last-child {
-            border-right: none;
-        }
-
-        .table_dark tr:hover td {
-            text-decoration: underline;
-        }
-    </style>
-    <script type="text/javascript">
-        $(function () {
-            $('#datetimepicker7').datetimepicker({
-                format: 'L'
+                                <th>Мотогодини</th>
+                                <td>${machines[i].motohour} мото/год</td>
+                            </tr>
+                        </table>
+                        `
+                if (machines[i].breakage == 'True') {
+                    info += `<p>Була поломка.<br/>
+                            Інформація про поломку: 
+                            <span><span></p>`
+                }
+                else {
+                    info += '<p>Поломок не було</p>'
+                }
+                var li = $('<li/>')
+                    .addClass('ui-menu-item')
+                    .attr('role', 'menuitem')
+                    .appendTo(cList);
+                var aaa = $('<p/>')
+                    .addClass('ui-all')
+                    .html(info)
+                    .appendTo(li);
             });
-            $('#datetimepicker8').datetimepicker({
-                format: 'L',
-                useCurrent: false
-            });
-            $("#datetimepicker7").on("change.datetimepicker", function (e) {
-                $('#datetimepicker8').datetimepicker('minDate', e.date);
-            });
-            $("#datetimepicker8").on("change.datetimepicker", function (e) {
-                $('#datetimepicker7').datetimepicker('maxDate', e.date);
-            });
+
+            $('.popup-fade').fadeIn();
         });
-    </script>
+
+        // Клик по ссылке "Закрыть".
+        $('.popup-close').click(function () {
+            $(this).parents('.popup-fade').fadeOut();
+            return false;
+        });
+    
+        // Закрытие по клавише Esc.
+        $(document).keydown(function (e) {
+            if (e.keyCode === 27) {
+                e.stopPropagation();
+                $('.popup-fade').fadeOut();
+            }
+        });
+    
+        // Клик по фону, но не по окну.
+        $('.popup-fade').click(function (e) {
+            if ($(e.target).closest('.popup').length == 0) {
+                $(this).fadeOut();
+            }
+        });	
+    });
+</script>
+{# код модального окна (конец) #}
+
+{# скрипт для выбора дат (начало) #}
+<script type="text/javascript">
+    $(function () {
+        $('#datetimepicker7').datetimepicker({
+            format: 'L'
+        });
+        $('#datetimepicker8').datetimepicker({
+            format: 'L',
+            useCurrent: false
+        });
+        $("#datetimepicker7").on("change.datetimepicker", function (e) {
+            $('#datetimepicker8').datetimepicker('minDate', e.date);
+        });
+        $("#datetimepicker8").on("change.datetimepicker", function (e) {
+            $('#datetimepicker7').datetimepicker('maxDate', e.date);
+        });
+    });
+</script>
+{# скрипт для выбора дат (конец) #}
+
+{% endblock add_js %}
 
 
 
-    {% endblock %}
+
+{% block add_style %}
+
+<style>
+    /* МОДАЛЬНОЕ ОКНО----------------------- */
+    .popup-fade {
+        display: none;
+    }
+
+    .popup-fade:before {
+        content: '';
+        background: #000;
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0.7;
+        z-index: 9999;
+    }
+
+    .popup {
+        position: fixed;
+        top: 20%;
+        left: 50%;
+        padding: 20px;
+        width: 900px;
+        margin-left: -200px;
+        background: #fff;
+        border: 1px solid orange;
+        border-radius: 4px;
+        z-index: 99999;
+        opacity: 1;
+    }
+
+    .popup-close {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+    }
+
+
+    /* TABLE----------------------- */
+    .table_dark {
+        font-size: 14px;
+        width: 100%;
+        text-align: left;
+        border-collapse: collapse;
+        background: #252F48;
+        margin: 10px;
+    }
+
+    .table_dark th {
+        color: #EDB749;
+        border-bottom: 1px solid #37B5A5;
+        padding: 12px 17px;
+    }
+
+    .table_dark td {
+        color: #CAD4D6;
+        border-bottom: 1px solid #37B5A5;
+        border-right: 1px solid #37B5A5;
+        padding: 7px 17px;
+    }
+
+    .table_dark tr:last-child td {
+        border-bottom: none;
+    }
+
+    .table_dark td:last-child {
+        border-right: none;
+    }
+
+    .table_dark tr:hover td {
+        text-decoration: underline;
+    }
+</style>
+{% endblock add_style %}

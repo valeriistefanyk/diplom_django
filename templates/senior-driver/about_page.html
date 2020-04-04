@@ -1,7 +1,22 @@
-<h1>INFO ABOUT DRIVER</h1>
-<h5>maybe here will be information about employees</h5>
+{% extends 'senior-driver/_base_page_driver.html'%}
+
+{% block title %}Додатки{% endblock %}
+
+{% block content_page %}
+
+    <div class="container-fluid">
+        <h1 class="mt-4 text-center">Інформація</h1>
+        <div class="content-text">
+            <h1>INFO ABOUT DRIVER</h1>
+            <h5>maybe here will be information about employees</h5>
+            <br><br><br><br><br>
+            <a href="{% url 'driver:home-page' %}">В особистий кабінет</a>
+        </div>
+    </div>
+{% endblock content_page %}
 
 
-<br><br><br><br><br>
-
-<a href="{% url 'driver:home-page' %}">В особистий кабінет</a>
+{% block add_style %}
+    <style>        
+    </style>
+{% endblock add_style %}

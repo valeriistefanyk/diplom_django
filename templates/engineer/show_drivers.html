@@ -1,48 +1,8 @@
-{% extends 'base.html' %}
+{% extends 'engineer/_base_page_engineer.html' %}
 
+{% block title %}Водії{% endblock title %}
 
-{% block title %}Сторінка інженера{% endblock %}
-
-
-{% block content %}
-<div class="d-flex" id="wrapper">
-
-    <!-- Sidebar -->
-    <div class="bg-dark border-right" id="sidebar-wrapper">
-        <div class="sidebar-heading text-light py-5">VMM Core Production</div>
-        <div class="list-group list-group-flush">
-            <a href="{% url 'engineer:home-page' %}"
-                class="list-group-item list-group-item-action bg-dark text-light border-light border-top"><i
-                    class="fa fa-home"></i>Головна</a>
-            <a href="{% url 'engineer:reports' %}"
-                class="list-group-item list-group-item-action bg-dark text-light border-light"><i
-                    class="fa fa-table"></i>Звіти</a>
-            <a href="{% url 'engineer:drivers' %}"
-                class="list-group-item list-group-item-action bg-dark text-light border-light"><i
-                    class="fa fa-truck"></i>Старші водії</a>
-            <a href="{% url 'engineer:fix_machines' %}"
-                class="list-group-item list-group-item-action bg-dark text-light border-light border-bottom"><i
-                    class="fa fa-wrench"></i>Інформація про ремонт машин</a>
-            <a href="{% url 'engineer:work_days' %}"
-                class="list-group-item list-group-item-action bg-dark text-light border-light border-bottom"><i
-                    class="fa fa-calendar"></i>Графік роботи</a>
-        </div>
-    </div>
-    <!-- /#sidebar-wrapper -->
-
-    <!-- Page Content -->
-    <div id="page-content-wrapper">
-
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark border-bottom">
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
-                    <a class="nav-link text-light" href="#">Привіт, {{ user.username }}!</a>
-                    <a class="nav-link text-warning" href="{% url 'mylogout' %}"><i
-                            class="fa fa-arrow-right"></i>Вийти</a>
-
-                </ul>
-            </div>
-        </nav>
+{% block content_page %}
 
         <div class="container-fluid">
             <h1 class="mt-4 text-center">Старші водії</h1>
@@ -63,97 +23,51 @@
                             {{driver.full_name}}</td>
                         <td>{{driver.user.email}}</td>
                         <td>{{driver.phones}}</td>
-                        <td><a href="{% url 'engineer:driver_detail' driver.user.username %}"><button class="btn_send btn btn-warning text-dark text-center">Інформація / Машини / Звіти</button></a></td>
+                        <td><a href="{% url 'engineer:driver_detail' driver.user.username %}"><button class="btn_send btn btn-warning text-dark text-center">Інформація / Машини / Водії</button></a></td>
                     </tr>
                     {% endfor %}
                 </table>
                 {% endif %}
             </div>
         </div>
-        <style>
-            body {
-                overflow-x: hidden;
-            }
+{% endblock content_page %}
+    
 
-            .fa {
-                margin-right: 10px;
-            }
+{% block add_style %}
+    <style> 
+        /* TABLE----------------------- */
+        .table_dark {
+            font-size: 14px;
+            width: 100%;
+            text-align: left;
+            border-collapse: collapse;
+            background: #252F48;
+            margin: 10px;
+        }
 
-            #sidebar-wrapper {
-                min-height: 100vh;
-                margin-left: -15rem;
-                -webkit-transition: margin .25s ease-out;
-                -moz-transition: margin .25s ease-out;
-                -o-transition: margin .25s ease-out;
-                transition: margin .25s ease-out;
-            }
+        .table_dark th {
+            color: #EDB749;
+            border-bottom: 1px solid #37B5A5;
+            padding: 12px 17px;
+        }
 
-            #sidebar-wrapper .sidebar-heading {
-                padding: 0.875rem 1.25rem;
-                font-size: 1.2rem;
-            }
+        .table_dark td {
+            color: #CAD4D6;
+            border-bottom: 1px solid #37B5A5;
+            border-right: 1px solid #37B5A5;
+            padding: 20px 27px;
+        }
 
-            #sidebar-wrapper .list-group {
-                width: 15rem;
-            }
+        .table_dark tr:last-child td {
+            border-bottom: none;
+        }
 
-            #page-content-wrapper {
-                min-width: 100vw;
-            }
+        .table_dark td:last-child {
+            border-right: none;
+        }
 
-            #wrapper.toggled #sidebar-wrapper {
-                margin-left: 0;
-            }
-
-            @media (min-width: 768px) {
-                #sidebar-wrapper {
-                    margin-left: 0;
-                }
-
-                #page-content-wrapper {
-                    min-width: 0;
-                    width: 100%;
-                }
-
-                #wrapper.toggled #sidebar-wrapper {
-                    margin-left: -15rem;
-                }
-            }
-
-            /* TABLE----------------------- */
-            .table_dark {
-                font-size: 14px;
-                width: 100%;
-                text-align: left;
-                border-collapse: collapse;
-                background: #252F48;
-                margin: 10px;
-            }
-
-            .table_dark th {
-                color: #EDB749;
-                border-bottom: 1px solid #37B5A5;
-                padding: 12px 17px;
-            }
-
-            .table_dark td {
-                color: #CAD4D6;
-                border-bottom: 1px solid #37B5A5;
-                border-right: 1px solid #37B5A5;
-                padding: 20px 27px;
-            }
-
-            .table_dark tr:last-child td {
-                border-bottom: none;
-            }
-
-            .table_dark td:last-child {
-                border-right: none;
-            }
-
-            .table_dark tr:hover td {
-                text-decoration: underline;
-            }
-        </style>
-
-        {% endblock %}
+        .table_dark tr:hover td {
+            text-decoration: underline;
+        }
+    </style>       
+{% endblock add_style %}
