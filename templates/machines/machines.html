@@ -6,8 +6,6 @@
 {% block content %}
 
 
-    <!-- Добавляем sidebar -->
-    {% include 'parts_element/_sidebar.html' %}
 
 
     <form method="GET" >
@@ -93,5 +91,4 @@
       <p><a href="{% url 'machines:detail_machines' %}">Всі машини детально</a></p>  
       <p><a href="{% url 'machines:show_machine_description' %}">Опис машин</a></p>
     
-    {% include 'parts_element/_footer.html' %}
 {% endblock %}

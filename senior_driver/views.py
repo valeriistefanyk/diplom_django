@@ -41,7 +41,23 @@ def show_my_reports(request):
     # login and permission check end
     
     my_reports = Report.objects.filter(filled_up__user=request.user)
+    
+    if request.GET.get('from') and request.GET.get('to'):
+        from_date = request.GET.get('from')
+        to_date = request.GET.get('to')
+        from_date_correct = correct_date(from_date)
+        to_date_correct = correct_date(to_date)
+        my_reports = my_reports.filter(date__range = [from_date_correct, to_date_correct])
+    else:
+        from_date = correct_date(my_reports.earliest('date').date, choise=2)
+        to_date = correct_date(my_reports.latest('date').date, choise=2)
+
+    
+    my_reports = add_machines(my_reports)
+
     context = {
+        'from_date': from_date,
+        'to_date' : to_date,
         'my_reports': my_reports
     }
     return render(request, 'senior-driver/my_reports.html', context)
@@ -202,3 +218,38 @@ def make_report(request):
 
 
     return render(request, 'senior-driver/make_report.html', context)
+
+
+# ПРАВИЛЬНА ДАТА
+def correct_date(date, choise = 1):
+    if choise == 1:
+        date_list = date.split('/')
+        date_correct = f"{date_list[2]}-{date_list[0]}-{date_list[1]}"
+        return date_correct
+    if choise == 2:
+        return date.strftime("%m/%d/%Y")
+
+
+def add_machines(reports):
+    machines_all = Machine.objects.values('id', 'machine__name', 'number_machine', 'inventory_number', 'breakage_info')
+    for report in reports:
+        machines = []
+
+        for machine in report.machinereport_set.values():
+            m = machines_all.get(id=machine['machine_id'])
+            machine_full_name =  f"{m['machine__name']} #{m['number_machine']} [IN{m['inventory_number']}] "
+            fuel = machine['fuel']
+            motohour = machine['motohour']
+            breakage = "В ремонті" if machine['breakage'] else "В робочому стані"
+            breakage_info = m['breakage_info'] if m['breakage_info'] else 'Інформації про поломку немає'
+            
+            machines_info = {
+                'full_name': machine_full_name,
+                'fuel': fuel,
+                'motohour': motohour,
+                'breakage': breakage,
+                'breakage_info': breakage_info
+            }
+            machines.append(machines_info)
+        report.machines = machines
+    return reports
