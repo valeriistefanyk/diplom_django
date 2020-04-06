@@ -40,7 +40,12 @@ def show_my_reports(request):
         raise Http404("У Вас не має прав на перегляд цієї сторінки")
     # login and permission check end
     
-    my_reports = Report.objects.filter(filled_up__user=request.user)
+    if not request.user.is_superuser:
+        my_reports = Report.objects.filter(filled_up__user=request.user)
+    else:
+        from senior_driver.models import SeniorDriver
+        driver = SeniorDriver.objects.get(user__username='higonov')
+        my_reports = Report.objects.filter(filled_up=driver)
     
     if request.GET.get('from') and request.GET.get('to'):
         from_date = request.GET.get('from')
@@ -156,14 +161,6 @@ def make_report(request):
                     machine_breakage_list[i-1] = "del"
             machine_breakage_list = list(filter(lambda el: el == 'on' or el == 'off', machine_breakage_list))
             date = request.POST.get('date')
-
-            
-            print("Дата: ", date)
-            print("Список машин: ", machine_list)
-            print("Список мотогодин: ", machine_motohour_list)
-            print("Список бензин: ", machine_fuel_list)
-            print("Список поломки: ", machine_breakage_list)
-            print("Список информации о поломках: ", machine_breakage_info_list)
             
     
             # создать отчеты
@@ -202,7 +199,8 @@ def make_report(request):
                         breakage = breakage
                     )
                 return redirect('driver:home-page')
-
+            else:
+                print(f"Дата - {request.POST.get('date')}")
 
             context = {
                 'selected_machine_bool': True,

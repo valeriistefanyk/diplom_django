@@ -42,7 +42,7 @@
             {% with True as flag %}
             {% for info in report.report_info %}
             <tr>{% if flag %}
-                <td rowspan="5">{{ report.date }}
+                <td rowspan="{{ report.report_info | length }}">{{ report.date }}
                     {% update_variable False as flag %}
                 </td>
                 {% endif %}
@@ -59,7 +59,8 @@
             {% endfor %}
             {% endwith %}
             {% endfor %}
-            {% endif%}
+        </table>
+        {% endif%}
     </div>
 </div>
 {% endblock content_page %}

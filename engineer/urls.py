@@ -6,7 +6,8 @@ app_name = 'engineer'
 
 urlpatterns = [
     path('', views.hello_page, name='home-page'),
-    path('reports/', views.showReports, name='reports'),
+    path('unforwarded_reports/', views.show_unforwarded_reports, name='unforwarded_reports'),
+    path('forwarded_reports/', views.show_forwarded_reports, name='forwarded_reports'),
     path('drivers/', views.show_drivers, name='drivers'),
     path('drivers/<str:username>/', views.show_drivers_detail, name='driver_detail'),
     path('workdays/', views.work_days, name='work_days'),

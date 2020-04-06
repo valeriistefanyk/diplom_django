@@ -26,9 +26,12 @@
             <a href="{% url 'engineer:home-page' %}"
                 class="list-group-item list-group-item-action bg-dark text-light border-light border-top"><i
                     class="fa fa-home"></i>Головна</a>
-            <a href="{% url 'engineer:reports' %}"
+            <a href="{% url 'engineer:unforwarded_reports' %}"
                 class="list-group-item list-group-item-action bg-dark text-light border-light"><i
-                    class="fa fa-table"></i>Звіти</a>
+                    class="fa fa-table"></i>Невідправлені звіти</a>
+            <a href="{% url 'engineer:forwarded_reports' %}"
+                class="list-group-item list-group-item-action bg-dark text-light border-light"><i
+                    class="fa fa-table"></i>Відправлені звіти</a>
             <a href="{% url 'engineer:drivers' %}"
                 class="list-group-item list-group-item-action bg-dark text-light border-light"><i
                     class="fa fa-truck"></i>Старші водії</a>

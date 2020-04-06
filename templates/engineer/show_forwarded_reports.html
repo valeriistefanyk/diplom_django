@@ -1,0 +1,216 @@
+{% extends 'engineer/_base_page_engineer.html' %}
+{% load update_variable %}
+
+{% block title %}Передані звіти{% endblock title %}
+
+{% block content_page %}
+
+    <div class="container-fluid">
+        <h2 class="mt-4 mb-4 text-center">Звіти які передані керівництву</h2>
+        <div class="content-text">
+            <div class="row">
+                <div class="col-md-3 offset-md-2">
+                    <div class="row">
+                        <div class="col-6">
+                            Фільтр за датою
+                        </div>
+                        <div class="col-6">
+                            <form action="">
+                                <div class="form-check">
+                                <input class="form-check-input" type="radio" name="radioDate" id="radio1" {% if radio %}checked{% endif %} value="diapozon">
+                                <label class="form-check-label" for="radio1">
+                                    діапазон 
+                                </label>
+                              </div>
+                              <div class="form-check">
+                                <input class="form-check-input" type="radio" name="radioDate" id="radio2" {% if not radio %}checked{% endif %}  value="concrete">
+                                <label class="form-check-label" for="radio2">
+                                    конкретна
+                                </label>
+                              </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-7">
+                    <div id="dateconcrete" class="desc" {% if radio %}style="display: none;"{% endif %}>
+                        <!-- конкертна дата -->
+                        <form class="form-inline" method="GET">
+                            <div class="form-group ml-3 mb-2">
+                                <div class="input-group date" id="concretedate" data-target-input="nearest">
+                                    <input type="text" value="{{ date }}" class="form-control datetimepicker-input"
+                                        data-target="#concretedate" name="date" placeholder="Дата"/>
+                                    <div class="input-group-append" data-target="#concretedate" data-toggle="datetimepicker">
+                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group ml-3 mb-2 pt-1">
+                                <button type="submit" class="btn btn-primary mb-2">Вибрати</button>
+                            </div>
+                        </form>
+                    </div>
+                    <div id="datediapozon" class="desc" {% if not radio %}style="display: none;"{% endif %}>
+                        <!-- діапазон дат -->
+                        <form class="form-inline" method="GET">
+                            <div class="form-group ml-3 mb-2">
+                                <div class="input-group date" id="fromdate" data-target-input="nearest">
+                                    <input type="text" value="{{ from_date }}" class="form-control datetimepicker-input"
+                                        data-target="#fromdate" name="from" placeholder="Початкова дата"/>
+                                    <div class="input-group-append" data-target="#fromdate" data-toggle="datetimepicker">
+                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group ml-3 mb-2">
+                                <div class="input-group date" id="todate" data-target-input="nearest">
+                                    <input type="text" value="{{ to_date }}" class="form-control datetimepicker-input"
+                                        data-target="#todate" name="to" placeholder="Кінцева дата">
+                                    <div class="input-group-append" data-target="#todate" data-toggle="datetimepicker">
+                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group ml-3 mb-2 pt-1">
+                                <button type="submit" class="btn btn-primary mb-2">Вибрати</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+            
+        <table class="table_dark">
+            <tr>
+                <th>Дата звіту</th>
+                <th>Оформив [бригада №]</th>
+                <th>Машини</th>
+            </tr>
+            {% for report in date_report_set %}
+                {% with True as flag %}
+                {% for info in report.report_info %}
+                    <tr>{% if flag %}
+                        <td rowspan="{{ report.report_info | length }}">{{ report.date }}
+                            {% update_variable False as flag %}
+                        </td>
+                        {% endif %}
+                        <td>{{ info.driver }} [Бригада №{{info.brigade_name}}]</td>
+                        <td><ul class="hr">
+                            {%for machine in info.machines %}
+                                <li>{{ machine.machine_short_name }} ({{ machine.motohour }};{{ machine.fuel }})</li>
+                            {% endfor %}</ul>
+                        </td>
+                    </tr>
+                {% endfor %}
+                {% endwith %}
+            {% endfor %}
+        </table>
+    </div>
+{% endblock content_page %}
+    
+
+{% block add_style %}
+    <style> 
+        /* TABLE----------------------- */
+        .table_dark {
+            font-size: 14px;
+            width: 100%;
+            text-align: left;
+            border-collapse: collapse;
+            background: #252F48;
+            margin: 10px;
+        }
+
+        .table_dark th {
+            color: #EDB749;
+            border-bottom: 1px solid #37B5A5;
+            padding: 12px 17px;
+        }
+
+        .table_dark td {
+            color: #CAD4D6;
+            border-bottom: 1px solid #37B5A5;
+            border-right: 1px solid #37B5A5;
+            padding: 20px 27px;
+        }
+
+        .table_dark tr:last-child td {
+            border-bottom: none;
+        }
+
+        .table_dark td:last-child {
+            border-right: none;
+        }
+
+        .table_dark tr:hover td {
+            text-decoration: underline;
+        }
+
+        /* Для списку машин----------------------- */
+        ul {
+          margin: 0;
+          padding: 0;
+        }
+
+        ul {
+          display: flex;
+        }
+
+        ul li {
+          list-style-type: none;
+          flex-basis: auto;
+          flex-grow: 1;
+          text-align: center;
+        }
+
+        ul li a {
+          padding: 20px 0;
+          text-decoration: none;
+          color: #ccc;
+          display: block;
+        }
+
+        ul li:nth-child(2n) a {
+          color: #000;
+        }
+    </style>       
+{% endblock add_style %}
+
+
+{% block add_js %}
+{# скрипт для выбора дат (начало) #}
+<script type="text/javascript">
+    $(function () {
+        $('#fromdate').datetimepicker({
+            format: 'L'
+        });
+        $('#todate').datetimepicker({
+            format: 'L',
+            useCurrent: false
+        });
+        $("#fromdate").on("change.datetimepicker", function (e) {
+            $('#todate').datetimepicker('minDate', e.date);
+        });
+        $("#todate").on("change.datetimepicker", function (e) {
+            $('#fromdate').datetimepicker('maxDate', e.date);
+        });
+
+
+        $('#concretedate').datetimepicker({
+            format: 'L'
+        });
+    });
+</script>
+{# скрипт для выбора дат (конец) #}
+<script>
+    $(document).ready(function() {
+        $("input[name$='radioDate']").click(function() {
+            var test = $(this).val();
+    
+            $("div.desc").hide();
+            $("#date" + test).show();
+        });
+    });
+</script>
+
+{% endblock add_js %}

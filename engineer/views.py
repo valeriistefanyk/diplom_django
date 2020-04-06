@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import Http404
+from django.db.models import Count
 
 from engineer import models
 from machines.models import Machine
@@ -21,7 +22,7 @@ def hello_page(request):
 
 
 # Відображення звітів
-def showReports(request):
+def show_unforwarded_reports(request):
     """Відображення звіту для інженера"""
     
     # login and permission check start
@@ -38,11 +39,16 @@ def showReports(request):
         
         if checked == "True":
             report = models.Report.objects.get(pk=report_id)
-            report.checked = True
-            report.save()
+            if not request.user.is_superuser:
+                report.checked = True
+                report.save()
+            else:
+                print(report)
+            
 
-
+    
     reports = models.Report.objects.all()
+    
     from_date = request.GET.get('from')
     to_date = request.GET.get('to')
 
@@ -52,14 +58,144 @@ def showReports(request):
         reports = reports.filter(date__range = [from_date_correct, to_date_correct])
         print(reports)
 
+
+    reports_forwarded = reports.filter(checked=True).order_by('date')
+    reports_unforwarded = reports.filter(checked=False).order_by('date')
+
+    machines_all = Machine.objects.values('id', 'machine__name', 'number_machine', 'inventory_number', 'breakage_info')
+    # попробуем сортировку по дням (начало кода)
+    date_report_set = []
+    reports_date = reports_unforwarded.values('date').annotate(total=Count('id'))
+    for report_date in reports_date:
+        date = report_date['date'].strftime("%Y-%m-%d")
+        queryset_rep = reports_unforwarded.filter(date=date).select_related('filled_up')
+        reports_set = []
+        for query in queryset_rep:
+            report_id = query.id
+            driver = query.filled_up.full_name()
+            brigade_name = query.filled_up.brigade_name
+            machines = []
+            for machine in query.machinereport_set.values():
+                m = machines_all.get(id=machine['machine_id'])
+                machine_short_name =  f"{m['machine__name']} #{m['number_machine']}"
+                machine_full_name =  f"{m['machine__name']} #{m['number_machine']} [IN{m['inventory_number']}] "
+                fuel = machine['fuel']
+                motohour = machine['motohour']
+                breakage = "Є поломка" if machine['breakage'] else "Поломок не було"
+                if breakage == "Є поломка":
+                    if m['breakage_info']:
+                        breakage += f"<br>Інформація: {m['breakage_info']}"
+                    else:
+                        breakage = f"<br>Інформація про поломку відсутня"
+                
+                machines_info = {
+                    'machine_short_name': machine_short_name,
+                    'machine_full_name': machine_full_name,
+                    'fuel': fuel,
+                    'motohour': motohour,
+                    'breakage': breakage,
+                }
+
+                machines.append(machines_info)
+
+            reports_set.append({'report_id': report_id, 'driver': driver, 'brigade_name': brigade_name, 'machines': machines})
+        date_report_set.append({'date': date, 'report_info': reports_set})
+    # попробуем сортировку по дням (конец кода)
+
+
+
     context = {
         'from_date': from_date,
         'to_date' : to_date,
         'reports': reports,
-        'reports_forwarded': reports.filter(checked=True).order_by('date'),
-        'reports_unforwarded': reports.filter(checked=False).order_by('date'),
+        'reports_forwarded': reports_forwarded,
+        'reports_unforwarded': reports_unforwarded,
+        'date_report_set': date_report_set,
     }
-    return render(request, 'engineer/show_reports.html', context)
+    return render(request, 'engineer/show_unforwarded_reports.html', context)
+
+
+def show_forwarded_reports(request):
+    """Відображення звіту для інженера"""
+    
+    # login and permission check start
+    if not request.user.is_authenticated:
+        return redirect('mylogin')
+    if not ('engineer.view_engineer' in request.user.get_group_permissions()):
+        # return redirect(reverse('home', kwargs={ 'message': FooBar }))
+        raise Http404("У Вас не має прав на перегляд цієї сторінки")
+    # login and permission check end
+    
+    
+    reports_forwarded = models.Report.objects.filter(checked=True).order_by('date')
+    
+    from_date = request.GET.get('from')
+    to_date = request.GET.get('to')
+    date = request.GET.get('date')
+    
+    # radio true - diapason, false - concrete date
+    radio = True
+
+    if from_date and to_date:
+        from_date_correct = correct_date(from_date)
+        to_date_correct = correct_date(to_date)
+        reports_forwarded = reports_forwarded.filter(date__range = [from_date_correct, to_date_correct])
+
+    if date:
+        reports_forwarded = reports_forwarded.filter(date = correct_date(date))
+        radio = False
+
+    
+
+    machines_all = Machine.objects.values('id', 'machine__name', 'number_machine', 'inventory_number', 'breakage_info')
+    date_report_set = []
+    reports_date = reports_forwarded.values('date').annotate(total=Count('id'))
+    for report_date in reports_date:
+        date = report_date['date'].strftime("%Y-%m-%d")
+        queryset_rep = reports_forwarded.filter(date=date).select_related('filled_up')
+        reports_set = []
+        for query in queryset_rep:
+            report_id = query.id
+            driver = query.filled_up.full_name()
+            brigade_name = query.filled_up.brigade_name
+            machines = []
+            for machine in query.machinereport_set.values():
+                m = machines_all.get(id=machine['machine_id'])
+                machine_short_name =  f"{m['machine__name']} #{m['number_machine']}"
+                machine_full_name =  f"{m['machine__name']} #{m['number_machine']} [IN{m['inventory_number']}] "
+                fuel = machine['fuel']
+                motohour = machine['motohour']
+                breakage = "Є поломка" if machine['breakage'] else "Поломок не було"
+                if breakage == "Є поломка":
+                    if m['breakage_info']:
+                        breakage += f"<br>Інформація: {m['breakage_info']}"
+                    else:
+                        breakage = f"<br>Інформація про поломку відсутня"
+                
+                machines_info = {
+                    'machine_short_name': machine_short_name,
+                    'machine_full_name': machine_full_name,
+                    'fuel': fuel,
+                    'motohour': motohour,
+                    'breakage': breakage,
+                }
+
+                machines.append(machines_info)
+
+            reports_set.append({'report_id': report_id, 'driver': driver, 'brigade_name': brigade_name, 'machines': machines})
+        date_report_set.append({'date': date, 'report_info': reports_set})
+
+
+    
+
+    context = {
+        'from_date': from_date,
+        'to_date' : to_date,
+        'date': date,
+        'radio': radio,
+        'date_report_set': date_report_set,
+    }
+    return render(request, 'engineer/show_forwarded_reports.html', context)
 
 
 # Старші водії
