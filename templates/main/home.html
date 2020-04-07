@@ -10,16 +10,19 @@
 {% block content %}
 
 <div class="card card-image"
-  style="background-image: url(https://mdbootstrap.com/img/Photos/Horizontal/Work/4-col/img%20%2814%29.jpg); background-size: cover; height: 100vh;">
+  style="background-image: url('/media/static_img/back_train.jpg'); background-size: cover; height: 100vh;">
 
   <!-- Content -->
   <div class="mask flex-center rgba-black-strong">
     <div class="col">
-      <div class="text-white text-center d-flex align-items-center py-5 px-4">
+      <div class="text-white text-center align-items-center py-5 px-4">
         <div>
-          <h5 class="text-warning" style="letter-spacing: 3px;"> VMM CORE PRODUCTION</h5>
+          <h5 class="text-warning" style="letter-spacing: 3px;"> TRACK MACHINES APP</h5>
           <h3 class="card-title pt-2"><strong>О программе:</strong></h3>
-          <p>Программа предназначена для автоматизированого рабочего места</p>
+          <p>Автоматизоване робоче місце для співробітників керуючих колійними машинами.<br>
+            Для входу в кабінет натисніть кнопку "Увійти". Якщо ви раніше входили в систему, повторна авторизація не потрібна. 
+            В інакшому випадку Вам потрібно буде вести логін та пароль   
+        </p>
           <h3 class="card-title pt-2"><strong>Контакты:</strong></h3>
           <a href="vmmcore1@gmail.com">Email: vmmcore1@gmail.com</a>
           <br>
@@ -30,10 +33,10 @@
       </div>
     </div>
     <div class="col">
-      <div class="text-white text-center d-flex align-items-center py-5 px-4">
+      <div class="text-white text-center align-items-center py-5 px-4">
         <div>
           <h5 class="text-warning"> VMM Core</h5>
-          <h3 class="card-title pt-2"><strong>Главная</strong></h3>
+          <h3 class="card-title pt-2"><strong>Головна</strong></h3>
 
           {% if user.is_authenticated %}
             <p>Добрий день, {% if user.first_name %}{{ user.first_name }}{% else %}{{ user.username }}{% endif %}</p>
@@ -52,3 +55,4 @@
   }
 </style>
 {% endblock %}
+

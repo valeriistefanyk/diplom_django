@@ -8,37 +8,35 @@
 
 
 {% block content %}
-        <form class="text-center border border-dark rounded-lg p-5" action="{% url 'mylogin' %}" method="POST">
-            {% csrf_token %}
-            <p class="h4 mb-4">Авторизация</p>
+<div class="card card-image"
+  style="background-image: url('/media/static_img/back_train.jpg'); background-size: cover; height: 100vh;">
+  <div class="mask flex-center rgba-black-strong">
+    
+    <form class="text-center border border-dark rounded-lg p-5" action="{% url 'mylogin' %}" method="POST">
+        {% csrf_token %}
+        <p class="h4 mb-4">Авторизація</p>
 
-            <!-- Email -->
-            <input type="text" name="username" id="defaultLoginFormEmail" class="form-control mb-4" placeholder="Логин">
+        <!-- Email -->
+        <input type="text" name="username" id="defaultLoginFormEmail" class="form-control mb-4" placeholder="Логін">
 
-            <!-- Password -->
-            <input type="password" name="password" id="defaultLoginFormPassword" class="form-control mb-4" placeholder="Пароль">
+        <!-- Password -->
+        <input type="password" name="password" id="defaultLoginFormPassword" class="form-control mb-4" placeholder="Пароль">
 
-            <div>
-                <!-- Forgot password -->
-                <a href="#">Забыли пароль?</a>
-            </div>
-    </div>
-
-    <!-- Sign in button -->
-    <button class="btn btn-info btn-block my-4" type="submit">Войти в систему</button>
-
+        <button class="btn btn-info btn-block my-4" type="submit">Увійти в систему</button>
     </form>
+</div>
+    </div>
+  </div>
 
+
+       
+</div>
 <style>
     body {
-        position: relative;
-        background-color: #484444;
-    }
-
+        overflow: hidden;
+      }
     form {
         position: absolute;
-        left: 50%;
-        transform: translate3d(-50%, 40%, 0);
         width: 400px;
         background: #ffffff;
     }
