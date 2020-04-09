@@ -23,7 +23,7 @@ def hello_page(request):
 
 # Відображення звітів
 def show_unforwarded_reports(request):
-    """Відображення звіту для інженера"""
+    """Відображення невідправлених звітів """
     
     # login and permission check start
     if not request.user.is_authenticated:
@@ -46,24 +46,9 @@ def show_unforwarded_reports(request):
                 print(report)
             
 
-    
-    reports = models.Report.objects.all()
-    
-    from_date = request.GET.get('from')
-    to_date = request.GET.get('to')
-
-    if from_date and to_date:
-        from_date_correct = correct_date(from_date)
-        to_date_correct = correct_date(to_date)
-        reports = reports.filter(date__range = [from_date_correct, to_date_correct])
-        print(reports)
-
-
-    reports_forwarded = reports.filter(checked=True).order_by('date')
-    reports_unforwarded = reports.filter(checked=False).order_by('date')
+    reports_unforwarded = models.Report.objects.filter(checked=False).order_by('date')
 
     machines_all = Machine.objects.values('id', 'machine__name', 'number_machine', 'inventory_number', 'breakage_info')
-    # попробуем сортировку по дням (начало кода)
     date_report_set = []
     reports_date = reports_unforwarded.values('date').annotate(total=Count('id'))
     for report_date in reports_date:
@@ -100,23 +85,16 @@ def show_unforwarded_reports(request):
 
             reports_set.append({'report_id': report_id, 'driver': driver, 'brigade_name': brigade_name, 'machines': machines})
         date_report_set.append({'date': date, 'report_info': reports_set})
-    # попробуем сортировку по дням (конец кода)
-
-
+    
 
     context = {
-        'from_date': from_date,
-        'to_date' : to_date,
-        'reports': reports,
-        'reports_forwarded': reports_forwarded,
-        'reports_unforwarded': reports_unforwarded,
         'date_report_set': date_report_set,
     }
     return render(request, 'engineer/show_unforwarded_reports.html', context)
 
 
 def show_forwarded_reports(request):
-    """Відображення звіту для інженера"""
+    """Відображення відправлених звітів"""
     
     # login and permission check start
     if not request.user.is_authenticated:
@@ -144,7 +122,6 @@ def show_forwarded_reports(request):
     if date:
         reports_forwarded = reports_forwarded.filter(date = correct_date(date))
         radio = False
-
     
 
     machines_all = Machine.objects.values('id', 'machine__name', 'number_machine', 'inventory_number', 'breakage_info')
@@ -185,8 +162,6 @@ def show_forwarded_reports(request):
             reports_set.append({'report_id': report_id, 'driver': driver, 'brigade_name': brigade_name, 'machines': machines})
         date_report_set.append({'date': date, 'report_info': reports_set})
 
-
-    
 
     context = {
         'from_date': from_date,
