@@ -1,0 +1,11 @@
+id,username,email,first_name,last_name,is_staff,is_superuser
+1,admin,valeriistefanyk@gmail.com,,,True,True
+2,tolik,tolik@gmail.com,Tolik,Neve,False,False
+3,anatoliy,,,,False,False
+5,trofimov,trofimov@gmail.com,Максим,Трофімов,False,False
+6,tigrenko,tigrenko@gmail.com,Володимир,Тигренко,False,False
+7,higonov,higonov@gmail.com,Антон,Хігонов,False,False
+8,stanislav,stanislavchik@gmail.com,Станіслав,Євгенов,False,False
+9,topchiev,topchiev@gmail.com,Микола,Топчієв,False,False
+10,eshenko,eshenko_andriy@gmail.com,Андрій,Єщенко,False,False
+11,smirnov,smirnov@gmail.com,Валентин,Смірнов,False,False
