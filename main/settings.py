@@ -123,4 +123,6 @@ MEDIA_URL = '/media/'
 INTERNAL_IPS = [
     '127.0.0.1',
 ]
-LOGOUT_REDIRECT_URL = '/login/'
+LOGOUT_REDIRECT_URL = '/logout/'
+# LOGIN_REDIRECT_URL = '/login/'
+LOGIN_URL = '/login'

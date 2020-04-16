@@ -33,7 +33,9 @@ def mylogin(request):
     if request.user.is_authenticated:
         return redirect_on_right_page(request)
 
-
+    context = {
+        'message': ''
+    }
     if request.method == 'POST':
 
         utxt = request.POST.get('username')
@@ -47,9 +49,9 @@ def mylogin(request):
                 # return redirect('redirect_on_right_page')
                 return redirect_on_right_page(request)
 
-            return HttpResponse('Hello some user!')
+            context['message'] = 'Не правильний логін або пароль!'
 
-    return render(request, 'main/login.html')
+    return render(request, 'main/login.html', context)
 
 
 def mylogout(request):

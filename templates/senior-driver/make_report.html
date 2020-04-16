@@ -7,80 +7,44 @@
     <div class="container-fluid">
         <h1 class="mt-4 text-center">Створення звіту</h1>
         <div class="content-text">
-            <form action="{% url 'driver:report' %}" method="POST">
-              {% csrf_token %}
-              <p><label for="date"><i class="fa fa-calendar"></i>Дата:</label>
-                <input type="date" value="{{ date_today }}" name="date" id="date" required></p>
-              <input class="form-control mr-sm-2" style="max-width: 250px;" type="search" placeholder="Пошук"
-                aria-label="Search">
+            <form action="{% url 'driver:make-report-fill' %}" method="POST">
+                {% csrf_token %}
+                <p><label for="date"><i class="fa fa-calendar"></i>Дата:</label>
+                    <input type="date" value="{{ date_today }}" name="date" id="date" required></p>
 
-              <h4 class="text-warning my-4">Які машини оберете для звітності:</h4>
+                <h4 class="text-warning my-4">Які машини оберете для звітності:</h4>
+                {% if last_used_machines %}
+                    <p>Машини якими найчастіше використувались за останній місяць</p>
+                    {% for machine in last_used_machines %}
+                    <p><input type="checkbox" name="choices" value="{{machine.id}}" id="machine{{machine.id}}">
+                        <label for="machine{{machine.id}}">{{ machine.machine__name}} {{machine.number_machine}} [IN-{{machine.inventory_number}}]</label>
+                    </p>
+                    <hr>
+                    {% endfor %}
+                    <p>Всі інші машини</p>
+                {% endif %}
+                
+                {% for machine in long_used_machines %}
+                
+                <p><input type="checkbox" name="choices" value="{{machine.id}}" id="machine{{machine.id}}">
+                    <label for="machine{{machine.id}}">{{ machine.machine__name}} {{machine.number_machine}} [IN-{{machine.inventory_number}}]</label>
+                </p>
+                <hr>
+                {% endfor %}
 
-              {% for machine in can_use_machines %}
-              <p><input type="checkbox" name="choices" value="{{machine.id}}" id="machine{{machine.id}}"
-                  {% if machine.el %}checked{% endif %}>
-                <label for="machine{{machine.id}}"> {{machine.full_name}}</label>
-              </p>
-              <hr>
-              {% endfor %}
-
-              <input type="submit" class="btn btn-warning d-block mt-3" name="selectMachines" value="Обрати ці машини">
+                <input type="submit" class="btn btn-warning d-block mt-3" name="selectMachines" value="Обрати ці машини">
             </form>
 
-            <form class="form-group" action="{% url 'driver:report' %}" method="POST">
-              {% csrf_token %}
-              {% if selected_machine_list %}
-              {% for machine in selected_machine_list %}
-
-              {# Скрытые поля для передачи на бек | start #}
-              <input type="hidden" name="date" value="{{ date_today }}">
-              <input type="hidden" name="choices" value="{{machine.id}}">
-              {# Скрытые поля для передачи на бек | end #}
-
-              <div class="form-row border border-dark rounded-lg p-5 col-md-6 mx-auto">
-
-                <div class="form-group">
-                  <p><b>Машина {{machine.full_name}}</b></p>
-                </div>
-                <div class="form-group col-md-6">
-                  <label for="motog{{machine.id}}">Мотогини</label>
-                  <input type="number" name="motohour" class="form-control" id="motog{{machine.id}}"
-                    placeholder="Мотогодини (у мото/год)" required>
-                </div>
-                <div class="form-group col-md-6">
-                  <label for="fuel{{machine.id}}">Бензин</label>
-                  <input type="number" step="0.1" name="fuel" class="form-control" id="fuel{{machine.id}}"
-                    placeholder="Бензин (у літрах)" required>
-                </div>
-
-                <div class="custom-control custom-checkbox my-1">
-
-                  {#  костыль, но работает. Hidden поле - для передачи на бек, #}
-                  {#  должно идти перед основным чекбоксом. #}
-                  {#  div с классом breakage_info - в одном диве с чекбоксом (для jquery) #}
-
-                  <input type="hidden" value="off" name="breakage">
-                  <input type="checkbox" value="on" name="breakage" class="breakage custom-control-input"
-                    id="breakage{{machine.id}}">
-                  <label class="custom-control-label" for="breakage{{machine.id}}">Поломка?</label>
-
-                  <div class="breakage_info form-group col-md-12">
-                    <label for="info_breakage{{machine.id}}">Інформація про поломку</label>
-                    <textarea class="form-control col-md-12" name="breakage_info" id="info_breakage{{machine.id}}"
-                      rows="3"></textarea>
-
-                  </div>
-
-                </div>
-
-
-              </div>
-              {% endfor %}
-              <input type="submit" class="btn btn-warning d-block mt-3" name="sendData" value="Відправити дані">
-              {% elif selected_machine_bool %}
-              <p>Ви не обрали жодної машини!</p>
-              {% endif %}
-            </form>
+        {% if broken_machines %}
+        <br>    
+        <p>Машини які знаходяться у ремонті:
+                <ul>
+                    {% for machine in broken_machines %}
+                        <li>{{ machine.machine__name}} {{machine.number_machine}} {{machine.inventory_number}}</li>
+                    {% endfor %}
+                </ul>
+            </p>
+        {% endif %}
         </div>
     </div>
 {% endblock content_page %}
@@ -95,15 +59,7 @@
 {% block add_js %}
     <script>
         $(document).ready(function ($) {
-          $('input.breakage').change(function () {
-
-            if ($(this).is(':checked')) {
-              $(this).nextAll('div.breakage_info').show();
-            }
-            else {
-              $(this).nextAll('div.breakage_info').hide();
-            }
-          }).change();
+          
         });
     </script>
 {% endblock add_js %}

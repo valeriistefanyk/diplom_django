@@ -1,51 +1,47 @@
 from django.shortcuts import render, redirect
 from django.http import Http404
+from django.contrib.auth.decorators import login_required
+from django.db.models import Q, Sum
 
 from machines.models import Machine
 from engineer.models import Report, MachineReport
+from senior_driver.models import SeniorDriver
 import datetime
 
 
+@login_required
 def home_page(request):
+    """ Початкова сторінка бригадира """
 
-    # login and permission check start
-    if not request.user.is_authenticated:
-        return redirect('mylogin')
+    # permission check start
     if not ('senior_driver.view_seniordriver' in request.user.get_group_permissions()):
         raise Http404("У Вас не має прав на перегляд цієї сторінки")
-    # login and permission check end
-
+    # permission check end
     return render(request, 'senior-driver/home_page.html', context={})
 
 
-
+@login_required
 def about(request):
-
-    # login and permission check start
-    if not request.user.is_authenticated:
-        return redirect('mylogin')
+    
+    # permission check start
     if not ('senior_driver.view_seniordriver' in request.user.get_group_permissions()):
         raise Http404("У Вас не має прав на перегляд цієї сторінки")
-    # login and permission check end
+    # permission check end
 
     return render(request, 'senior-driver/about_page.html')
 
 
+@login_required
 def show_my_reports(request):
+    """ Звіти старшого водія """
 
-    # login and permission check start
-    if not request.user.is_authenticated:
-        return redirect('mylogin')
+    # permission check start
     if not ('senior_driver.view_seniordriver' in request.user.get_group_permissions()):
         raise Http404("У Вас не має прав на перегляд цієї сторінки")
-    # login and permission check end
+    # permission check end
     
-    if not request.user.is_superuser:
-        my_reports = Report.objects.filter(filled_up__user=request.user)
-    else:
-        from senior_driver.models import SeniorDriver
-        driver = SeniorDriver.objects.get(user__username='higonov')
-        my_reports = Report.objects.filter(filled_up=driver)
+    driver = set_driver(request.user)
+    my_reports = Report.objects.filter(filled_up=driver)
     
     if request.GET.get('from') and request.GET.get('to'):
         from_date = request.GET.get('from')
@@ -68,21 +64,17 @@ def show_my_reports(request):
     return render(request, 'senior-driver/my_reports.html', context)
 
 
+@login_required
 def show_machines(request):
-    
-    # login and permission check start
-    if not request.user.is_authenticated:
-        return redirect('mylogin')
+    """ Машини які належать машиністу """
+
+    # permission check start
     if not ('senior_driver.view_seniordriver' in request.user.get_group_permissions()):
         raise Http404("У Вас не має прав на перегляд цієї сторінки")
-    # login and permission check end
+    # permission check end
     
-
-    if not request.user.is_superuser:
-        my_machines = Machine.objects.filter(brigade=request.user.seniordriver)
-    else:
-        my_machines = Machine.objects.all()
-
+    driver = set_driver(request.user)
+    my_machines = Machine.objects.filter(brigade=driver)
     
     context = {
         'my_machines': my_machines.filter(breakage=False),
@@ -92,133 +84,117 @@ def show_machines(request):
     return render(request, 'senior-driver/my_machines.html', context)
 
 
+@login_required
 def make_report(request):
-    
-    # login and permission check start
-    if not request.user.is_authenticated:
-        return redirect('mylogin')
+    """ Створення звіту """
+
+    # permission check start
     if not ('senior_driver.view_seniordriver' in request.user.get_group_permissions()):
         raise Http404("У Вас не має прав на перегляд цієї сторінки")
-    # login and permission check end
+    # permission check end
 
-    if not request.user.is_superuser:
-        can_use_machines = Machine.objects.filter(
-            brigade=request.user.seniordriver).exclude(breakage=True)
-    else:
-        can_use_machines = Machine.objects.all()[:5]
-
-    for obj in can_use_machines:
-        obj.el = False
-
-    if request.method == "POST":
-        
-        date = request.POST.get('date')
-        pass_btn_select = False
-
-        # when passed selectMahines submit_button
-        if 'selectMachines' in request.POST:
-            print('BUTTON SELECT MACHINES CLICKED')
-            
-            machine_id_list = list(map(lambda el: int(el), request.POST.getlist('choices')))
-            machine_list = Machine.objects.filter(id__in=machine_id_list)
-            
-            for machine in can_use_machines:
-                    if machine.id in machine_id_list:
-                        machine.el = True
-
-            print(machine_list)
-            print(len(machine_list))
-            
-            context = {
-                'selected_machine_bool': True,
-                'date_today': date,
-                'can_use_machines': can_use_machines,
-                'selected_machine_list': machine_list, 
-            }
-            return render(request, 'senior-driver/make_report.html', context)
-
-        # when passed sendData submit_button
-        if 'sendData' in request.POST:
-            print('BUTTON SEND DATA CLICKED')
-
-            
-
-            machine_id_list = list(map(lambda el: int(el), request.POST.getlist('choices')))
-            machine_list = Machine.objects.filter(id__in=machine_id_list)
-            
-            for machine in can_use_machines:
-                    if machine.id in machine_id_list:
-                        machine.el = True
-
-
-            machine_fuel_list = list(map(lambda el: float(el), request.POST.getlist('fuel')))
-            machine_motohour_list = list(map(lambda el: int(el), request.POST.getlist('motohour')))
-            machine_breakage_list = request.POST.getlist('breakage')
-            machine_breakage_info_list = request.POST.getlist('breakage_info')
-
-            for i in range(len(machine_breakage_list)):
-                if machine_breakage_list[i] == 'on':
-                    machine_breakage_list[i-1] = "del"
-            machine_breakage_list = list(filter(lambda el: el == 'on' or el == 'off', machine_breakage_list))
-            date = request.POST.get('date')
-            
+    driver = set_driver(request.user)
     
-            # создать отчеты
-            if not request.user.is_superuser:
-                filled_up = request.user.seniordriver
-                date = request.POST.get('date')
+    all_machines = Machine.objects.filter(brigade=driver)
 
-                report = Report.objects.create(
-                    filled_up=filled_up, 
-                    date=date, 
-                    
-                    # потом удалить 
-                    motohour=32, 
-                    fuel=32, 
-                    machine=machine_list[0], 
-                    breakage=False)
-                
-                all_info = list(zip(machine_list, machine_motohour_list, machine_fuel_list, machine_breakage_list, machine_breakage_info_list))
-                for el in all_info:
-                    
-                    breakage = False
-                    if el[3] == 'on':
-                        breakage = True
-                        machine = Machine.objects.get(pk=el[0].id)
-                        machine.breakage = breakage
-                        machine.breakage_info = el[4]
-                        machine.breakage_date = date
-                        machine.save()
+    can_use_machines = all_machines.filter(breakage=False)
+    broken_machines = all_machines.filter(breakage=True).values('id', 'machine__name', 'number_machine', 'inventory_number')
 
+    days, count = 30, 5
+    last_used_machines = can_use_machines.filter(
+            last_used_data__range=[datetime.date.today() - datetime.timedelta(days), datetime.date.today()]
+        ).values('id', 'machine__name', 'number_machine', 'inventory_number'
+        ).annotate(days=Sum('work_days')
+        ).order_by('-days')[:count]
 
-                    MachineReport.objects.create(
-                        report = report,
-                        machine = el[0],
-                        motohour = el[1],
-                        fuel = el[2],
-                        breakage = breakage
-                    )
-                return redirect('driver:home-page')
-            else:
-                print(f"Дата - {request.POST.get('date')}")
+    long_used_machines = can_use_machines.filter(
+            ~Q(id__in=[o["id"] for o in last_used_machines])
+        ).values('id', 'machine__name', 'number_machine', 'inventory_number')
 
-            context = {
-                'selected_machine_bool': True,
-                'date_today': date,
-                'can_use_machines': can_use_machines,
-            }
-            return render(request, 'senior-driver/make_report.html', context)
-        
     context = {
-        'can_use_machines': can_use_machines,
+        'broken_machines': broken_machines,
+        'last_used_machines': last_used_machines,
+        'long_used_machines': long_used_machines,
         'date_today': datetime.date.today().strftime("%Y-%m-%d")
     }
-
 
     return render(request, 'senior-driver/make_report.html', context)
 
 
-# ПРАВИЛЬНА ДАТА
+@login_required
+def make_report_fill(request):
+    # permission check start
+    if not ('senior_driver.view_seniordriver' in request.user.get_group_permissions()):
+        raise Http404("У Вас не має прав на перегляд цієї сторінки")
+    # permission check end
+
+    
+    machine_id_list = list(map(lambda el: int(el), request.POST.getlist('choices')))
+    machines = Machine.objects.filter(id__in=machine_id_list)
+    date = request.POST.getlist('date')[0] if request.POST.getlist('date') else None
+
+    context = {}
+    
+    if request.POST.get('selectMachines'):
+
+        
+        context = {
+            'date': date,
+            'machines': machines,
+        }
+
+    if request.POST.get('sendData'):
+
+        machine_fuel_list = list(map(lambda el: float(el), request.POST.getlist('fuel')))
+        machine_motohour_list = list(map(lambda el: int(el), request.POST.getlist('motohour')))
+        machine_breakage_list = request.POST.getlist('breakage')
+        machine_breakage_info_list = request.POST.getlist('breakage_info')
+        for i in range(len(machine_breakage_list)):
+            if machine_breakage_list[i] == 'on':
+                machine_breakage_list[i-1] = "del"
+        machine_breakage_list = list(filter(lambda el: el == 'on' or el == 'off', machine_breakage_list))
+
+
+        # создать отчеты
+        filled_up = set_driver(request.user)
+        report = Report.objects.create(
+            filled_up=filled_up, 
+            date=date, 
+            
+            # потом удалить 
+            motohour=32, 
+            fuel=32, 
+            machine=machines[0], 
+            breakage=False)
+        
+        all_info = list(zip(machines, machine_motohour_list, machine_fuel_list, machine_breakage_list, machine_breakage_info_list))
+        
+        for el in all_info:
+            machine = Machine.objects.get(pk=el[0].id)
+            machine.work_days += 1
+            machine.last_used_data = date
+            breakage = False
+            if el[3] == 'on':
+                breakage = True
+                machine.breakage = breakage
+                machine.breakage_info = el[4]
+                machine.breakage_date = date
+            
+            machine.save()
+            MachineReport.objects.create(
+                report = report,
+                machine = el[0],
+                motohour = el[1],
+                fuel = el[2],
+                breakage = breakage
+            )
+        return render(request, 'senior-driver/home_page.html', {'message': 'Звіт створений'})
+        
+    return render(request, 'senior-driver/make_report_fill.html', context)
+
+
+
+### допоміжні методи ###
 def correct_date(date, choise = 1):
     if choise == 1:
         date_list = date.split('/')
@@ -251,3 +227,9 @@ def add_machines(reports):
             machines.append(machines_info)
         report.machines = machines
     return reports
+
+
+def set_driver(user):
+    if user.is_superuser:
+        return SeniorDriver.objects.all()[1]
+    return user.seniordriver

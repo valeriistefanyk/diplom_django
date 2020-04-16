@@ -1,6 +1,6 @@
 from django.db import models
 from senior_driver.models import SeniorDriver
-
+import datetime
 
 class Machine(models.Model):
     """Опис колійних машин"""
@@ -26,6 +26,9 @@ class Machine(models.Model):
     breakage_info = models.TextField(blank=True, null=True)
 
     brigade = models.ForeignKey(SeniorDriver, on_delete=models.CASCADE)
+
+    work_days = models.IntegerField(default=0)
+    last_used_data = models.DateField(default=datetime.date(2009, 10, 5))
 
 
     def lining_pidpiiki_list(self):
