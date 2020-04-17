@@ -42,6 +42,8 @@ class Command(BaseCommand):
                         fuel = round(random.uniform(20, 60), 1),
                         breakage = False
                     )
+                    machine.last_used_data = date_list[i]
+                    machine.save()
 
         for i in range(len(date_list)-1, len(date_list)):
             for driver in drivers:
@@ -60,6 +62,8 @@ class Command(BaseCommand):
                         fuel = round(random.uniform(20, 60), 1),
                         breakage = False
                     )
+                    machine.last_used_data = date_list[i]
+                    machine.save()
 
 
     def handle(self, *args, **kwargs):

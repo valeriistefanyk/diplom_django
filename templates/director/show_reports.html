@@ -94,7 +94,7 @@
         $('.btn_modal').on('click', function (e) {
 
             response = {{ date_report_set | safe }};
-
+            
             id_report = parseInt($(this).data("id_report"))
             date = $(this).data("date_report")
 
@@ -155,7 +155,7 @@
                     .html(info)
                     .appendTo(li);
             });
-
+            
             $('.popup-fade').fadeIn();
         });
 
