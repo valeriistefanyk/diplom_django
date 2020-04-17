@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.http import Http404
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 from django.db.models import Q, Sum
 
 from machines.models import Machine
@@ -10,35 +10,24 @@ import datetime
 
 
 @login_required
+@permission_required('senior_driver.full_control', raise_exception=True)
 def home_page(request):
     """ Початкова сторінка бригадира """
 
-    # permission check start
-    if not ('senior_driver.view_seniordriver' in request.user.get_group_permissions()):
-        raise Http404("У Вас не має прав на перегляд цієї сторінки")
-    # permission check end
     return render(request, 'senior-driver/home_page.html', context={})
 
 
 @login_required
+@permission_required('senior_driver.full_control', raise_exception=True)
 def about(request):
     
-    # permission check start
-    if not ('senior_driver.view_seniordriver' in request.user.get_group_permissions()):
-        raise Http404("У Вас не має прав на перегляд цієї сторінки")
-    # permission check end
-
     return render(request, 'senior-driver/about_page.html')
 
 
 @login_required
+@permission_required('senior_driver.full_control', raise_exception=True)
 def show_my_reports(request):
     """ Звіти старшого водія """
-
-    # permission check start
-    if not ('senior_driver.view_seniordriver' in request.user.get_group_permissions()):
-        raise Http404("У Вас не має прав на перегляд цієї сторінки")
-    # permission check end
     
     driver = set_driver(request.user)
     my_reports = Report.objects.filter(filled_up=driver)
@@ -65,13 +54,9 @@ def show_my_reports(request):
 
 
 @login_required
+@permission_required('senior_driver.full_control', raise_exception=True)
 def show_machines(request):
     """ Машини які належать машиністу """
-
-    # permission check start
-    if not ('senior_driver.view_seniordriver' in request.user.get_group_permissions()):
-        raise Http404("У Вас не має прав на перегляд цієї сторінки")
-    # permission check end
     
     driver = set_driver(request.user)
     my_machines = Machine.objects.filter(brigade=driver)
@@ -85,13 +70,9 @@ def show_machines(request):
 
 
 @login_required
+@permission_required('senior_driver.full_control', raise_exception=True)
 def make_report(request):
     """ Створення звіту """
-
-    # permission check start
-    if not ('senior_driver.view_seniordriver' in request.user.get_group_permissions()):
-        raise Http404("У Вас не має прав на перегляд цієї сторінки")
-    # permission check end
 
     driver = set_driver(request.user)
     
@@ -122,12 +103,8 @@ def make_report(request):
 
 
 @login_required
+@permission_required('senior_driver.full_control', raise_exception=True)
 def make_report_fill(request):
-    # permission check start
-    if not ('senior_driver.view_seniordriver' in request.user.get_group_permissions()):
-        raise Http404("У Вас не має прав на перегляд цієї сторінки")
-    # permission check end
-
     
     machine_id_list = list(map(lambda el: int(el), request.POST.getlist('choices')))
     machines = Machine.objects.filter(id__in=machine_id_list)
@@ -157,16 +134,8 @@ def make_report_fill(request):
 
         # создать отчеты
         filled_up = set_driver(request.user)
-        report = Report.objects.create(
-            filled_up=filled_up, 
-            date=date, 
+        report = Report.objects.create(filled_up=filled_up, date=date) 
             
-            # потом удалить 
-            motohour=32, 
-            fuel=32, 
-            machine=machines[0], 
-            breakage=False)
-        
         all_info = list(zip(machines, machine_motohour_list, machine_fuel_list, machine_breakage_list, machine_breakage_info_list))
         
         for el in all_info:

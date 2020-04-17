@@ -7,6 +7,7 @@
     <div class="container-fluid">
         <h2 class="mt-4 mb-4 text-center">Звіти які не передані керівництву</h2>
         <div class="content-text">
+            {% if date_report_set %}
             {% for date_report in date_report_set%}
             <div class="card mb-4">
                 <div class="card-header">
@@ -21,7 +22,6 @@
                             <div>
                                 <form action="{% url 'engineer:unforwarded_reports' %}" method="POST">
                                     {% csrf_token %}
-                                    <input type="hidden" name="checked" value="True" />
                                     <input type="hidden" name="report_id" value="{{info.report_id}}" />
                                     <input type="submit" name="forward_report" value="Відправити звіт керівництву" class="btn_send btn btn-warning text-dark text-center">
                                 </form>
@@ -48,6 +48,9 @@
                 </div>
             </div>
             {% endfor %}
+            {% else %}
+            <p>Всі звіти передані керівництву</p>
+            {% endif %}
         </div>
     </div>
     

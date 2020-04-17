@@ -29,6 +29,7 @@ INSTALLED_APPS = [
     'engineer',
     'administrator',
     'senior_driver',
+    'main',
 ]
 
 MIDDLEWARE = [

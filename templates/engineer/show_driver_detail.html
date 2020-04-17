@@ -21,20 +21,32 @@
                 </div>
                 <div class="col-md-auto offset-1">
                     <div class="driver_reports">
-                        {% if reports_driver %}
+
                         <h3 class="mb-4">Звіти водія</h3>
+                        {% if report_set %}
                         <div class="shadow bg-white rounded my-5 p-4">
-                            {% for report in reports_driver %}
-                            <h5 class="font-weight-bold text-warning">Звіт №2</h5>
+                            
+                            {% for report in report_set %}
+                            <h5 class="font-weight-bold text-warning">Звіт №{{report.id}}</h5>
                             <p><span class="font-weight-bold">Звіт за:</span> {{ report.date }}</p>
-                            <p><span class="font-weight-bold">Машина:</span> {{ report.machine.full_name }}</p>
-                            <p><span class="font-weight-bold">Мотогодини:</span> {{ report.motohour}}</p>
-                            <p><span class="font-weight-bold">Використано бензину:</span> {{ report.fuel }}</p>
-                            {% if report.breakage %}
-                            <br>
-                            <p class="text-danger font-weight-bold">Поломка машини!</p>
-                            <p>Інформація про поломку: ---- ДОБАВИТЬ ПОЛЕ В БД ----</p>
+
+                            {% if report.data %}
+                            <table class="table">
+                                <tr>
+                                    <td class="font-weight-bold">Машина</td>
+                                    <td class="font-weight-bold">Мотогодини</td>
+                                    <td class="font-weight-bold">Використано палива</td>
+                                </tr>
+                                {% for data in report.data %}
+                                <tr>
+                                    <td>{{data.machine}}</td>
+                                    <td>{{data.motohour}}</td>
+                                    <td>{{data.fuel}}</td>
+                                </tr>
+                                {% endfor %}
+                            </table>
                             {% endif %}
+                           
                             <br>
                             <hr>
                             {% endfor %}

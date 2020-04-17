@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required, permission_required
 from django.http import Http404
 import json
 from django.db.models import Count
@@ -8,28 +9,18 @@ from engineer.models import Report, Engineer
 from senior_driver.models import SeniorDriver
 
 
-# Стартова сторінка директора
+@login_required
+@permission_required('director.full_control', raise_exception=True)
 def home_page(request):
-
-    # login and permission check start
-    if not request.user.is_authenticated:
-        return redirect('mylogin')
-    if not ('director.view_director' in request.user.get_group_permissions()):
-        raise Http404("У Вас не має прав на перегляд цієї сторінки")
-    # login and permission check end
+    """ Стартова сторінка директора """
     
     return render(request, 'director/home_page.html')
 
 
-# Звіти які передані від інженера
+@login_required
+@permission_required('director.full_control', raise_exception=True)
 def show_reports(request):
-    
-    # login and permission check start
-    if not request.user.is_authenticated:
-        return redirect('mylogin')
-    if not ('director.view_director' in request.user.get_group_permissions()):
-        raise Http404("У Вас не має прав на перегляд цієї сторінки")
-    # login and permission check end
+    """ Звіти які передані від інженера """
     
     reports = Report.objects.filter(checked=True)
     from_date = request.GET.get('from')
@@ -88,17 +79,11 @@ def show_reports(request):
     return render(request, 'director/show_reports.html', context=context)
 
 
-
-# Графіки
+@login_required
+@permission_required('director.full_control', raise_exception=True)
 def show_statistics(request):
+    """ Графіки """
 
-    # login and permission check start
-    if not request.user.is_authenticated:
-        return redirect('mylogin')
-    if not ('director.view_director' in request.user.get_group_permissions()):
-        raise Http404("У Вас не має прав на перегляд цієї сторінки")
-    # login and permission check end
-    
     reports = Report.objects.all()
     drivers = SeniorDriver.objects.all().order_by('brigade_name')
     data_report = {
@@ -196,14 +181,9 @@ def show_statistics(request):
 
 
 #### TEST STATISTICS SHOW (END) ####
+@login_required
+@permission_required('director.full_control', raise_exception=True)
 def test_show_statistics(request):
-    
-    # login and permission check start
-    if not request.user.is_authenticated:
-        return redirect('mylogin')
-    if not ('director.view_director' in request.user.get_group_permissions()):
-        raise Http404("У Вас не має прав на перегляд цієї сторінки")
-    # login and permission check end
     
     reports = Report.objects.all()
     drivers = SeniorDriver.objects.all().order_by('brigade_name')
@@ -268,15 +248,10 @@ def test_show_statistics(request):
 
 
 
-# Інформація про працівників
+@login_required
+@permission_required('director.full_control', raise_exception=True)
 def show_employees(request):
-    
-    # login and permission check start
-    if not request.user.is_authenticated:
-        return redirect('mylogin')
-    if not ('director.view_director' in request.user.get_group_permissions()):
-        raise Http404("У Вас не має прав на перегляд цієї сторінки")
-    # login and permission check end
+    """ Інформація про працівників """
 
     engineers_info = [{'avatar': eng.avatar, 'full_name': eng.full_name(), 'email': eng.user.email, 'phones': eng.phones()} for eng in Engineer.objects.all()]
     drivers_info = [{'avatar': drvr.avatar, 'brigade': drvr.brigade_name, 'full_name': drvr.full_name(), 'email': drvr.user.email, 'phones': drvr.phones()} for drvr in SeniorDriver.objects.all().order_by('brigade_name')]

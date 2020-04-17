@@ -13,12 +13,8 @@ class Command(BaseCommand):
         reports = Report.objects.all()
         reports.delete()
 
-        
-
-
-        
-
 
     def handle(self, *args, **kwargs):
-        print("Delete all report data")
+        print("\nВидалення всіх звітів")
         self.init_data()
+        print("Видалення завершено\n")

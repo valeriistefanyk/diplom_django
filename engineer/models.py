@@ -5,8 +5,6 @@ from senior_driver.models import SeniorDriver
 from machines.models import Machine
 
 
-# Create your models here.
-
 class Engineer(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
@@ -37,19 +35,14 @@ class Report(models.Model):
     updated_data = models.DateTimeField(auto_now=True)
     date = models.DateField()
 
-    motohour = models.FloatField()
-    fuel = models.FloatField()
-    machine = models.ForeignKey(Machine, on_delete=models.CASCADE)
-
-    breakage = models.BooleanField(default=False)
-
     checked = models.BooleanField(blank=True, default=False)
+    checked_by = models.ForeignKey(Engineer, on_delete=models.CASCADE, blank=True, null = True)
 
     def __str__(self):
         return f"{self.filled_up} - {self.date}"
 
 class MachineReport(models.Model):
-    """ Ьаблиця MachineReport - які машини були використані в ході робочого дня """
+    """ Таблиця MachineReport - які машини були використані в ході робочого дня """
     
     report = models.ForeignKey(Report, on_delete=models.CASCADE)
 
@@ -58,4 +51,9 @@ class MachineReport(models.Model):
     fuel = models.FloatField()
     
     breakage = models.BooleanField(default=False)
+    breakage_info = models.TextField(blank=True, null=True)
+    breakage_date_start = models.DateField(blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.report.date} - {self.machine}"
     

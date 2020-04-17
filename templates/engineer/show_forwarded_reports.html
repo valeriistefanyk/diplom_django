@@ -97,7 +97,7 @@
                         <td>{{ info.driver }} [Бригада №{{info.brigade_name}}]</td>
                         <td><ul class="hr">
                             {%for machine in info.machines %}
-                                <li>{{ machine.machine_short_name }} ({{ machine.motohour }};{{ machine.fuel }})</li>
+                                <li>{{ machine.machine_short_name }} ({{ machine.motohour }}; {{ machine.fuel }})</li>
                             {% endfor %}</ul>
                         </td>
                     </tr>

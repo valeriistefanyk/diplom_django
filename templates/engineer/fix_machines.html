@@ -23,8 +23,7 @@
                             {{breakage_machine.breakage_info}}</p>
                         <form method="POST">
                             {% csrf_token %}
-                            <input type="hidden" name="breakage" value="False">
-                            <input type="hidden" name="breakage_machine" value="{{breakage_machine.id}}">
+                            <input type="hidden" name="breakage_machine_id" value="{{breakage_machine.id}}">
                             <input type="submit" name="fix_car" value="Вивести машину з ремонту" class="btn btn-warning">
                         </form>
                     </div>

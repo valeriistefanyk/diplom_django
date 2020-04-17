@@ -7,7 +7,7 @@ class Machine(models.Model):
     
     machine = models.ForeignKey('MachineName', on_delete=models.CASCADE)
 
-    inventory_number = models.IntegerField()
+    inventory_number = models.CharField(max_length=50)
     number_machine = models.CharField(max_length=30)
     year_of_commissioning = models.DateField(blank=True, null=True)
     
@@ -24,6 +24,8 @@ class Machine(models.Model):
     breakage = models.BooleanField(default=False)
     breakage_date = models.DateField(blank=True, null=True)
     breakage_info = models.TextField(blank=True, null=True)
+    fix_date = models.DateField(blank=True, null=True)
+    fix_by = models.CharField(max_length=50, blank=True, null=True)
 
     brigade = models.ForeignKey(SeniorDriver, on_delete=models.CASCADE)
 

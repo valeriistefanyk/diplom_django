@@ -121,5 +121,5 @@ class Command(BaseCommand):
     # main file
     def handle(self, *args, **kwargs):
         print("Create csv file")
-        
-        self.read_reports_csv()
+        self.create_machine_csv()
+        # self.read_reports_csv()

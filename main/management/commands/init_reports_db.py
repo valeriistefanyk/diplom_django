@@ -16,19 +16,24 @@ class Command(BaseCommand):
             date_list.append(datetime.date.today()-datetime.timedelta(days=i))
 
         drivers = SeniorDriver.objects.all()
+        if not drivers:
+            print('Помилка ініціалізації. Спочатку виконайте команду "python manage.py init_users_perm_db"')
+            return
+        
+        machines = Machine.objects.all()
+        if not machines:
+            print('Помилка ініціалізації. Спочатку виконайте команду "python manage.py init_machines_db"')
+            return
 
         for i in range(0, len(date_list)-1):
             for driver in drivers:
                 report = Report.objects.create(
                     filled_up = driver,
                     date = date_list[i],
-                    motohour = random.randint(5, 70),
-                    fuel = round(random.uniform(20, 60), 1),
-                    machine = Machine.objects.all()[0],
                     checked = True,
                 )
 
-                concrete_machines = Machine.objects.filter(brigade=driver)[:machines_count_checkded] 
+                concrete_machines = machines.filter(brigade=driver)[:machines_count_checkded] 
                 for machine in concrete_machines:
                     MachineReport.objects.create(
                         report = report,
@@ -43,13 +48,10 @@ class Command(BaseCommand):
                 report = Report.objects.create(
                     filled_up = driver,
                     date = date_list[i],
-                    motohour = random.randint(5, 70),
-                    fuel = round(random.uniform(20, 60), 1),
-                    machine = Machine.objects.all()[0],
                     checked = False,
                 )
 
-                concrete_machines = Machine.objects.filter(brigade=driver)[:machines_count_unchecked] 
+                concrete_machines = machines.filter(brigade=driver)[:machines_count_unchecked] 
                 for machine in concrete_machines:
                     MachineReport.objects.create(
                         report = report,
@@ -60,9 +62,8 @@ class Command(BaseCommand):
                     )
 
 
-        
-
-
     def handle(self, *args, **kwargs):
-        print("Initializes data for machine model")
+        print("\nІніціалізація даних звітів...")
         self.init_data(7, 3, 3)
+        print("Ініціалізація завершена\n")
+        
