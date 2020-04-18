@@ -59,7 +59,7 @@ def show_machines(request):
     """ Машини які належать машиністу """
     
     driver = set_driver(request.user)
-    my_machines = Machine.objects.filter(brigade=driver)
+    my_machines = Machine.objects.filter(brigade=driver).select_related('machine')
     
     context = {
         'my_machines': my_machines.filter(breakage=False),

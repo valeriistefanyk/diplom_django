@@ -166,7 +166,7 @@ def show_forwarded_reports(request):
 def show_drivers(request):
     """ Старші водії """
 
-    drivers = SeniorDriver.objects.all().order_by('brigade_name')
+    drivers = SeniorDriver.objects.all().order_by('brigade_name').select_related('user')
     context = {
         'drivers': drivers
     }
@@ -224,7 +224,6 @@ def show_fix_machines(request):
         machine.fix_by = engineer.full_name()
         
         machine.save()
-        print(machine)
 
     breakage_machines = Machine.objects.filter(breakage=True).order_by('-brigade')
     context = {

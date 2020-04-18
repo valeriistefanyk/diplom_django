@@ -56,4 +56,7 @@ class MachineReport(models.Model):
 
     def __str__(self):
         return f"{self.report.date} - {self.machine}"
+
+    def machine_name(self):
+        return f"{self.machine.full_name()}"
     

@@ -22,7 +22,7 @@ def home_page(request):
 def show_reports(request):
     """ Звіти які передані від інженера """
     
-    reports = Report.objects.filter(checked=True)
+    reports = Report.objects.filter(checked=True).select_related('filled_up', 'filled_up__user')
     from_date = request.GET.get('from')
     to_date = request.GET.get('to')
 
@@ -40,7 +40,7 @@ def show_reports(request):
     reports_date = reports.values('date').annotate(total=Count('id'))
     for report_date in reports_date:
         date = report_date['date'].strftime("%Y-%m-%d")
-        queryset_rep = reports.filter(date=date).select_related('filled_up')
+        queryset_rep = reports.filter(date=date)
         reports_set = []
         for query in queryset_rep:
             report_id = query.id
@@ -85,7 +85,7 @@ def show_statistics(request):
     """ Графіки """
 
     reports = Report.objects.all()
-    drivers = SeniorDriver.objects.all().order_by('brigade_name')
+    drivers = SeniorDriver.objects.all().order_by('brigade_name').select_related('user')
     data_report = {
         'names': drivers.values_list('brigade_name', flat=True)
     }
@@ -252,9 +252,11 @@ def test_show_statistics(request):
 @permission_required('director.full_control', raise_exception=True)
 def show_employees(request):
     """ Інформація про працівників """
+    engineer = Engineer.objects.all().select_related('user')
+    drivers = SeniorDriver.objects.all().order_by('brigade_name').select_related('user')
 
-    engineers_info = [{'avatar': eng.avatar, 'full_name': eng.full_name(), 'email': eng.user.email, 'phones': eng.phones()} for eng in Engineer.objects.all()]
-    drivers_info = [{'avatar': drvr.avatar, 'brigade': drvr.brigade_name, 'full_name': drvr.full_name(), 'email': drvr.user.email, 'phones': drvr.phones()} for drvr in SeniorDriver.objects.all().order_by('brigade_name')]
+    engineers_info = [{'avatar': eng.avatar, 'full_name': eng.full_name(), 'email': eng.user.email, 'phones': eng.phones()} for eng in engineer]
+    drivers_info = [{'avatar': drvr.avatar, 'brigade': drvr.brigade_name, 'full_name': drvr.full_name(), 'email': drvr.user.email, 'phones': drvr.phones()} for drvr in drivers]
 
     context = {
         'engineers': engineers_info,
