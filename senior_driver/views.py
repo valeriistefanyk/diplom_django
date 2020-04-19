@@ -152,6 +152,7 @@ def make_report_fill(request):
             machine.save()
             MachineReport.objects.create(
                 report = report,
+                name = el[0].name,
                 machine = el[0],
                 motohour = el[1],
                 fuel = el[2],

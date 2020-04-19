@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required, permission_required
 from django.http import Http404
+from django.db.models import Q, Sum
 from django.db.models import Count
 
 from engineer import models
@@ -35,41 +36,33 @@ def show_unforwarded_reports(request):
 
     reports_unforwarded = models.Report.objects.filter(checked=False).order_by('date')
 
-    machines_all = Machine.objects.values('id', 'machine__name', 'number_machine', 'inventory_number', 'breakage', 'breakage_info', 'fix_date')
     date_report_set = []
     reports_date = reports_unforwarded.values('date').annotate(total=Count('id'))
     for report_date in reports_date:
         date = report_date['date'].strftime("%Y-%m-%d")
-        queryset_rep = reports_unforwarded.filter(date=date).select_related('filled_up')
+        queryset_rep = reports_unforwarded.filter(date=date).select_related('filled_up', 'filled_up__user')
         reports_set = []
         for query in queryset_rep:
             report_id = query.id
             driver = query.filled_up.full_name()
             brigade_name = query.filled_up.brigade_name
             machines = []
-            for machine in query.machinereport_set.values():
-                m = machines_all.get(id=machine['machine_id'])
-                machine_short_name =  f"{m['machine__name']} #{m['number_machine']}"
-                machine_full_name =  f"{m['machine__name']} #{m['number_machine']} [IN{m['inventory_number']}]"
+            for machine in query.machinereport_set.values('name', 'fuel', 'motohour', 'breakage', 'breakage_info'):
+                name = machine['name']
                 fuel = machine['fuel']
                 motohour = machine['motohour']
                 
-                breakage_from_report = machine['breakage']
-                if breakage_from_report:
-                    breakage = "Є поломка"
-                    if not m['breakage']:
-                        breakage += f"<br>Оновлення: машина була починена {m['fix_date']}"
-                    elif m['breakage_info']:
-                        breakage += f"<br>Інформація: {m['breakage_info']}"
+                breakage = "Є поломка" if machine['breakage'] else "Поломок не було"
+                if breakage == "Є поломка":
+                    if machine['breakage_info']:
+                        breakage += f"<br>Інформація: {machine['breakage_info']}"
                     else:
                         breakage = f"<br>Інформація про поломку відсутня"
-                else:
-                    breakage = "Поломки не було"
                         
                 
                 machines_info = {
-                    'machine_short_name': machine_short_name,
-                    'machine_full_name': machine_full_name,
+                    'machine_short_name': name,
+                    'machine_full_name': name,
                     'fuel': fuel,
                     'motohour': motohour,
                     'breakage': breakage,
@@ -111,7 +104,6 @@ def show_forwarded_reports(request):
         radio = False
     
 
-    machines_all = Machine.objects.values('id', 'machine__name', 'number_machine', 'inventory_number', 'breakage_info')
     date_report_set = []
     reports_date = reports_forwarded.values('date').annotate(total=Count('id'))
     for report_date in reports_date:
@@ -123,22 +115,21 @@ def show_forwarded_reports(request):
             driver = query.filled_up.full_name()
             brigade_name = query.filled_up.brigade_name
             machines = []
-            for machine in query.machinereport_set.values():
-                m = machines_all.get(id=machine['machine_id'])
-                machine_short_name =  f"{m['machine__name']} #{m['number_machine']}"
-                machine_full_name =  f"{m['machine__name']} #{m['number_machine']} [IN{m['inventory_number']}] "
+            for machine in query.machinereport_set.values('name', 'fuel', 'motohour', 'breakage', 'breakage_info'):
+                
+                name = machine['name']
                 fuel = machine['fuel']
                 motohour = machine['motohour']
                 breakage = "Є поломка" if machine['breakage'] else "Поломок не було"
                 if breakage == "Є поломка":
-                    if m['breakage_info']:
-                        breakage += f"<br>Інформація: {m['breakage_info']}"
+                    if machine['breakage_info']:
+                        breakage += f"<br>Інформація: {machine['breakage_info']}"
                     else:
                         breakage = f"<br>Інформація про поломку відсутня"
                 
                 machines_info = {
-                    'machine_short_name': machine_short_name,
-                    'machine_full_name': machine_full_name,
+                    'machine_short_name': name,
+                    'machine_full_name': name,
                     'fuel': fuel,
                     'motohour': motohour,
                     'breakage': breakage,
@@ -178,22 +169,23 @@ def show_drivers(request):
 def show_drivers_detail(request, username):
     """ Деталбна інформація про водія """
 
-    driver = get_object_or_404(SeniorDriver, user__username=username)
-    reports_driver = models.Report.objects.filter(filled_up=driver)
-    machines_driver = models.Machine.objects.filter(brigade=driver)
-    report_set = []
+    driver = SeniorDriver.objects.select_related('user').get(user__username=username)
+    
+
+    reports_driver = models.Report.objects.filter(filled_up=driver).values('id', 'date')
+    machine_reports_all = MachineReport.objects.filter(Q(report_id__in = [o["id"] for o in reports_driver])).values('name', 'fuel', 'motohour','breakage', 'breakage_info', 'report_id')
+
+    
     for report in reports_driver:
-        machine_reports = MachineReport.objects.filter(report=report)
-        data = []
-        for machine_report in machine_reports:
-            data.append({'machine': machine_report.machine, 'motohour': machine_report.motohour, 'fuel': machine_report.fuel})
-        report_set.append({'id': report.id, 'date': report.date, 'data': data})
+        report["machines"] = []
+        for machine_report in machine_reports_all.filter(report_id=report["id"]):
+            report["machines"].append({'machine': machine_report["name"], 'motohour': machine_report["motohour"], 'fuel': machine_report["fuel"]})
 
 
     context = {
         'driver': driver,
         'reports_driver': reports_driver,
-        'report_set': report_set, 
+        'report_set': reports_driver, 
     }
     return render(request, 'engineer/show_driver_detail.html', context)
 

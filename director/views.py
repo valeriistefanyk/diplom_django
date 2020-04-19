@@ -34,7 +34,6 @@ def show_reports(request):
     
 
 
-    machines_all = Machine.objects.values('id', 'machine__name', 'number_machine', 'inventory_number', 'breakage_info')
     # попробуем сортировку по дням (начало кода)
     date_report_set = []
     reports_date = reports.values('date').annotate(total=Count('id'))
@@ -48,17 +47,15 @@ def show_reports(request):
             brigade_name = query.filled_up.brigade_name
             machines = []
             for machine in query.machinereport_set.values():
-                m = machines_all.get(id=machine['machine_id'])
-                machine_short_name =  f"{m['machine__name']} #{m['number_machine']}"
-                machine_full_name =  f"{m['machine__name']} #{m['number_machine']} [IN{m['inventory_number']}] "
+                name =  machine["name"]
                 fuel = machine['fuel']
                 motohour = machine['motohour']
                 breakage = "True" if machine['breakage'] else "False"
-                breakage_info = m['breakage_info'] if m['breakage_info'] else ''
+                breakage_info = machine['breakage_info'] if machine['breakage_info'] else ''
                 
                 machines_info = {
-                    'machine_short_name': machine_short_name,
-                    'machine_full_name': machine_full_name,
+                    'machine_short_name': name,
+                    'machine_full_name': name,
                     'fuel': fuel,
                     'motohour': motohour,
                     'breakage': breakage,

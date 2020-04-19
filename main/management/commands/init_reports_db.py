@@ -35,15 +35,17 @@ class Command(BaseCommand):
 
                 concrete_machines = machines.filter(brigade=driver)[:machines_count_checkded] 
                 for machine in concrete_machines:
-                    MachineReport.objects.create(
+                    machine_report = MachineReport.objects.create(
                         report = report,
                         machine = machine,
+                        name = machine.short_name(),
                         motohour = random.randint(5, 70),
                         fuel = round(random.uniform(20, 60), 1),
                         breakage = False
                     )
                     machine.last_used_data = date_list[i]
                     machine.save()
+                    
 
         for i in range(len(date_list)-1, len(date_list)):
             for driver in drivers:
@@ -58,6 +60,7 @@ class Command(BaseCommand):
                     MachineReport.objects.create(
                         report = report,
                         machine = machine,
+                        name = machine.short_name(),
                         motohour = random.randint(5, 70),
                         fuel = round(random.uniform(20, 60), 1),
                         breakage = False

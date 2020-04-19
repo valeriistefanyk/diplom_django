@@ -30,14 +30,14 @@
                             <h5 class="font-weight-bold text-warning">Звіт №{{report.id}}</h5>
                             <p><span class="font-weight-bold">Звіт за:</span> {{ report.date }}</p>
 
-                            {% if report.data %}
+                            {% if report.machines %}
                             <table class="table">
                                 <tr>
                                     <td class="font-weight-bold">Машина</td>
                                     <td class="font-weight-bold">Мотогодини</td>
                                     <td class="font-weight-bold">Використано палива</td>
                                 </tr>
-                                {% for data in report.data %}
+                                {% for data in report.machines %}
                                 <tr>
                                     <td>{{data.machine}}</td>
                                     <td>{{data.motohour}}</td>

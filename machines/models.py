@@ -6,6 +6,8 @@ class Machine(models.Model):
     """Опис колійних машин"""
     
     machine = models.ForeignKey('MachineName', on_delete=models.CASCADE)
+    
+    name = models.CharField(max_length=50, blank=True, null=True)
 
     inventory_number = models.CharField(max_length=50)
     number_machine = models.CharField(max_length=30)

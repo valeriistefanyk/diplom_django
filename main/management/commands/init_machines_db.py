@@ -29,10 +29,13 @@ class Command(BaseCommand):
     def init_machines(self):
 
         data_machines = read_csv(filename='machines')
+        machinenames = MachineName.objects.all()
         for element in data_machines:
+            
             machine = Machine.objects.create(
                 id=element["id"], 
                 machine_id=element["machine_id"],
+                name= machinenames.get(pk=element["machine_id"]).name,
                 inventory_number=element["inventory_number"],
                 number_machine=element["number_machine"],
                 brigade_id=element["brigade_id"],

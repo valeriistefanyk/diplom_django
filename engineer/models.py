@@ -47,6 +47,9 @@ class MachineReport(models.Model):
     report = models.ForeignKey(Report, on_delete=models.CASCADE)
 
     machine = models.ForeignKey(Machine, on_delete=models.CASCADE)
+    
+    name = models.CharField(max_length=200, blank=True)
+    
     motohour = models.FloatField()
     fuel = models.FloatField()
     
