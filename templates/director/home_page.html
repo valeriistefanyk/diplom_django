@@ -4,44 +4,27 @@
 
     <div class="container-fluid">
         <h1 class="mt-4 text-center">Головна</h1>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Laudantium tempore tenetur harum minus
-            temporibus possimus, error quisquam repellat numquam nostrum aliquid? Molestias laborum mollitia
-            voluptatum, inventore sed voluptatem adipisci perferendis. Ratione sit cum dignissimos qui vitae,
-            doloremque aperiam itaque, ipsa exercitationem unde accusantium dolorum in animi, culpa rerum ea
-            expedita dolores explicabo deleniti laboriosam voluptatem! Facilis ipsa, id amet consectetur incidunt
-            numquam culpa impedit dolorem voluptatem illum tempora sequi recusandae harum dolore, laudantium error
-            iure praesentium fugiat. Obcaecati sequi corporis dolores magni consequatur itaque quo earum. Corporis
-            harum debitis ipsam magnam, eaque autem, hic quisquam nam neque maiores iure! Cupiditate voluptatem
-            dignissimos earum. Doloribus fugit quod natus libero aut. Animi, quas est neque, possimus laborum
-            commodi eligendi totam, amet dolorem accusamus recusandae beatae nulla in facere modi repellendus
-            laudantium culpa. Rem aperiam possimus non, est eos explicabo esse vitae iste? Eaque laborum dicta
-            accusamus aut, animi ullam distinctio itaque iure ducimus, debitis cupiditate ex suscipit optio omnis
-            quod necessitatibus assumenda, nam praesentium amet fugiat! Recusandae aperiam quaerat nesciunt maiores
-            laborum eum quis porro, hic nobis facere harum quia cumque impedit, laboriosam accusantium facilis
-            explicabo nihil rem reprehenderit inventore earum maxime quam architecto autem? Adipisci aperiam
-            distinctio officiis! Eum expedita minus eius qui blanditiis fugiat nisi aliquam alias minima, sint odit
-            similique nihil adipisci praesentium doloribus enim possimus velit non aliquid a? Dolor consequatur,
-            impedit, accusamus veniam aliquid quam id iste non quia commodi, tenetur est qui molestias nam. Non eius
-            veniam distinctio repellat totam! Quisquam ea similique impedit tempore inventore rem quo possimus ex
-            minus eum. Illo, repellendus. Alias vitae maiores ea quos libero quia eos earum error culpa repellendus
-            odit, delectus ab reprehenderit voluptatibus asperiores aperiam aut, minima quam voluptates sed odio
-            nihil! Culpa quia perspiciatis quidem, nesciunt similique id repellat aliquam quos eveniet quae voluptas
-            numquam. Harum, nisi nobis totam quod ratione, quas sit dolores laboriosam libero aliquam nihil,
-            doloremque hic officiis unde voluptatem amet exercitationem sequi voluptas aperiam deserunt beatae!
-            Nulla reiciendis accusantium blanditiis nihil repellendus in repellat, perspiciatis, at provident qui
-            non culpa earum eligendi architecto, alias voluptas incidunt vel. Voluptatibus provident quisquam magni
-            numquam vitae consequatur rem cum soluta repudiandae excepturi quidem architecto quaerat, corrupti earum
-            tenetur vero blanditiis, mollitia eum possimus. Sunt, exercitationem inventore omnis praesentium
-            explicabo rem cum incidunt dolor blanditiis repellat labore cumque itaque tempora recusandae in eaque
-            officiis quis nulla beatae enim sed! Voluptatum vitae similique impedit voluptas dolores iusto qui nemo
-            cupiditate animi assumenda sit nesciunt rerum fuga, amet neque aliquid enim adipisci repellendus harum
-            aspernatur mollitia placeat iure atque! Aliquam ut autem totam deserunt dolorem saepe maiores labore
-            illo, fuga tempora possimus consectetur ad incidunt et laborum tempore id provident fugit adipisci! Quod
-            quia voluptatibus pariatur sit et necessitatibus voluptate officia, accusantium asperiores, laboriosam,
-            repudiandae quis illo tempore nostrum! Quas, ad? Similique itaque minus repudiandae expedita
-            voluptatibus, sint at nihil quibusdam obcaecati rem quod dicta. Earum illum necessitatibus modi dolores
-            aspernatur, quia, minus quod exercitationem veniam quas voluptatum quos reprehenderit dolor magni
-            voluptate ad error id iure delectus at!</p>
+        <ul class="alert">
+            <li>
+                <p>У вкладці <a href="{% url 'director:reports' %}">Звіти</a> знаходяться інформація про звіти, які були створені старшими машиністами та передані головним інженером.<br/>
+                   
+                <p>
+            </li>
+            <li><p>
+            У вкладці <a href="{% url 'director:statistics'%}">"Статистика"</a> знаходиться інформація про якість роботи машиністів. 
+            Дані у вигляді графік з можливістю налаштування даних які будуть відображатись.
+        </p>
+            </li>
+            <li><p>
+                Вкладка <a href="{% url 'director:employees'%}">"Працівники"</a> містить інформацію про головних інженерів та старших машиністів, 
+                номера телефонів, email-адреси та детальну інформацію про кожного з них. 
+            </p></li>
+            <li><p>
+                Вкладка <a href="{% url 'director:all-machines'%}">"Всі машини"</a> містить інформацію про всі  машини які є у фірми. 
+                Можна подивитись детальну інформацію про конкретну машину, знайти необхідну машину за назвою або інвентарному номеру, або номеру машини. 
+                А також подивитись опис, вигляд, прзначення різних колійних машин. 
+            </p></li>
+        </ul>
     </div>
 {% endblock content_page %}
 

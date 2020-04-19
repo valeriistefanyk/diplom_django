@@ -3,30 +3,43 @@
 {% block title %}All machines{% endblock %}
 
 {% block content %}
+    <div class="back"><input type="button" class="btn btn-primary" onclick='history.back();' value="Назад"></div>
+    <div class="container alert">
+        <h2 class="text-center alert">Опис всіх наявних машин</h2>
+        <div>
+        {% if machines %}
 
-    {% if machines %}
-    <table class="table">
-        <tr>
-            <td>Назва машини</td>
-            <td>Опис</td>
-            <td>Кількість машин</td>
-            <td>Вигляд</td>
-            
-        </tr>
-        {% for machine in machines %}
-        <tr>
-            <td>{{ machine.name }}</td>
-            <td>{{ machine.description }}<br><br>
-                <a href="#" >Інформація про машини</a>
-            </td>
-            <td>{{ machine.machine_set.count }}</td>
-            <td><img width="200px" src="{{ machine.image.url }}" alt="{{ machine.name }}"> </td>
-        </tr>
-        {% endfor %}
-    </table>
-    {% else %}
-        <p>NO MACHINES LIST</p>
-    {% endif %}
-    <br><br>
+        <table class="table">
+            <tr>
+                <td>Назва машини</td>
+                <td>Опис</td>
+                <td>Кількість машин</td>
+                <td>Вигляд</td>
+                
+            </tr>
+            {% for machine in machines %}
+            <tr>
+                <td>{{ machine.name }}</td>
+                <td>{{ machine.description }}<br><br>
+                    <!-- <a href="#" >Інформація про машини</a> -->
+                </td>
+                <td>{{ machine.machine_set.count }}</td>
+                <td><img width="200px" src="{{ machine.image.url }}" alt="{{ machine.name }}"> </td>
+            </tr>
+            {% endfor %}
+        </table>
+        {% else %}
+            <p>NO MACHINES LIST</p>
+        {% endif %}
+    
+    </div></div>
+    <style>
+        .back {
+            position: absolute; 
+            top: 20px; 
+            left: 100px; 
+            line-height: 1px;
+           }
+    </style>    
 
 {% endblock %}

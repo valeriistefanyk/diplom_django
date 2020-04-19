@@ -1,12 +1,15 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required, permission_required
 from django.http import Http404
-import json
+from django.db.models import Q
 from django.db.models import Count
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
-from machines.models import Machine
+from machines.models import Machine, MachineName
 from engineer.models import Report, Engineer
 from senior_driver.models import SeniorDriver
+
+import json
 
 
 @login_required
@@ -262,6 +265,30 @@ def show_employees(request):
     return render(request, 'director/employees.html', context)
 
 
+@login_required
+@permission_required('director.full_control', raise_exception=True)
+def all_machines(request):
+    
+    machiness = Machine.objects.all()
+    query = request.GET.get('q')
+    if query:
+        machiness = machiness.filter(
+            Q(machine__name__icontains=query) | Q(inventory_number__icontains=query) |
+            Q(number_machine__icontains=query)
+        ).distinct()
+    paginator = Paginator(machiness, 10)
+    page = request.GET.get('page')
+    try:
+        machines = paginator.page(page)
+    except EmptyPage:
+        machines = paginator.page(paginator.num_pages)
+    except PageNotAnInteger:
+        machines = paginator.page(1)
+
+    context = {
+        'machines': machines
+    }
+    return render(request, 'director/machines.html', context=context)
 
 
 # ПРАВИЛЬНА ДАТА

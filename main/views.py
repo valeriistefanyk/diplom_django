@@ -5,24 +5,14 @@ from django.http import HttpResponse
 from main._helper_func import _whoisit, _status
 
 
-# request is django.core.handlers.wsgi.WSGIRequest class
 def home(request):
-    return render(request, 'main/home.html')
-
-
-
-def mylogin(request):
 
     user = request.user
     context = {}
-    # login and permission check start
-    if request.user.is_authenticated:
-        return redirect_on_right_page(request, user)
+    
+    if request.POST.get('entrance'):
+        return redirect_on_right_page(request, request.user)
 
-
-    context = {
-        'message': ''
-    }
     if request.method == 'POST':
 
         utxt = request.POST.get('username')
@@ -32,18 +22,20 @@ def mylogin(request):
             
             this_user = authenticate(username=utxt, password=ptxt)
             if this_user != None:
-                login(request, this_user)
+                login_user = login(request, this_user)
                 return redirect_on_right_page(request, this_user)
 
             context['message'] = 'Не правильний логін або пароль!'
 
-    return render(request, 'main/login.html', context)
+
+    return render(request, 'main/home.html', context)
+
 
 
 def mylogout(request):
 
     logout(request)
-    return redirect('mylogin')
+    return redirect('/')
 
 
 ### допоможні методи ###

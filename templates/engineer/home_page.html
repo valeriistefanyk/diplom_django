@@ -3,47 +3,37 @@
 {% block content_page %}
 
         <div class="container-fluid">
-            <h1 class="mt-4 text-center">Головна</h1>
+            <h1 class="mt-4 text-center">Головна сторінка інженера</h1>
             <div class="content-text">
-                <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Dicta a perspiciatis ducimus illo veniam
-                    quas eaque, facilis commodi minus aperiam nemo consequuntur reiciendis ipsam vel alias officia esse
-                    animi repudiandae repellat. Obcaecati esse officia possimus, commodi accusamus quos? Velit,
-                    architecto ipsum vel labore aut hic mollitia nesciunt eaque saepe voluptatum porro, maxime alias. Ad
-                    cum repellat rerum? Quisquam nisi dolores itaque officia, ut harum. Perspiciatis veritatis, sapiente
-                    officiis nam odio omnis ab voluptatem nobis quia aperiam qui, eveniet optio in nesciunt commodi
-                    cumque sit. Quos totam, cupiditate, nam dolorum aspernatur suscipit assumenda ea, ducimus officiis
-                    quis fugit quam! Neque veritatis laborum natus obcaecati aliquid deserunt itaque autem sunt,
-                    maiores, minus animi, aut iure? Veniam eius alias, nisi quasi nemo quas harum corporis a dignissimos
-                    optio odio. Ex sint nesciunt facilis debitis necessitatibus at tenetur nobis, dolores sapiente, in
-                    voluptas pariatur! Recusandae error iste velit sapiente eius, totam asperiores, adipisci consequatur
-                    enim autem laboriosam nisi quia dolorem! Nobis repellat quidem tempora. Consequuntur temporibus
-                    aliquam inventore eum, consectetur obcaecati in asperiores hic nemo distinctio qui nesciunt harum
-                    quis quas nisi facere repudiandae accusamus. Minima natus ab consequuntur eligendi! Accusamus rem
-                    culpa, perferendis nemo quae repellendus natus id nulla, sed ullam earum amet accusantium magnam
-                    vitae soluta aperiam, molestiae doloremque voluptatem possimus assumenda facilis esse. Harum illo
-                    dignissimos enim eveniet totam mollitia soluta pariatur id, illum ad porro, dolorum quo nobis
-                    tenetur? Cumque recusandae accusamus temporibus aliquam nesciunt iste, amet iusto provident at
-                    reprehenderit ullam reiciendis animi hic ad suscipit eius optio quis. Rem asperiores, tempore
-                    possimus at, dolorem ab consequuntur ratione molestias repellat voluptatem quae et, quos atque hic
-                    cupiditate! Quibusdam labore ducimus explicabo numquam asperiores! Cupiditate, facilis nostrum
-                    accusantium adipisci velit illo asperiores, harum, corrupti eveniet quis animi dicta earum
-                    consectetur neque ut? Harum maiores, aut voluptate explicabo quo expedita vel illum autem enim
-                    deserunt blanditiis molestiae reiciendis, iure voluptatem deleniti quasi nobis perspiciatis sit
-                    perferendis aspernatur quas esse eaque laborum dignissimos. Dolorem cumque, totam beatae tempore
-                    repellendus, ad voluptate fugit earum eius aspernatur incidunt, molestiae illo unde ratione minus
-                    dicta voluptatum? Soluta perferendis quasi amet ipsum expedita vel nobis itaque magnam, quaerat
-                    error repudiandae reiciendis aperiam quis dicta? Quibusdam eos fugit officia sunt illum ipsa
-                    deleniti, reiciendis delectus veniam atque ratione tempora a debitis recusandae, non mollitia dolor
-                    consequatur autem quia temporibus voluptates rem aliquid quo ad. Aliquid nam velit consequuntur.
-                    Aspernatur debitis nam sed reiciendis ab dignissimos natus assumenda minima fugiat? Esse maiores
-                    unde magni quasi nemo tempore, similique sint odit ex blanditiis ullam, labore doloremque fugit ab
-                    non veritatis saepe ducimus quod sed delectus! Tempora alias eveniet autem fugit aliquam unde, ex
-                    ducimus facilis aperiam sapiente necessitatibus, tempore quasi illum at dicta et corrupti odio
-                    consectetur saepe rerum consequuntur, quas enim quam culpa. Sunt voluptate dicta enim reiciendis,
-                    voluptatibus hic. Impedit ab, dicta rem voluptas doloremque sequi accusamus, ipsam nulla
-                    voluptatibus officiis consequuntur facere, quod voluptate pariatur reprehenderit molestias ratione?
-                    Hic incidunt ullam minus modi molestias consequatur sint ipsa quaerat reprehenderit eveniet.
-                    Suscipit voluptatem ex id facere temporibus.</p>
+                <p class="alert">Основна функція програми для інженера - перевірка звітів, які надійшли від старшого водія і після перевірки передати звіт директору</p>
+                <ul class="alert">
+                    <li>
+                        <p>У вкладці <a href="{% url 'engineer:unforwarded_reports' %}">Невідправлені звіти</a> знаходяться звіти, які прийли від старших машиністів та ще не передані керівництву<br/>
+                            Після ознайомлення зі звітом Ви можете відправити їх керівництву. Якщо є якісь деталі - треба зв'язатись зі старшим машиністом, який заповнював звіт.</p>
+                        <p>
+                    </li>
+                    <li><p>
+                    У вкладці <a href="{% url 'engineer:forwarded_reports'%}">"Відправлені звіти"</a> знаходяться всі звіти, які були передані керівництву.
+                </p>
+                    </li>
+                    <li><p>
+                        Вкладка <a href="{% url 'engineer:drivers'%}">"Старші машиністи"</a> містить інформацію про старших машиністів, 
+                        номера телефонів, email-адреси та детальну інформацію про кожного з них 
+                    </p></li>
+                    <li><p>
+                        Вкладка <a href="{% url 'engineer:fix_machines'%}">"Інформація про ремонт машини"</a> містить машини, які у даний момент часу знаходяться в ремонтному цеху.
+                        Коли з'являється Інформація про відремонтування машини, Вам потрібно вивести машину з ремонту.
+                    </p></li>
+                    <li><p>
+                        Вкладка <a href="{% url 'engineer:work_days'%}">"Графік роботи"</a> містить деяку Вашу інформацію, графік виходу на роботу, 
+                        телефони та email-адреси для зв'язку зі старшими машиністами і директором  
+                    </p></li>
+                    <li><p>
+                        Вкладка <a href="{% url 'engineer:all-machines'%}">"Всі машини"</a> містить інформацію про всі  машини які є у фірми. 
+                        Можна подивитись детальну інформацію про конкретну машину, знайти необхідну машину за назвою або інвентарному номеру, або номеру машини. 
+                        А також подивитись опис, вигляд, прзначення різних колійних машин. 
+                    </p></li>
+                </ul>
             </div>
         </div>
 {% endblock content_page %}

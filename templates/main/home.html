@@ -1,58 +1,101 @@
-{% extends 'base.html' %}
 {% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Track machines app</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	
+<!--===============================================================================================-->
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+	<link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@600&display=swap" rel="stylesheet">
+	<link rel="stylesheet" type="text/css" href="{% static 'css/home_page.css' %}">
+<!--===============================================================================================-->
+</head>
+<body>
+	
+	<div class="limiter">
+		<div class="container-login100">
+			<div class="wrap-login100">
+				<div class="login100-pic text-center p-b-136">
+					<h2 class="text-warning" style="letter-spacing: 3px;"> TRACK MACHINES APP</h2><br>
+					<h3 class="card-title pt-2"><strong>Про програму:</strong></h3><br>
+					<p>Автоматизоване робоче місце для співробітників керуючих колійними машинами.<br>
+						Програма призначена для полегшення ведення звітності на фірмі. Доступ до програми мають директор, 
+						головні інженери та старші машиністи. Особистий кабінет і функції у групи користувачів різні.
+						Для входу особистий кабінет, введіть логін та пароль  
+				  </p><br>
+					<h3 class="card-title pt-2"><strong>Контакти:</strong></h3>
+					<a href="mailto:valeriistefanyk@gmail.com">Email: valeriistefanyk@gmail.com</a>
+					<br>
+					
+				</div>
 
-{% block add_head_link %}
-  <link rel="stylesheet" href="{% static 'css/mdb.min.css' %}">
-{% endblock add_head_link %}
+				{% if user.is_authenticated %}
+				<div class="login100-pic text-center p-b-136">
+					<h2 class="text-warning info" style="letter-spacing: 3px;">З поверненням, {{user.first_name}}!</h2><br>
+					<br>
+					<h3 class="card-title pt-2 info"><strong>Ваші дані для входу збережені<br>
+						Для входу в особистий кабінет натисніть "Увійти"<br/>
+						</strong></h3><br>
+					<br>
+					<form action="/" method="POST">
+						{% csrf_token %}
+						<input type="submit" class="login100-form-btn" name="entrance" value="Увійти в кабінет">
+					</form>
+					<br><br>
+					<p class="info">
+						<a href="/logout/">вийти з акаунту</a>
+					</p>
+				</div>
+				{% else %}
+				<form class="login100-form validate-form" action="/" method="POST">
+					{% csrf_token %}
+					<span class="login100-form-title">
+						Увійти до кабінету
+					</span>
+					{% if message %}
+					<p style="text-align:center; color:red;" class="center">{{ message }}</p><br/>
+					{% endif %}
+					<div class="wrap-input100 validate-input">
+						<input class="input100" type="text" name="username" placeholder="Логін">
+						<span class="focus-input100"></span>
+						<span class="symbol-input100">
+							<i class="fa fa-user" aria-hidden="true"></i>
+						</span>
+					</div>
 
-{% block title %}Railway Machines{% endblock %}
+					<div class="wrap-input100 validate-input">
+						<input class="input100" type="password" name="password" placeholder="Пароль">
+						<span class="focus-input100"></span>
+						<span class="symbol-input100">
+							<i class="fa fa-lock" aria-hidden="true"></i>
+						</span>
+					</div>
+					<input type="hidden" name="next" value="{{ request.GET.next }}"/>
+					<div class="container-login100-form-btn">
+						<button class="login100-form-btn">
+							Увійти
+						</button>
+					</div>
+					
+					</div>
+				</form>
+				{% endif %}
+			</div>
+		</div>
+	</div>
+	
 
-{% block content %}
-
-<div class="card card-image"
-  style="background-image: url('/media/static_img/back_train.jpg'); background-size: cover; height: 100vh;">
-
-  <!-- Content -->
-  <div class="mask flex-center rgba-black-strong">
-    <div class="col">
-      <div class="text-white text-center align-items-center py-5 px-4">
-        <div>
-          <h5 class="text-warning" style="letter-spacing: 3px;"> TRACK MACHINES APP</h5>
-          <h3 class="card-title pt-2"><strong>О программе:</strong></h3>
-          <p>Автоматизоване робоче місце для співробітників керуючих колійними машинами.<br>
-            Для входу в кабінет натисніть кнопку "Увійти". Якщо ви раніше входили в систему, повторна авторизація не потрібна. 
-            В інакшому випадку Вам потрібно буде вести логін та пароль   
-        </p>
-          <h3 class="card-title pt-2"><strong>Контакты:</strong></h3>
-          <a href="vmmcore1@gmail.com">Email: vmmcore1@gmail.com</a>
-          <br>
-          <a href="#"><i class="fab fa-github fa-2x m-2 cyan-text"></i></a>
-          <a href="#"><i class="fab fa-viber fa-2x m-2 indigo-text"></i></a>
-
-            </div>
-      </div>
-    </div>
-    <div class="col">
-      <div class="text-white text-center align-items-center py-5 px-4">
-        <div>
-          <h5 class="text-warning"> VMM Core</h5>
-          <h3 class="card-title pt-2"><strong>Головна</strong></h3>
-
-          {% if user.is_authenticated %}
-            <p>Добрий день, {% if user.first_name %}{{ user.first_name }}{% else %}{{ user.username }}{% endif %}</p>
-          {% else %}
-            <p>Ви не авторизовані, увійдіть у власний акаунт</p>
-          {% endif %}
-          <a class="btn btn-warning mt-4" href="{% url 'mylogin' %}">Увійти</a>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
+</body>
 <style>
-  body {
-    overflow: hidden;
-  }
+	.p-t-136 {padding-top: 136px;}
+	.p-b-136 {padding-bottom: 136px;}
+	.container-login100{
+		background-image: url("{% static 'images/background_dark.jpg'%}");
+	}
+	.info{
+		text-align: center;
+	}
 </style>
-{% endblock %}
-
+</html>

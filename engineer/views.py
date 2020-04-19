@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.http import Http404
 from django.db.models import Q, Sum
 from django.db.models import Count
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from engineer import models
 from machines.models import Machine
@@ -222,6 +223,32 @@ def show_fix_machines(request):
         'breakage_machines': breakage_machines
     }
     return render(request, 'engineer/fix_machines.html', context)
+
+
+@login_required
+@permission_required('engineer.full_control', raise_exception=True)
+def all_machines(request):
+    
+    machiness = models.Machine.objects.all().values('name', 'number_machine', 'inventory_number', 'id')
+    query = request.GET.get('q')
+    if query:
+        machiness = machiness.filter(
+            Q(name__icontains=query) | Q(inventory_number__icontains=query) |
+            Q(number_machine__icontains=query)
+        ).distinct()
+    paginator = Paginator(machiness, 10)
+    page = request.GET.get('page')
+    try:
+        machines = paginator.page(page)
+    except EmptyPage:
+        machines = paginator.page(paginator.num_pages)
+    except PageNotAnInteger:
+        machines = paginator.page(1)
+
+    context = {
+        'machines': machines
+    }
+    return render(request, 'engineer/machines.html', context=context)
 
 
 # ПРАВИЛЬНА ДАТА

@@ -3,11 +3,12 @@
 {% block title %}Детально про машину{% endblock %}
 
 {% block content %}
-
-
-{% if machine %}
-    <h2>Інформація про машину {{ machine.machine.name }} #{{ machine.number_machine}}:</h2>
-    <p>Належить бригаді № {{ machine.brigade.brigade_name }}. Старший водій - {{ machine.brigade.full_name }}</p>
+<div class="back"><input type="button" class="btn btn-primary" onclick='history.back();' value="Назад"></div>
+    <div class="container alert">
+        <h1 class="alert text-center">Інформація про машину {{ machine.name }} #{{ machine.number_machine}}:</h1>
+        <div>
+            
+    <p> Машина належить бригаді №{{ machine.brigade.brigade_name }}. Старший машиніст - {{ machine.brigade.full_name }}</p>
 
     <table class="table">
         <caption style="caption-side: top;">Таблиця з даними</caption>
@@ -17,7 +18,7 @@
         </tr>
         <tr>
             <td>Назва машини</td>
-            <td>{{machine.machine.name}}</td>
+            <td>{{machine.name}}</td>
         </tr>
         <tr>
             <td>Інвентарний номер</td>
@@ -109,13 +110,12 @@
             <td>{{ machine.hydraulic_fluid_list|join:"<br>"|default:"Дані відсутні" }}</td>
         </tr>
     </table>
-{% else %}
-    <p>Некоректна назва машини</p>
-{% endif %}
-
-
-
-    <br>
-    <a href="{% url 'machines:all-machines' %}">До списку машин</a>
-    <br><br>
-{% endblock %}
+    <style>
+        .back {
+            position: absolute; 
+            top: 20px; 
+            left: 100px; 
+            line-height: 1px;
+           }
+    </style>    
+    {% endblock %}

@@ -85,7 +85,7 @@ def show_detail_machines(request):
 
 def show_machines_description(request):
     
-    machines = models.MachineName.objects.all()
+    machines = models.MachineName.objects.all().prefetch_related('machine_set')
     context = {
         'machines': machines
     }

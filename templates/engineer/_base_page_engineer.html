@@ -34,13 +34,16 @@
                     class="fa fa-table"></i>Відправлені звіти</a>
             <a href="{% url 'engineer:drivers' %}"
                 class="list-group-item list-group-item-action bg-dark text-light border-light"><i
-                    class="fa fa-truck"></i>Старші водії</a>
+                    class="fa fa-truck"></i>Старші машиністи</a>
             <a href="{% url 'engineer:fix_machines' %}"
                 class="list-group-item list-group-item-action bg-dark text-light border-light border-bottom"><i
                     class="fa fa-wrench"></i>Інформація про ремонт машин</a>
             <a href="{% url 'engineer:work_days' %}"
                 class="list-group-item list-group-item-action bg-dark text-light border-light border-bottom"><i
                     class="fa fa-calendar"></i>Графік роботи</a>
+            <a href="{% url 'engineer:all-machines' %}"
+                class="list-group-item list-group-item-action bg-dark text-light border-light border-bottom"><i
+                    class="fa fa-truck"></i>Всі машини</a>
         </div>
     </div>
         <!-- /#sidebar-wrapper -->

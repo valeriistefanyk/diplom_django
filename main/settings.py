@@ -38,7 +38,6 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    #'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -126,7 +125,7 @@ INTERNAL_IPS = [
 ]
 LOGOUT_REDIRECT_URL = '/logout/'
 # LOGIN_REDIRECT_URL = '/login/'
-LOGIN_URL = '/login'
+LOGIN_URL = '/'
 
 
 
