@@ -39,11 +39,12 @@
                 <th scope="col">Машини</th>
                 <th scope="col">Детальніше</th>
             </tr>
-        </thead>
+            </thead>
+            <tbody>
             {% for report in date_report_set %}
             {% with True as flag %}
             {% for info in report.report_info %}
-            <tbody>
+            
             <tr>{% if flag %}
                 <th scope="row" rowspan="{{ report.report_info | length }}">{{ report.date }}
                     {% update_variable False as flag %}
@@ -59,10 +60,11 @@
                         інформація</button>
                 </td>
             </tr>
-        </tbody>
+        
             {% endfor %}
             {% endwith %}
             {% endfor %}
+            </tbody>
         </table>
         {% endif%}
     </div>
