@@ -28,23 +28,26 @@
                     </div>
                 </div>
             </div>
-            <button type="submit" class="btn btn-primary mb-2">Вибрати</button>
+            <button type="submit" class="btn btn-warning mb-2">Вибрати</button>
         </form>
         {% if date_report_set %}
-        <table class="table_dark">
+        <table class="table table-bordered table-fix">
+            <thead class="table-warning text-dark">
             <tr>
-                <th>Дата звіту</th>
-                <th>Оформив [бригада №]</th>
-                <th>Машини</th>
-                <th>Детальніше</th>
+                <th scope="col">Дата звіту</th>
+                <th scope="col">Оформив [бригада №]</th>
+                <th scope="col">Машини</th>
+                <th scope="col">Детальніше</th>
             </tr>
+        </thead>
             {% for report in date_report_set %}
             {% with True as flag %}
             {% for info in report.report_info %}
+            <tbody>
             <tr>{% if flag %}
-                <td rowspan="{{ report.report_info | length }}">{{ report.date }}
+                <th scope="row" rowspan="{{ report.report_info | length }}">{{ report.date }}
                     {% update_variable False as flag %}
-                </td>
+                </th>
                 {% endif %}
                 <td>{{ info.driver }} [Бригада №{{info.brigade_name}}]</td>
                 <td>{%for machine in info.machines %}
@@ -56,6 +59,7 @@
                         інформація</button>
                 </td>
             </tr>
+        </tbody>
             {% endfor %}
             {% endwith %}
             {% endfor %}
@@ -71,10 +75,10 @@
 {# модальное окно начало #}
 <div class="popup-fade">
     <div class="popup">
-        <a class="popup-close" href="#">Закрыть</a>
+        <a class="popup-close mr-2" href="#"><i class="fa fa-arrow-left mr-2"></i>Закрыть</a>
         <div class="popup-content">
-            <p>Дата: <span class="report_date">(невідома)</span></p>
-            <p>Водій: <span class="report_filled_up">(невідомий)</span>
+            <p><i class="fa fa-calendar"></i> Дата: <span class="report_date">(невідома)</span></p>
+            <p><i class="fa fa-user-circle"></i> Водій: <span class="report_filled_up">(невідомий)</span>
                 [бригада №<span class="report_brigade_name">(невідомо)</span>]</p>
             <p>
                 <ul class="machines"></ul>
@@ -230,8 +234,8 @@
 
     .popup {
         position: fixed;
-        top: 20%;
-        left: 50%;
+        top: 10%;
+        left: 35%;
         padding: 20px;
         width: 900px;
         margin-left: -200px;
@@ -250,38 +254,9 @@
 
 
     /* TABLE----------------------- */
-    .table_dark {
-        font-size: 14px;
-        width: 100%;
-        text-align: left;
-        border-collapse: collapse;
-        background: #252F48;
-        margin: 10px;
-    }
-
-    .table_dark th {
-        color: #EDB749;
-        border-bottom: 1px solid #37B5A5;
-        padding: 12px 17px;
-    }
-
-    .table_dark td {
-        color: #CAD4D6;
-        border-bottom: 1px solid #37B5A5;
-        border-right: 1px solid #37B5A5;
-        padding: 7px 17px;
-    }
-
-    .table_dark tr:last-child td {
-        border-bottom: none;
-    }
-
-    .table_dark td:last-child {
-        border-right: none;
-    }
-
-    .table_dark tr:hover td {
-        text-decoration: underline;
+    .table-fix{
+      background: #2b3d6b;
+      color: #fff;
     }
 </style>
 {% endblock add_style %}

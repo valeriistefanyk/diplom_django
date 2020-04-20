@@ -16,17 +16,20 @@
         <div class="content-text">
             <h2>Старші водії:</h2>
             {% if drivers %}
-            <table class="table_dark">
+            <table class="table table-bordered table-fix">
+                <thead class="table-warning text-dark">
                 <tr>
-                    <th>Бригада</th>
-                    <th>Працівник</th>
-                    <th>Email</th>
-                    <th>Телефон</th>
-                    <th>Статистика</th>
+                    <th scope="col">Бригада</th>
+                    <th scope="col">Працівник</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Телефон</th>
+                    <th scope="col">Статистика</th>
                 </tr>
+                </thead>
                 {% for driver in drivers %}
+                <tbody>
                 <tr>
-                    <td>№{{driver.brigade_name}}</td>
+                    <th scope="row">№{{driver.brigade_name}}</th>
                     <td><img width="50px" src="{{driver.avatar.url}}" alt="{{driver.full_name}}">
                         {{driver.full_name}}</td>
                     <td>{{driver.user.email}}</td>
@@ -35,6 +38,7 @@
                         data-driver_id="{{driver.id}}" data-date_report="">Детальна інформація</button>    
                 </td>
                 </tr>
+            </tbody>
                 {% endfor %}
             </table>
             {% endif %}
@@ -50,10 +54,9 @@
 {# модальное окно начало #}
 <div class="popup-fade">
     <div class="popup">
-        <a class="popup-close" href="#">Закрыть</a>
+        <a class="popup-close mr-2" href="#"> <i class="fa fa-arrow-left mr-2"></i> Закрыть</a>
         <div class="popup-content">
-            <p>Данные: <span class="data">(невідома)</span></p>
-            <p>Водій: <span class="report_filled_up">(невідомий)</span> 
+            <p><i class="fa fa-user-circle"></i> Водій: <span class="report_filled_up">(невідомий)</span> 
                 [бригада №<span class="report_brigade_name">(невідомо)</span>]</p>
             <p>
                 <ul class="machines"></ul>
@@ -70,39 +73,10 @@
 {% block add_style %}
     <style>
         /* TABLE----------------------- */
-        .table_dark {
-            font-size: 14px;
-            width: 100%;
-            text-align: left;
-            border-collapse: collapse;
-            background: #252F48;
-            margin: 10px;
-        }
-
-        .table_dark th {
-            color: #EDB749;
-            border-bottom: 1px solid #37B5A5;
-            padding: 12px 17px;
-        }
-
-        .table_dark td {
-            color: #CAD4D6;
-            border-bottom: 1px solid #37B5A5;
-            border-right: 1px solid #37B5A5;
-            padding: 7px 17px;
-        }
-
-        .table_dark tr:last-child td {
-            border-bottom: none;
-        }
-
-        .table_dark td:last-child {
-            border-right: none;
-        }
-
-        .table_dark tr:hover td {
-            text-decoration: underline;
-        }
+        .table-fix{
+      background: #2b3d6b;
+      color: #fff;
+    }
     </style>
 {% endblock add_style %}
 
