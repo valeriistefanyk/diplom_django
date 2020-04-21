@@ -4,70 +4,46 @@
 
 {% block content_page %}
 
-        <div class="container-fluid">
-            <h1 class="mt-4 text-center">Старші водії</h1>
-            <div class="content-text">
-                {% if drivers %}
-                <table class="table_dark">
-                    <tr>
-                        <th>Бригада</th>
-                        <th>Працівник</th>
-                        <th>Email</th>
-                        <th>Телефон</th>
-                        <th>Інформація</th>
-                    </tr>
-                    {% for driver in drivers %}
-                    <tr>
-                        <td>№{{driver.brigade_name}}</td>
-                        <td><img width="50px" src="{{driver.avatar.url}}" alt="{{driver.full_name}}">
-                            {{driver.full_name}}</td>
-                        <td>{{driver.user.email}}</td>
-                        <td>{{driver.phones}}</td>
-                        <td><a href="{% url 'engineer:driver_detail' driver.user.username %}"><button class="btn_send btn btn-warning text-dark text-center">Інформація / Машини / Водії</button></a></td>
-                    </tr>
-                    {% endfor %}
-                </table>
-                {% endif %}
-            </div>
-        </div>
+<div class="container-fluid">
+    <h1 class="mt-4 text-center">Старші водії</h1>
+    <div class="content-text">
+        {% if drivers %}
+        <table class="table table-bordered table-fix">
+            <thead class="table-warning text-dark">
+                <tr>
+                    <th scope="col">Бригада</th>
+                    <th scope="col">Працівник</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Телефон</th>
+                    <th scope="col">Інформація</th>
+                </tr>
+            <tbody>
+                {% for driver in drivers %}
+                <tr>
+                    <td>№{{driver.brigade_name}}</td>
+                    <td><img width="50px" src="{{driver.avatar.url}}" alt="{{driver.full_name}}">
+                        {{driver.full_name}}</td>
+                    <td>{{driver.user.email}}</td>
+                    <td>{{driver.phones}}</td>
+                    <td><a href="{% url 'engineer:driver_detail' driver.user.username %}"><button
+                                class="btn_send btn btn-warning text-dark text-center">Інформація / Машини /
+                                Водії</button></a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% endif %}
+    </div>
+</div>
 {% endblock content_page %}
-    
+
 
 {% block add_style %}
-    <style> 
-        /* TABLE----------------------- */
-        .table_dark {
-            font-size: 14px;
-            width: 100%;
-            text-align: left;
-            border-collapse: collapse;
-            background: #252F48;
-            margin: 10px;
-        }
-
-        .table_dark th {
-            color: #EDB749;
-            border-bottom: 1px solid #37B5A5;
-            padding: 12px 17px;
-        }
-
-        .table_dark td {
-            color: #CAD4D6;
-            border-bottom: 1px solid #37B5A5;
-            border-right: 1px solid #37B5A5;
-            padding: 20px 27px;
-        }
-
-        .table_dark tr:last-child td {
-            border-bottom: none;
-        }
-
-        .table_dark td:last-child {
-            border-right: none;
-        }
-
-        .table_dark tr:hover td {
-            text-decoration: underline;
-        }
-    </style>       
+<style>
+    /* TABLE----------------------- */
+    .table-fix {
+        background: #2b3d6b;
+        color: #fff;
+    }
+</style>
 {% endblock add_style %}

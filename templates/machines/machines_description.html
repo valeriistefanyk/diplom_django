@@ -3,20 +3,20 @@
 {% block title %}All machines{% endblock %}
 
 {% block content %}
-    <div class="back"><input type="button" class="btn btn-primary" onclick='history.back();' value="Назад"></div>
-    <div class="container alert">
-        <h2 class="text-center alert">Опис всіх наявних машин</h2>
-        <div>
+    <div class="back"><input type="button" class="btn btn-warning" onclick='history.back();' value="Назад"></div>
         {% if machines %}
+        <h2 class="text-center alert">Опис всіх наявних машин</h2>
 
-        <table class="table">
+        <table class="table table-bordered table-fix">
+            <thead class="table-warning text-dark">
             <tr>
-                <td>Назва машини</td>
-                <td>Опис</td>
-                <td>Кількість машин</td>
-                <td>Вигляд</td>
+                <th scope="col">Назва машини</th>
+                <th scope="col">Опис</th>
+                <th scope="col">Кількість машин</th>
+                <th scope="col">Вигляд</th>
                 
             </tr>
+            </thead>
             {% for machine in machines %}
             <tr>
                 <td>{{ machine.name }}</td>
@@ -34,11 +34,17 @@
     
     </div></div>
     <style>
+        body{
+            overflow-x: hidden;
+        }
         .back {
             position: absolute; 
             top: 20px; 
             left: 100px; 
             line-height: 1px;
+           }
+           .table-fix{
+               text-align: center;
            }
     </style>    
 
