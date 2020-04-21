@@ -53,12 +53,12 @@ def show_unforwarded_reports(request):
                 fuel = machine['fuel']
                 motohour = machine['motohour']
                 
-                breakage = "Є поломка" if machine['breakage'] else "Поломок не було"
-                if breakage == "Є поломка":
+                breakage = "Є несправність" if machine['breakage'] else "Несправностей не було"
+                if breakage == "Є несправність":
                     if machine['breakage_info']:
                         breakage += f"<br>Інформація: {machine['breakage_info']}"
                     else:
-                        breakage = f"<br>Інформація про поломку відсутня"
+                        breakage = f"<br>Інформація про несправність відсутня"
                         
                 
                 machines_info = {
@@ -121,12 +121,12 @@ def show_forwarded_reports(request):
                 name = machine['name']
                 fuel = machine['fuel']
                 motohour = machine['motohour']
-                breakage = "Є поломка" if machine['breakage'] else "Поломок не було"
-                if breakage == "Є поломка":
+                breakage = "Є несправність" if machine['breakage'] else "Несправностей не було"
+                if breakage == "Є несправність":
                     if machine['breakage_info']:
                         breakage += f"<br>Інформація: {machine['breakage_info']}"
                     else:
-                        breakage = f"<br>Інформація про поломку відсутня"
+                        breakage = f"<br>Інформація про несправність відсутня"
                 
                 machines_info = {
                     'machine_short_name': name,

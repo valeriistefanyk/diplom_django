@@ -134,7 +134,7 @@
                 var info = `Машина: ${machines[i].machine_full_name}. 
                         <table class='table'>
                             <tr>
-                                <th>Бензин</th>
+                                <th>Дизель</th>
                                 <td>${machines[i].fuel} л.</td>
                             </tr>
                             <tr>
@@ -145,12 +145,12 @@
                         </table>
                         `
                 if (machines[i].breakage == 'True') {
-                    info += `<p>Була поломка.<br/>
-                            Інформація про поломку: 
+                    info += `<p>Була несправність.<br/>
+                            Інформація про несправність: 
                             <span><span></p>`
                 }
                 else {
-                    info += '<p>Поломок не було</p>'
+                    info += '<p>Несправностей не було</p>'
                 }
                 var li = $('<li/>')
                     .addClass('ui-menu-item')

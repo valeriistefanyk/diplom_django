@@ -62,8 +62,7 @@ def show_machines(request):
     my_machines = Machine.objects.filter(brigade=driver).select_related('machine')
     
     context = {
-        'my_machines': my_machines.filter(breakage=False),
-        'my_machines_broken': my_machines.filter(breakage=True),
+        'my_machines': my_machines.all(),
     }
 
     return render(request, 'senior-driver/my_machines.html', context)
@@ -185,7 +184,7 @@ def add_machines(reports):
             fuel = machine['fuel']
             motohour = machine['motohour']
             breakage = "В ремонті" if machine['breakage'] else "В робочому стані"
-            breakage_info = m['breakage_info'] if m['breakage_info'] else 'Інформації про поломку немає'
+            breakage_info = m['breakage_info'] if m['breakage_info'] else 'Інформації про неспроаність немає'
             
             machines_info = {
                 'full_name': machine_full_name,

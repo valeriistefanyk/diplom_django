@@ -5,33 +5,26 @@
 {% block content_page %}
 
     <div class="container-fluid">
-        <h3>Машини які належать Вам:</h3><br>
+        <h2 class="pt-5" style="text-align: center;">Машини які належать Вам:</h2><br>
 
         {# НЕ СЛОМАННЫЕ МАШИНЫ #}
         {% if my_machines %}
-            <ul>   
+        <div class="row justify-content-around">
             {% for my_machine in my_machines %}
-                <li>
-                    <p>{{ my_machine.full_name }}  | 
-                        <a href="{% url 'machines:detail' my_machine.id %}">детальніше</a></p>
-                </li> 
+            <div class="card m-2 shadow p-3 mb-5 bg-white rounded" style="width: 20rem;">
+                <img class="card-img-top" src="{{my_machine.machine.image.url}}" alt="{{my_machine.name}}">
+                <div class="card-body">
+                    <h5 class="card-title">{{my_machine.name}} #{{my_machine.number_machine}}</h5>
+                    <hr>
+                    <p class="card-text">Інвентарний номер: <b>{{my_machine.inventory_number}}</b></p>
+                    <p class="card-text">Стан машини: {% if my_machine.breakage %}<span style="color: red; font-weight: bold;">В ремонті!</span>{% else %}<span style="color: green; font-weight: bold;">Робочий</span>{% endif %}</p>
+                    <a href="{% url 'machines:detail' my_machine.id %}" class="btn btn-primary">Детальніше</a>
+                </div>
+            </div>
             {% endfor %}
-            </ul> 
+        </div>
         {% else %}
-            <p>Не має машин</p>
-        {% endif %}
-        
-        {# СЛОМАННЫЕ МАШИНЫ #}
-        {% if my_machines_broken %}
-            <h3>Машини які зламані і знаходяться в ремонті:</h3>
-            <ul>
-            {% for my_machine_broken in my_machines_broken %}
-                <li>
-                    <p>{{ my_machine_broken.full_name }}  | 
-                        <a href="{% url 'machines:detail' my_machine_broken.id %}">детальніше</a></p>
-                </li>     
-            {% endfor %}
-            </ul>
+        <h3 class="pt-5 pl-5">За Вами не числиться жодна машина!</h3>
         {% endif %}
     </div>
 

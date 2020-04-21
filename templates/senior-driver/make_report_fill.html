@@ -9,13 +9,15 @@
         <div class="content-text">
             {% if machines %}
             <input type="button" onclick='history.back();' value="Назад"/>
-            <form class="form-group" action="{% url 'driver:make-report-fill' %}" method="POST">
+            
+              <form class="form-group" action="{% url 'driver:make-report-fill' %}" method="POST">
                 {% csrf_token %}
                 
                 <input type="hidden" name="date" value="{{ date }}">
                 <p>Дата {{date}}</p>
 
                 {% for machine in machines %}
+                <div class="alert">
                 <input type="hidden" name="choices" value="{{machine.id}}">
   
                 <div class="form-row border border-dark rounded-lg p-5 col-md-6 mx-auto">
@@ -29,9 +31,9 @@
                       placeholder="Мотогодини (у мото/год)" required>
                   </div>
                   <div class="form-group col-md-6">
-                    <label for="fuel{{machine.id}}">Бензин</label>
+                    <label for="fuel{{machine.id}}">Дизельне паливо</label>
                     <input type="number" step="0.1" name="fuel" class="form-control" id="fuel{{machine.id}}"
-                      placeholder="Бензин (у літрах)" required>
+                      placeholder="Дизель (у літрах)" required>
                   </div>
   
                   <div class="custom-control custom-checkbox my-1">
@@ -43,19 +45,21 @@
                     <input type="hidden" value="off" name="breakage">
                     <input type="checkbox" value="on" name="breakage" class="breakage custom-control-input"
                       id="breakage{{machine.id}}">
-                    <label class="custom-control-label" for="breakage{{machine.id}}">Поломка?</label>
+                    <label class="custom-control-label" for="breakage{{machine.id}}">Несправність?</label>
   
                     <div class="breakage_info form-group col-md-12">
-                      <label for="info_breakage{{machine.id}}">Інформація про поломку</label>
+                      <label for="info_breakage{{machine.id}}">Інформація про несправність</label>
                       <textarea class="form-control col-md-12" name="breakage_info" id="info_breakage{{machine.id}}"
                         rows="3"></textarea>
   
                     </div>
                   </div>
                 </div>
+              </div>
                 {% endfor %}
                 <input type="submit" class="btn btn-warning d-block mt-3" name="sendData" value="Відправити дані"> 
               </form>
+            
             {% else %}
               <h3>Ви не вибрали машини, які будуть відображатись у звіті!</h3>
               <a href="{% url 'driver:make-report' %}" class="btn btn-warning">Перейти до вибору машин</a>
