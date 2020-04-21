@@ -3,119 +3,130 @@
 {% block title %}Детально про машину{% endblock %}
 
 {% block content %}
-<div class="back"><input type="button" class="btn btn-primary" onclick='history.back();' value="Назад"></div>
-    <div class="container alert">
-        <h1 class="alert text-center">Інформація про машину {{ machine.name }} #{{ machine.number_machine}}:</h1>
-        <div>
-            
-    <p> Машина належить бригаді №{{ machine.brigade.brigade_name }}. Старший машиніст - {{ machine.brigade.full_name }}</p>
+<div class="back"><input type="button" class="btn btn-warning" onclick='history.back();' value="Назад"></div>
+<div class="container alert">
+    <h1 class="alert text-center">Інформація про машину {{ machine.name }} #{{ machine.number_machine}}:</h1>
+    <div>
 
-    <table class="table">
-        <caption style="caption-side: top;">Таблиця з даними</caption>
-        <tr>
-            <th>Поле</th>
-            <th>Опис</th>
-        </tr>
-        <tr>
-            <td>Назва машини</td>
-            <td>{{machine.name}}</td>
-        </tr>
-        <tr>
-            <td>Інвентарний номер</td>
-            <td>{{machine.inventory_number}}</td>
-        </tr>
-        <tr>
-            <td>Номер машини</td>
-            <td>№{{machine.number_machine}}</td>
-        </tr>
-        <tr>
-            <td>Рік введення в експлуатацію</td>
-            <td>{{machine.year_of_commissioning}}</td>
-        </tr>
-        <tr>
-            <td>Років в експлуатації</td>
-            <td>{{machine.years_comission}}</td>
-        </tr>
-        <tr>
-            <td>Двигун</td>
-            <td>{{ machine.engine_list|join:"<br>"|default:"Дані відсутні" }}</td>
-        </tr>
-        <tr>
-            <td>Номінальна потужність</td>
-            <td>{{ machine.rated_capacity|default:"Дані відсутні" }}</td>
-        </tr>
-        <tr>
-            <td>Витрати за нормою на 1 мот/год, кг</td>
-            <td>{{ machine.costs_at_rate|default:"Дані відсутні" }}</td>
-        </tr>
-        <tr>
-            <td>Дизмасло, % від витрат палива</td>
-            <td>{{ machine.dizmaslo|default:"Дані відсутні" }}</td>
-        </tr>
-        <tr>
-            <td>Турбонагнітачі</td>
-            <td>{{ machine.turbocharger_list|join:"<br>"|default:"Дані відсутні" }}</td>
-        </tr>
-        <tr>
-            <td>Фільтра</td>
-            <td>{{ machine.filter_list|join:"<br>"|default:"Дані відсутні" }}</td>
-        </tr>
-        <tr>
-            <td>Підбивочні блоки</td>
-            <td>{{ machine.lining_blocks_list|join:"<br>"|default:"Дані відсутні" }}</td>
-        </tr>
-        <tr>
-            <td>Підпійки підбивочних блоків</td>
-            <td>{{ machine.lining_pidpiiki_list|join:"<br>"|default:"Дані відсутні" }}</td>
-        </tr>
-        <tr>
-            <td>Компресори</td>
-            <td>{{ machine.compressor_list|join:"<br>"|default:"Дані відсутні" }}</td>
-        </tr>
-        <tr>
-            <td>Діаметр колісних пар</td>
-            <td>{{ machine.diametr_wheel_pairs|default:"Дані відсутні" }}</td>
-        </tr>
-        <tr>
-            <td>Акумулятори</td>
-            <td>{{ machine.battery_list|join:"<br>"|default:"Дані відсутні" }}</td>
-        </tr>
-        <tr>
-            <td>Дата проведення ост. КР</td>
-            <td>{{ machine.date_ost_kr|default:"Дані відсутні" }}</td>
-        </tr>
-        <tr>
-            <td>Первісна вартість, грн</td>
-            <td>{{ machine.initial_value|default:"Дані відсутні" }}</td>
-        </tr>
-        <tr>
-            <td>Залишкова вартість, грн</td>
-            <td>{{ machine.residual_value|default:"Дані відсутні" }}</td>
-        </tr>
-        <tr>
-            <td>Дата кінця амортизації</td>
-            <td>{{ machine.depreciation_end_date|default:"Дані відсутні" }}</td>
-        </tr>
-        <tr>
-            <td>Дизельне мастило</td>
-            <td>{{ machine.dizmaslo_list|join:"<br>"|default:"Дані відсутні" }}</td>
-        </tr>
-        <tr>
-            <td>Трансмісійна рідина</td>
-            <td>{{ machine.transmission_fluid_list|join:"<br>"|default:"Дані відсутні" }}</td>
-        </tr>
-        <tr>
-        <tr>
-            <td>Гідравлічна рідина</td>
-            <td>{{ machine.hydraulic_fluid_list|join:"<br>"|default:"Дані відсутні" }}</td>
-        </tr>
-    </table>
-    <style>
-        .back {
-            position: absolute; 
-            top: 20px; 
-            left: 100px; 
-            line-height: 1px;
-           }
-    </style>    
-    {% endblock %}
+        <p> Машина належить бригаді №{{ machine.brigade.brigade_name }}. Старший машиніст -
+            {{ machine.brigade.full_name }}</p>
+
+        <table class="table table-bordered table-fix">
+
+            <caption style="caption-side: top;">Таблиця з даними:</caption>
+            <thead class="table-warning text-dark">
+                <tr>
+                    <th scope="col">Поле</th>
+                    <th scope="col">Опис</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Назва машини</td>
+                    <td>{{machine.name}}</td>
+                </tr>
+                <tr>
+                    <td>Інвентарний номер</td>
+                    <td>{{machine.inventory_number}}</td>
+                </tr>
+                <tr>
+                    <td>Номер машини</td>
+                    <td>№{{machine.number_machine}}</td>
+                </tr>
+                <tr>
+                    <td>Рік введення в експлуатацію</td>
+                    <td>{{machine.year_of_commissioning}}</td>
+                </tr>
+                <tr>
+                    <td>Років в експлуатації</td>
+                    <td>{{machine.years_comission}}</td>
+                </tr>
+                <tr>
+                    <td>Двигун</td>
+                    <td>{{ machine.engine_list|join:"<br>"|default:"Дані відсутні" }}</td>
+                </tr>
+                <tr>
+                    <td>Номінальна потужність</td>
+                    <td>{{ machine.rated_capacity|default:"Дані відсутні" }}</td>
+                </tr>
+                <tr>
+                    <td>Витрати за нормою на 1 мот/год, кг</td>
+                    <td>{{ machine.costs_at_rate|default:"Дані відсутні" }}</td>
+                </tr>
+                <tr>
+                    <td>Дизмасло, % від витрат палива</td>
+                    <td>{{ machine.dizmaslo|default:"Дані відсутні" }}</td>
+                </tr>
+                <tr>
+                    <td>Турбонагнітачі</td>
+                    <td>{{ machine.turbocharger_list|join:"<br>"|default:"Дані відсутні" }}</td>
+                </tr>
+                <tr>
+                    <td>Фільтра</td>
+                    <td>{{ machine.filter_list|join:"<br>"|default:"Дані відсутні" }}</td>
+                </tr>
+                <tr>
+                    <td>Підбивочні блоки</td>
+                    <td>{{ machine.lining_blocks_list|join:"<br>"|default:"Дані відсутні" }}</td>
+                </tr>
+                <tr>
+                    <td>Підпійки підбивочних блоків</td>
+                    <td>{{ machine.lining_pidpiiki_list|join:"<br>"|default:"Дані відсутні" }}</td>
+                </tr>
+                <tr>
+                    <td>Компресори</td>
+                    <td>{{ machine.compressor_list|join:"<br>"|default:"Дані відсутні" }}</td>
+                </tr>
+                <tr>
+                    <td>Діаметр колісних пар</td>
+                    <td>{{ machine.diametr_wheel_pairs|default:"Дані відсутні" }}</td>
+                </tr>
+                <tr>
+                    <td>Акумулятори</td>
+                    <td>{{ machine.battery_list|join:"<br>"|default:"Дані відсутні" }}</td>
+                </tr>
+                <tr>
+                    <td>Дата проведення ост. КР</td>
+                    <td>{{ machine.date_ost_kr|default:"Дані відсутні" }}</td>
+                </tr>
+                <tr>
+                    <td>Первісна вартість, грн</td>
+                    <td>{{ machine.initial_value|default:"Дані відсутні" }}</td>
+                </tr>
+                <tr>
+                    <td>Залишкова вартість, грн</td>
+                    <td>{{ machine.residual_value|default:"Дані відсутні" }}</td>
+                </tr>
+                <tr>
+                    <td>Дата кінця амортизації</td>
+                    <td>{{ machine.depreciation_end_date|default:"Дані відсутні" }}</td>
+                </tr>
+                <tr>
+                    <td>Дизельне мастило</td>
+                    <td>{{ machine.dizmaslo_list|join:"<br>"|default:"Дані відсутні" }}</td>
+                </tr>
+                <tr>
+                    <td>Трансмісійна рідина</td>
+                    <td>{{ machine.transmission_fluid_list|join:"<br>"|default:"Дані відсутні" }}</td>
+                </tr>
+                <tr>
+                <tr>
+                    <td>Гідравлічна рідина</td>
+                    <td>{{ machine.hydraulic_fluid_list|join:"<br>"|default:"Дані відсутні" }}</td>
+                </tr>
+            </tbody>
+        </table>
+        <style>
+            .back {
+                position: absolute;
+                top: 20px;
+                left: 100px;
+                line-height: 1px;
+            }
+
+            .table-fix {
+                background: #2b3d6b;
+                color: #fff;
+            }
+        </style>
+        {% endblock %}
