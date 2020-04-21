@@ -8,12 +8,13 @@
     <h1 class="pt-4 alert text-center">Інформація про машину {{ machine.name }} #{{ machine.number_machine}}:</h1>
     
     <div class="row pt-4">
-        <div class="col-5 text-center">
-            <div class="card" style="width: 18rem;">
-                <img class="card-img-top" src="{{machine.machine.image.url}}" alt="{{machine.name}}">
+        <div class="col-5 text-center" >
+            <div class="card border-0" style="width: 18rem;">
+                
                 <div class="card-body">
                     <h5 class="card-title">{{machine.name}}</h5>
-                  </div>
+                </div>
+                <img class="card-img-top" src="{{machine.machine.image.url}}" alt="{{machine.name}}">
             </div>
         </div>
         <div class="col" style="font-size: larger;">

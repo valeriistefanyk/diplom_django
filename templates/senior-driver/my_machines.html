@@ -12,14 +12,14 @@
         <div class="row justify-content-around">
             {% for my_machine in my_machines %}
             <div class="card m-2 shadow p-3 mb-5 bg-white rounded" style="width: 20rem;">
-                <img class="card-img-top" src="{{my_machine.machine.image.url}}" alt="{{my_machine.name}}">
-                <div class="card-body">
+                <div class="card-body text-center">
                     <h5 class="card-title">{{my_machine.name}} #{{my_machine.number_machine}}</h5>
                     <hr>
                     <p class="card-text">Інвентарний номер: <b>{{my_machine.inventory_number}}</b></p>
                     <p class="card-text">Стан машини: {% if my_machine.breakage %}<span style="color: red; font-weight: bold;">В ремонті!</span>{% else %}<span style="color: green; font-weight: bold;">Робочий</span>{% endif %}</p>
                     <a href="{% url 'machines:detail' my_machine.id %}" class="btn btn-primary">Детальніше</a>
                 </div>
+                <img class="card-img-top" src="{{my_machine.machine.image.url}}" alt="{{my_machine.name}}">
             </div>
             {% endfor %}
         </div>
