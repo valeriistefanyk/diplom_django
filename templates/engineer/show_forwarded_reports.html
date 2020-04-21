@@ -80,15 +80,19 @@
             </div>
         </div>
             
-        <table class="table_dark">
+        <table class="table table-bordered table-fix">
+            <thead class="table-warning text-dark">
             <tr>
                 <th>Дата звіту</th>
                 <th>Оформив [бригада №]</th>
                 <th>Машини</th>
             </tr>
+            </thead>
+            <tbody>
             {% for report in date_report_set %}
                 {% with True as flag %}
                 {% for info in report.report_info %}
+                
                     <tr>{% if flag %}
                         <td rowspan="{{ report.report_info | length }}">{{ report.date }}
                             {% update_variable False as flag %}
@@ -101,9 +105,11 @@
                             {% endfor %}</ul>
                         </td>
                     </tr>
+                    
                 {% endfor %}
                 {% endwith %}
             {% endfor %}
+        </tbody>
         </table>
     </div>
 {% endblock content_page %}
@@ -112,40 +118,10 @@
 {% block add_style %}
     <style> 
         /* TABLE----------------------- */
-        .table_dark {
-            font-size: 14px;
-            width: 100%;
-            text-align: left;
-            border-collapse: collapse;
-            background: #252F48;
-            margin: 10px;
-        }
-
-        .table_dark th {
-            color: #EDB749;
-            border-bottom: 1px solid #37B5A5;
-            padding: 12px 17px;
-        }
-
-        .table_dark td {
-            color: #CAD4D6;
-            border-bottom: 1px solid #37B5A5;
-            border-right: 1px solid #37B5A5;
-            padding: 20px 27px;
-        }
-
-        .table_dark tr:last-child td {
-            border-bottom: none;
-        }
-
-        .table_dark td:last-child {
-            border-right: none;
-        }
-
-        .table_dark tr:hover td {
-            text-decoration: underline;
-        }
-
+        .table-fix{
+      background: #2b3d6b;
+      color: #fff;
+    }
         /* Для списку машин----------------------- */
         ul {
           margin: 0;

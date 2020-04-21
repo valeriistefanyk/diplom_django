@@ -4,98 +4,101 @@
 
 {% block content_page %}
 
-        <div class="container-fluid">
-            <h1 class="mt-4 text-center">Інформація про водія</h1>
-            <div class="content-text my-4">
-                <div class="col-md-auto">
-                    <div class="card shadow bg-white rounded" style="width: 18rem;">
-                        <img src="{{driver.avatar.url}}" style="height: 20rem;" alt="{{driver.full_name}}">
-                        <div class="card-body">
-                            <h4 class="text-center">{{driver.full_name}}</h4>
-                            <h5 class="text-center">{{driver.user.username}}</h5>
-                            <p class="card-text">Дата народження: {{driver.date_of_birth}}</p>
-                            <p class="card-text">Email: {{driver.user.email}}</p>
-                            <p class="card-text">Телефон: {{driver.phones}}</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-auto offset-1">
-                    <div class="driver_reports">
+<div class="container-fluid">
+    <h1 class="mt-4 text-center">Інформація про водія</h1>
 
-                        <h3 class="mb-4">Звіти водія</h3>
-                        {% if report_set %}
-                        <div class="shadow bg-white rounded my-5 p-4">
-                            
-                            {% for report in report_set %}
-                            <h5 class="font-weight-bold text-warning">Звіт №{{report.id}}</h5>
-                            <p><span class="font-weight-bold">Звіт за:</span> {{ report.date }}</p>
-
-                            {% if report.machines %}
-                            <table class="table">
-                                <tr>
-                                    <td class="font-weight-bold">Машина</td>
-                                    <td class="font-weight-bold">Мотогодини</td>
-                                    <td class="font-weight-bold">Використано палива</td>
-                                </tr>
-                                {% for data in report.machines %}
-                                <tr>
-                                    <td>{{data.machine}}</td>
-                                    <td>{{data.motohour}}</td>
-                                    <td>{{data.fuel}}</td>
-                                </tr>
-                                {% endfor %}
-                            </table>
-                            {% endif %}
-                           
-                            <br>
-                            <hr>
-                            {% endfor %}
-                        </div>
-                        {% else%}
-                        <p>У цього старшого водія звітів немає</p>
-                        {% endif %}
+    <div class="content-text my-4">
+        <div class="row d-flex">
+            <div class="col-md-4">
+                <div class="card shadow bg-white rounded" style="width: 18rem;">
+                    <img src="{{driver.avatar.url}}" style="height: 20rem;" alt="{{driver.full_name}}">
+                    <div class="card-body">
+                        <h4 class="text-center">{{driver.full_name}}</h4>
+                        <h5 class="text-center">@{{driver.user.username}}</h5>
+                        <p class="card-text">Дата народження: {{driver.date_of_birth}}</p>
+                        <p class="card-text">Email: {{driver.user.email}}</p>
+                        <p class="card-text">Телефон: {{driver.phones}}</p>
                     </div>
                 </div>
             </div>
+            <div class="col-md-8">
+                <div class="driver_reports">
+
+                    <h3 class="mb-4">Звіти водія</h3>
+                    {% if report_set %}
+                    <div class="shadow bg-white rounded my-5 p-4">
+
+                        {% for report in report_set %}
+                        <h5 class="font-weight-bold text-warning">Звіт №{{report.id}}</h5>
+                        <p><span class="font-weight-bold">Звіт за:</span> {{ report.date }}</p>
+
+                        {% if report.machines %}
+                        <table class="table">
+                            <tr>
+                                <td class="font-weight-bold">Машина</td>
+                                <td class="font-weight-bold">Мотогодини</td>
+                                <td class="font-weight-bold">Використано палива</td>
+                            </tr>
+                            {% for data in report.machines %}
+                            <tr>
+                                <td>{{data.machine}}</td>
+                                <td>{{data.motohour}}</td>
+                                <td>{{data.fuel}}</td>
+                            </tr>
+                            {% endfor %}
+                        </table>
+                        {% endif %}
+
+                        <br>
+                        <hr>
+                        {% endfor %}
+                    </div>
+                    {% else%}
+                    <p>У цього старшого водія звітів немає</p>
+                    {% endif %}
+                </div>
+            </div>
         </div>
+    </div>
+</div>
 {% endblock content_page %}
-    
+
 
 {% block add_style %}
-    <style> 
-        /* TABLE----------------------- */
-        .table_dark {
-            font-size: 14px;
-            width: 100%;
-            text-align: left;
-            border-collapse: collapse;
-            background: #252F48;
-            margin: 10px;
-        }
+<style>
+    /* TABLE----------------------- */
+    .table_dark {
+        font-size: 14px;
+        width: 100%;
+        text-align: left;
+        border-collapse: collapse;
+        background: #252F48;
+        margin: 10px;
+    }
 
-        .table_dark th {
-            color: #EDB749;
-            border-bottom: 1px solid #37B5A5;
-            padding: 12px 17px;
-        }
+    .table_dark th {
+        color: #EDB749;
+        border-bottom: 1px solid #37B5A5;
+        padding: 12px 17px;
+    }
 
-        .table_dark td {
-            color: #CAD4D6;
-            border-bottom: 1px solid #37B5A5;
-            border-right: 1px solid #37B5A5;
-            padding: 20px 27px;
-        }
+    .table_dark td {
+        color: #CAD4D6;
+        border-bottom: 1px solid #37B5A5;
+        border-right: 1px solid #37B5A5;
+        padding: 20px 27px;
+    }
 
-        .table_dark tr:last-child td {
-            border-bottom: none;
-        }
+    .table_dark tr:last-child td {
+        border-bottom: none;
+    }
 
-        .table_dark td:last-child {
-            border-right: none;
-        }
+    .table_dark td:last-child {
+        border-right: none;
+    }
 
-        .table_dark tr:hover td {
-            text-decoration: underline;
-        }
-    </style>       
+    .table_dark tr:hover td {
+        text-decoration: underline;
+    }
+</style>
 {% endblock add_style %}
