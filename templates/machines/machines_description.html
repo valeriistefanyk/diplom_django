@@ -3,7 +3,7 @@
 {% block title %}All machines{% endblock %}
 
 {% block content %}
-    <div class="back"><input type="button" class="btn btn-warning" onclick='history.back();' value="Назад"></div>
+    
         {% if machines %}
         <h2 class="text-center alert">Опис всіх наявних машин</h2>
 
@@ -12,9 +12,11 @@
             <tr>
                 <th scope="col">Назва машини</th>
                 <th scope="col">Опис</th>
+                
                 <th scope="col">Кількість машин</th>
                 <th scope="col">Вигляд</th>
                 
+        
             </tr>
             </thead>
             {% for machine in machines %}
@@ -23,6 +25,7 @@
                 <td>{{ machine.description }}<br><br>
                     <!-- <a href="#" >Інформація про машини</a> -->
                 </td>
+                
                 <td>{{ machine.machine_set.count }}</td>
                 <td><img width="200px" src="{{ machine.image.url }}" alt="{{ machine.name }}"> </td>
             </tr>
@@ -31,8 +34,7 @@
         {% else %}
             <p>NO MACHINES LIST</p>
         {% endif %}
-    
-    </div></div>
+        <div class="back"><input type="button" class="btn btn-warning" onclick='history.back();' value="Назад"></div>
     <style>
         body{
             overflow-x: hidden;
