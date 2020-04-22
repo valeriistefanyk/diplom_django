@@ -4,7 +4,8 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.db.models import Q, Sum
 
 from machines.models import Machine
-from engineer.models import Report, MachineReport
+from engineer.models import Report, MachineReport, Engineer
+from director.models import Director
 from senior_driver.models import SeniorDriver
 import datetime
 
@@ -21,7 +22,15 @@ def home_page(request):
 @permission_required('senior_driver.full_control', raise_exception=True)
 def about(request):
     
-    return render(request, 'senior-driver/about_page.html')
+    driver = set_driver(request.user)
+    engineers = Engineer.objects.all()
+    directors = Director.objects.all()
+    context = {
+        'driver': driver,
+        'engineers': engineers,
+        'directors': directors,
+    }
+    return render(request, 'senior-driver/about_page.html', context)
 
 
 @login_required
