@@ -3,64 +3,55 @@
 {% block title %}Створити звіт{% endblock %}
 
 {% block content_page %}
-
     <div class="container-fluid">
         <h1 class="mt-4 text-center">Створення звіту</h1>
         <div class="content-text">
             <form action="{% url 'driver:make-report-fill' %}" method="POST">
                 {% csrf_token %}
-                <p><label for="date"><i class="fa fa-calendar"></i>Дата:</label>
+                <p class="pt-4 offset-1"><label for="date"><span style="font-size: larger; font-weight: bold;" class="pr-4">1.</span> <i class="fa fa-calendar"></i><span style="font-size: larger;" class="pr-2"> Оберіть за яку дату звіт:</span></label>
                     <input type="date" value="{{ date_today }}" name="date" id="date" required></p>
 
-                <h4 class="text-warning my-4">Які машини оберете для звітності:</h4>
+                <p class="offset-1 pb-4" style="font-size: larger;"><span style="font-weight: bold;" class="pr-4">2.</span> Оберіть машини, які використовувались у цей день:</p>
+                               
+                  
                 {% if last_used_machines %}
-                    <p>Машини якими найчастіше використувались за останній місяць</p>
+                    <p class="offset-2 text-info font-italic pb-2">Машини якими найчастіше використувались за останній місяць</p>
                     {% for machine in last_used_machines %}
-                    <p><input type="checkbox" name="choices" value="{{machine.id}}" id="machine{{machine.id}}">
+                    <p class="offset-2"><input type="checkbox" name="choices" value="{{machine.id}}" id="machine{{machine.id}}">
                         <label for="machine{{machine.id}}">{{ machine.machine__name}} {{machine.number_machine}} [IN-{{machine.inventory_number}}]</label>
                     </p>
-                    <hr>
                     {% endfor %}
-                    <p>Всі інші машини</p>
+                    <p class="offset-2 text-info font-italic pb-2">Всі інші машини</p>
                 {% endif %}
                 
-                {% for machine in long_used_machines %}
+                <div class="row">
+                    <div class="offset-2 col-8">
+                        <div class="row">
+                            {% for machine in long_used_machines %}
+                            <div class="col-6 pb-3">
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="checkbox" name="choices" value="{{machine.id}}" id="machine{{machine.id}}">
+                                    <label class="form-check-label" for="machine{{machine.id}}">{{ machine.machine__name}} {{machine.number_machine}} [IN-{{machine.inventory_number}}]</label>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
                 
-                <p><input type="checkbox" name="choices" value="{{machine.id}}" id="machine{{machine.id}}">
-                    <label for="machine{{machine.id}}">{{ machine.machine__name}} {{machine.number_machine}} [IN-{{machine.inventory_number}}]</label>
-                </p>
-                <hr>
-                {% endfor %}
-
-                <input type="submit" class="btn btn-warning d-block mt-3" name="selectMachines" value="Обрати ці машини">
+                <input type="submit" class="offset-1 btn btn-primary d-block mt-3 mb-3" name="selectMachines" value="Продовжити">
             </form>
 
-        {% if broken_machines %}
-        <br>    
-        <p>Машини які знаходяться у ремонті:
-                <ul>
+            {% if broken_machines %}
+                <p class="offset-1 text-primary font-italic pt-4" style="font-size: larger;">Машини які невідображаються через їх знаходження у ремонті:
+                <ul class="offset-1 pl-10">
                     {% for machine in broken_machines %}
-                        <li>{{ machine.machine__name}} {{machine.number_machine}} {{machine.inventory_number}}</li>
+                        <li class="pb-2">{{ machine.machine__name}} {{machine.number_machine}} {{machine.inventory_number}}</li>
                     {% endfor %}
                 </ul>
-            </p>
-        {% endif %}
+            {% endif %}
         </div>
     </div>
 {% endblock content_page %}
 
-
-{% block add_style %}
-    <style>        
-    </style>
-{% endblock add_style %}
-
-
-{% block add_js %}
-    <script>
-        $(document).ready(function ($) {
-          
-        });
-    </script>
-{% endblock add_js %}
     

@@ -54,7 +54,7 @@
                             <h5 class="card-title">Звіт #{{ report.id }} за {{ report.date }}</h5>
                         </div>
                         <div class="card-body">
-                            <table class="table table-hover table-dark">
+                            <table class="table table-hover">
                                 <tr>
                                     <th>Машина</th>
                                     <th>Мотогодини</th>
@@ -66,7 +66,7 @@
                                     <td>{{ machine.full_name }}</td>
                                     <td>{{ machine.motohour}}</td>
                                     <td>{{ machine.fuel }}</td>
-                                    <td>{{ machine.breakage }}</td>
+                                    <td>{{ machine.breakage | safe }}</td>
                                 </tr>
                             {% endfor %}
                             </table>

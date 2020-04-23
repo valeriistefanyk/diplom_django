@@ -4,6 +4,9 @@
 
     <div class="container-fluid">
         <h1 class="mt-4 text-center">Головна</h1>
+        <div class="content-text">
+            <div class="row justify-content-center">
+                <div class="col-10">
         <ul class="alert">
             <li>
                 <p>У вкладці <a href="{% url 'director:reports' %}">Звіти</a> знаходяться інформація про звіти, які були створені старшими машиністами та передані головним інженером.<br/>
@@ -25,11 +28,16 @@
                 А також подивитись опис, вигляд, прзначення різних колійних машин. 
             </p></li>
         </ul>
-    </div>
+    </div></div></div>
 {% endblock content_page %}
 
 
 {% block add_style %}
-    <style>        
+    <style> 
+        p{
+            font-size: larger;
+            text-align: justify;
+            line-height: 2;
+        }       
     </style>
 {% endblock add_style %}

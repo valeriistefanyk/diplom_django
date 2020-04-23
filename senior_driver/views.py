@@ -39,7 +39,7 @@ def show_my_reports(request):
     """ Звіти старшого водія """
     
     driver = set_driver(request.user)
-    my_reports = Report.objects.filter(filled_up=driver)
+    my_reports = Report.objects.filter(filled_up=driver).order_by('-id')
     
     if request.GET.get('from') and request.GET.get('to'):
         from_date = request.GET.get('from')
@@ -145,7 +145,7 @@ def make_report_fill(request):
         report = Report.objects.create(filled_up=filled_up, date=date) 
             
         all_info = list(zip(machines, machine_motohour_list, machine_fuel_list, machine_breakage_list, machine_breakage_info_list))
-        
+    
         for el in all_info:
             machine = Machine.objects.get(pk=el[0].id)
             machine.work_days += 1
@@ -166,6 +166,7 @@ def make_report_fill(request):
                 fuel = el[2],
                 breakage = breakage
             )
+            
         return render(request, 'senior-driver/home_page.html', {'message': 'Звіт створений'})
         
     return render(request, 'senior-driver/make_report_fill.html', context)
@@ -192,15 +193,18 @@ def add_machines(reports):
             machine_full_name =  f"{m['machine__name']} #{m['number_machine']} [IN{m['inventory_number']}] "
             fuel = machine['fuel']
             motohour = machine['motohour']
-            breakage = "В ремонті" if machine['breakage'] else "В робочому стані"
-            breakage_info = m['breakage_info'] if m['breakage_info'] else 'Інформації про неспроаність немає'
+            if machine['breakage']:
+                breakage = "Є несправність"
+                breakage += f"<br>({m['breakage_info']})"  if m['breakage_info'] else ''
+            else:
+                breakage = "В робочому стані"
+                
             
             machines_info = {
                 'full_name': machine_full_name,
                 'fuel': fuel,
                 'motohour': motohour,
                 'breakage': breakage,
-                'breakage_info': breakage_info
             }
             machines.append(machines_info)
         report.machines = machines
