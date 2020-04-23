@@ -8,10 +8,10 @@
         <div class="content-text">
             <form action="{% url 'driver:make-report-fill' %}" method="POST">
                 {% csrf_token %}
-                <p class="pt-4 offset-1"><label for="date"><span style="font-size: larger; font-weight: bold;" class="pr-4">1.</span> <i class="fa fa-calendar"></i><span style="font-size: larger;" class="pr-2"> Оберіть за яку дату звіт:</span></label>
+                <p class="pt-4 offset-1"><label for="date"><span style="font-size: larger; font-weight: bold;" class="pr-4">1.</span> <i class="fa fa-calendar" aria-hidden="true"></i><span style="font-size: larger;" class="pr-2"> Оберіть дату:</span></label>
                     <input type="date" value="{{ date_today }}" name="date" id="date" required></p>
 
-                <p class="offset-1 pb-4" style="font-size: larger;"><span style="font-weight: bold;" class="pr-4">2.</span> Оберіть машини, які використовувались у цей день:</p>
+                <p class="offset-1 pb-4" style="font-size: larger;"><span style="font-weight: bold;" class="pr-4">2.</span> <i class="fa fa-train" aria-hidden="true"></i><span class="pr-2"> Оберіть колійні машини, які використовувались у цей день:</span></p>
                                
                   
                 {% if last_used_machines %}
