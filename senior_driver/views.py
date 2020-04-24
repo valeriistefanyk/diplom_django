@@ -10,6 +10,9 @@ from senior_driver.models import SeniorDriver
 import datetime
 
 
+def test(request):
+    return render(request, 'senior-driver/test4.html', context={})
+
 @login_required
 @permission_required('senior_driver.full_control', raise_exception=True)
 def home_page(request):
@@ -23,8 +26,8 @@ def home_page(request):
 def about(request):
     
     driver = set_driver(request.user)
-    engineers = Engineer.objects.all()
-    directors = Director.objects.all()
+    engineers = Engineer.objects.all().select_related('user')
+    directors = Director.objects.all().select_related('user')
     context = {
         'driver': driver,
         'engineers': engineers,
@@ -52,7 +55,7 @@ def show_my_reports(request):
         to_date = correct_date(my_reports.latest('date').date, choise=2)
 
     
-    my_reports = add_machines(my_reports)
+    # my_reports = add_machines(my_reports)
 
     context = {
         'from_date': from_date,
@@ -160,11 +163,12 @@ def make_report_fill(request):
             machine.save()
             MachineReport.objects.create(
                 report = report,
-                name = el[0].name,
+                name = el[0].name + ' №' + el[0].number_machine,
                 machine = el[0],
                 motohour = el[1],
                 fuel = el[2],
-                breakage = breakage
+                breakage = breakage,
+                breakage_info = el[4]
             )
             
         return render(request, 'senior-driver/home_page.html', {'message': 'Звіт створений'})
@@ -189,6 +193,7 @@ def add_machines(reports):
         machines = []
 
         for machine in report.machinereport_set.values():
+            
             m = machines_all.get(id=machine['machine_id'])
             machine_full_name =  f"{m['machine__name']} #{m['number_machine']} [IN{m['inventory_number']}] "
             fuel = machine['fuel']
@@ -213,5 +218,5 @@ def add_machines(reports):
 
 def set_driver(user):
     if user.is_superuser:
-        return SeniorDriver.objects.all()[1]
+        return SeniorDriver.objects.all().select_related('user')[1]
     return user.seniordriver

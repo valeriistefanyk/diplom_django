@@ -11,42 +11,7 @@
 {% block content_page %}
 
 <div>
-    
-    <div>
-        <p id="latFld"></p>
-    </div>
-    <div>
-        <p id="lngFld"></p>
-    </div>
-    
-    
-    
-    <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                
-                <div class="modal-header">
-                    
-                    <h5 class="modal-title">Місце роботи</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="container-fluid">
-                        <div class="row">
-                            <div class="col-12" id="map-canvas" style="height:300px"></div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary">Зберегти</button>
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Відмінити</button>
-                  </div>
-            </div>
-        </div>
-    </div>
+
     {% if machines %}
 
     <h1 class="mt-4 mb-6 text-center">Продовження створення звіту за {{date}}</h1>
@@ -94,8 +59,16 @@
                                         rows="1" placeholder="Опишіть несправність..."></textarea>
                                 </div>
                             </div>
-                            <button type="button" class="btn btn-primary" onclick="use_maps()" data-toggle="modal" data-target=".bd-example-modal-lg">Додати маршрут</button>
-                            <button type="button" class="btn btn-primary" onclick="use_maps()" data-toggle="modal" data-target=".bd-example-modal-lg">Додати маршрут</button>
+
+                            <button type="button" class="btn btn-primary" data-toggle="modal" onclick="var markersArray = [];" data-target=".bd-example-modal-lg">Додати маршрут</button>
+                            
+                            <div>
+                                <p id="latFld"></p>
+                            </div>
+                            <div>
+                                <p id="lngFld"></p>
+                            </div>
+
                         </div>
                     </div>
                 </div>
@@ -115,11 +88,117 @@
     </div>
 </div>
 </div>
+
+<div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                
+                <div class="modal-header">
+                    <h5 class="modal-title">Місце роботи</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="container-fluid">
+                        <div class="row">
+                          <div class="col-12 pt-10">
+                            <div id="map-canvas" style="height: 400px;"></div>
+                          </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary">Зберегти</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Відмінити</button>
+                  </div>
+            </div>
+        </div>
+    </div>
+<div>
+
 {% endblock content_page %}
 
 
 {% block add_style %}
 <style>
+    .pac-container {
+        background-color: #FFF;
+        z-index: 20;
+        position: fixed;
+        display: inline-block;
+    }
+    .modal{
+        z-index: 20;   
+    }
+    .modal-backdrop{
+        z-index: 10;        
+    }
+    #infowindow-content .title {
+        font-weight: bold;
+      }
+
+      #infowindow-content {
+        display: none;
+      }
+
+      #map #infowindow-content {
+        display: inline;
+      }
+
+      .pac-card {
+        margin: 10px 10px 0 0;
+        border-radius: 2px 0 0 2px;
+        box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        outline: none;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+        background-color: #fff;
+        font-family: Roboto;
+      }
+
+      #pac-container {
+        padding-bottom: 12px;
+        margin-right: 12px;
+      }
+
+      .pac-controls {
+        display: inline-block;
+        padding: 5px 11px;
+      }
+
+      .pac-controls label {
+        font-family: Roboto;
+        font-size: 13px;
+        font-weight: 300;
+      }
+
+      #pac-input {
+        background-color: #fff;
+        font-family: Roboto;
+        font-size: 15px;
+        font-weight: 300;
+        margin-left: 12px;
+        padding: 0 11px 0 13px;
+        text-overflow: ellipsis;
+        width: 400px;
+      }
+
+      #pac-input:focus {
+        border-color: #4d90fe;
+      }
+
+      #title {
+        color: #fff;
+        background-color: #4d90fe;
+        font-size: 25px;
+        font-weight: 500;
+        padding: 6px 12px;
+      }
+      #target {
+        width: 345px;
+      }
 </style>
 {% endblock add_style %}
 
@@ -129,16 +208,6 @@
 
 <script>
     $(document).ready(function ($) {
-        $('input.breakage').change(function () {
-
-            if ($(this).is(':checked')) {
-                $(this).nextAll('div.breakage_info').show();
-            }
-            else {
-                $(this).nextAll('div.breakage_info').hide();
-            }
-        }).change();
-
         $('input.breakage').change(function () {
 
             if ($(this).is(':checked')) {

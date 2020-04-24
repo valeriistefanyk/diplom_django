@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <input type="text" id="pac-input" class="controls">
+    <div id="map-canvas"></div>
+</body>
+
+<script
+src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBL7BsIUwiM3SSVg65sc3U-oklrdxU77eY&v=3.exp&sensor=false&libraries=places">
+</script>
+<script>
+    var map;
+    function initialize(){
+        var mapOptions = {
+            zoom: 8,
+            center: new google.maps.LatLng(-34, 150)
+        };
+        map = new google.maps.Map(document.getElementById('map-canvas'),
+            mapOptions    
+        );
+    }
+    google.maps.event.addDomListener(window, 'load', initialize);
+
+
+    var defaultBounds = new google.maps.LatLngBounds(
+        new google.maps.LatLng(-33, 151),
+        new google.maps.LatLng(-33.2, 151.1)
+    );
+    var oprtions = {
+        bounds: defaultBounds
+    }
+
+    var input = document.getElementById('pac-input');
+    map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+    var autocomplete = new google.maps.places.Autocomplete(input, options);    
+</script>
+
+<!-- var defaultBounds = new google.maps.LatLngBounds(
+        new google.maps.LatLng(-33, 151),
+        new google.maps.LatLng(-33.2, 151.1)
+    );
+    var oprtions = {
+        bounds: defaultBounds
+    }
+
+    var input = document.getElementById('pac-input');
+    map. -->
+</html>

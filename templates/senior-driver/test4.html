@@ -1,0 +1,76 @@
+{% extends 'senior-driver/_base_page_driver.html'%}
+{% load static %}
+{% block add_head_link_2 %}
+    
+{% endblock add_head_link_2 %}
+
+{% block title %}Створення звіту {% endblock %}
+
+{% block content_page %}
+<div id="map"></div>
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bd-example-modal-lg">Додати маршрут</button>
+<div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                
+                <div class="modal-header">
+                    <h5 class="modal-title">Місце роботи</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="container-fluid">
+                        <div class="row">
+                          <div class="col-12 pt-10">
+                            <!-- <div id="map-canvas" style="height: 400px;"></div> -->
+                          </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary">Зберегти</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Відмінити</button>
+                  </div>
+            </div>
+        </div>
+    </div>
+<div>
+  <div>
+    <p id="latFld"></p>
+</div>
+<div>
+    <p id="lngFld"></p>
+</div>
+
+
+  <div class="row pt-10">
+ 
+  
+</div>
+</div>
+
+
+{% endblock content_page %}
+
+{% block add_style %}
+<style>
+#map {
+  height: 100%;
+}
+/* Optional: Makes the sample page fill the window. */
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+</style>
+{% endblock add_style %}
+
+{% block add_js %}
+
+    <script src="{% static 'js/google_maps_marker_add.js'%}"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBL7BsIUwiM3SSVg65sc3U-oklrdxU77eY&v=3.exp&libraries=places&language=uk&region=UK" async defer></script>
+  <script src="{% static 'js/bootstrap.js' %}"></script>
+{% endblock add_js %}
