@@ -43,7 +43,7 @@
             </form>
 
             {% if broken_machines %}
-                <p class="offset-1 text-primary font-italic pt-4" style="font-size: larger;">Машини які невідображаються через їх знаходження у ремонті:
+                <p class="offset-1 text-primary font-italic pt-4" style="font-size: larger;">Машини які не відображаються через їх знаходження у ремонті:
                 <ul class="offset-1 pl-10">
                     {% for machine in broken_machines %}
                         <li class="pb-2">{{ machine.machine__name}} {{machine.number_machine}} {{machine.inventory_number}}</li>

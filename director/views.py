@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required, permission_required
 from django.http import Http404
 from django.db.models import Q
@@ -6,7 +6,7 @@ from django.db.models import Count
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from machines.models import Machine, MachineName
-from engineer.models import Report, Engineer
+from engineer.models import Report, Engineer, MachineReport
 from senior_driver.models import SeniorDriver
 
 import json
@@ -25,7 +25,7 @@ def home_page(request):
 def show_reports(request):
     """ Звіти які передані від інженера """
     
-    reports = Report.objects.filter(checked=True).select_related('filled_up', 'filled_up__user')
+    reports = Report.objects.filter(checked=True).select_related('filled_up', 'filled_up__user').order_by('-date')
     from_date = request.GET.get('from')
     to_date = request.GET.get('to')
 
@@ -77,6 +77,54 @@ def show_reports(request):
         'date_report_set': date_report_set,
     }
     return render(request, 'director/show_reports.html', context=context)
+
+
+@login_required
+@permission_required('director.full_control', raise_exception=True)
+def show_report_detail(request, report_id):
+    
+    try:
+        report = Report.objects.select_related('checked_by', 'filled_up', 'filled_up__user', 'checked_by__user').get(pk=report_id)
+    except:
+        raise Http404("Звіт не знайдений")
+    
+    if report.checked == False:
+        raise Http404("Звіт ще не був переданий Вам. Інформація про цей звіт поки не доступна!")
+
+    machinereports = MachineReport.objects.filter(report_id=report.id).select_related('machine', 'machine__machine')
+
+    data_for_js = []
+
+    breakage = False
+    
+    for machinereport in machinereports:
+        if machinereport.breakage:
+            breakage = True
+
+        if machinereport.latFld and machinereport.lngFld:
+            data = [machinereport.name, machinereport.latFld, machinereport.lngFld]
+            data_for_js.append(data)
+    
+    
+    if len(data_for_js) > 1:
+        lat_arr = [el[1] for el in data_for_js]
+        lng_arr = [el[2] for el in data_for_js]
+        center_lat = sum(lat_arr)/len(lat_arr)
+        center_lng = sum(lng_arr)/len(lng_arr)
+        center = {"lat": center_lat, "lng": center_lng}
+    elif len(data_for_js) == 1:
+        center = {"lat": data_for_js[0][1], "lng": data_for_js[0][2]}
+    else:
+        center = {"lat": 50.443165, "lng": 30.485434}
+    
+    context = {
+        'report': report,
+        'machinereports': machinereports,
+        'data_for_js': data_for_js,
+        'center_map': center,
+        'breakage': breakage
+    }
+    return render(request, 'director/detail_report.html', context=context)
 
 
 @login_required

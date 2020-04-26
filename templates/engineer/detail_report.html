@@ -1,0 +1,122 @@
+{% extends 'engineer/_base_page_engineer.html' %}
+{% load static %}
+
+
+{% block content_page %}
+    <div>
+        <h2 class="mt-4 text-center">Детально про звіт</h2>
+
+        <div class="row pt-4">
+            
+            <div class="col-4 offset-3 text-center">
+                <p class="font-larger"><b><span class="text-success">Звіт оформив</span> {{report.filled_up.user.last_name}} {{report.filled_up.user.first_name}}</b></p>
+                <p><i class="fa fa-phone" aria-hidden="true"></i> <span>{{report.filled_up.telephone1}}</span>
+                    {% if report.filled_up.telephone2 %}, <span>{{report.filled_up.telephone2}}</span>{% endif %} </p>
+                <p><i class="fa fa-envelope"></i> <span><a href="mailto:{{report.filled_up.user.email}}" style="color: black;">{{report.filled_up.user.email}}</a></span></p>
+            </div>
+            <div class=" col-2">
+                <img src="{{ report.filled_up.avatar.url}}" alt="{{report.filled_up.user.username}}" class=" rounded-circle" width="100">
+            </div>
+        </div>
+        <div class="row offset-3 col-6 justify-content-center pt-3">
+            <div class="col-6 text-center pt-3">
+                <p class="font-larger"><i class="fa fa-file" aria-hidden="true"></i> <span>Звіт №{{report.id}}</span></p>
+            </div>
+            <div class="col-6 text-center pt-3">
+                <p class="font-larger"><i class="fa fa-calendar"></i> <span>{{report.date}}</span></p>
+            </div>
+        </div>
+        <p class="text-center font-italic pt-4 mt-4 font-larger">Машини та дані про мотогодини і використане дизельне паливо</p>
+        <div class="col-10 text-center offset-1">
+        <table class="table">
+            <tr>
+                <th>Машина</th>
+                <th>Мотогодини</th>
+                <th>Використано дизелю</th>
+            </tr>
+            {% for machinereport in machinereports %}
+            <tr>
+                <td><a class="" href="{% url 'machines:detail' machinereport.machine.id %}">{{machinereport.machine}}</a></td>
+                <td>{{machinereport.motohour}} мото/год</td>
+                <td>{{machinereport.fuel}} л.</td>
+            </tr>
+            {% endfor %}
+        </table>
+        </div>
+
+        <p class="text-center font-italic pt-3 font-larger">Інформація про несправності</p>
+        {% if breakage %}  
+        <ul class="offset-2 pl-10">
+            {% for machinereport in machinereports %}
+                {% if machinereport.breakage %}
+                <li class="pb-2">{{machinereport.name}}<br>
+                    <span class="font-italic">Інформація про несправність:</span> 
+                    {% if machinereport.breakage_info %} 
+                         <span class="text-danger font-italic"><b>{{ machinereport.breakage_info }}</b></span>
+                    {% else %}
+                        <span class="text-danger font-italic"><b>інформація вказана не була</b></span>
+                    {% endif %}
+                </li> 
+                {% endif %}
+            {% endfor %}
+        </ul>
+        {% else %}
+            <p class="text-center">За даним звітом несправностей під час роботи виявлено не було</p>
+        {% endif %}
+
+
+        <p class="text-center font-italic pt-3 font-larger">Місця проведення робот</p>
+        {% if data_for_js %}
+            <p class="offset-2 col-8 text-center">На карті зображені місця виконання роботи. Наведіть на маркер <i class="fas fa-map-marker-alt" style="color: red;"></i>, щоб дізнатись яка саме машина брала участь у роботі на данній дільниці
+                <br>Маркери можуть бути віддаленні один від одного, використовуйте зумування</p>
+        {% else %}
+            <p class="text-center">Даних про місця де виконувались роботи невідома або не була вказана</p>
+        {% endif %}
+    </div>
+    <div class="offset-1 col-10" id="map">
+
+    </div>
+    
+{% endblock content_page %}
+
+{% block add_style %}
+<style>
+    #map {
+        height: 500px;
+    }
+    .font-larger{
+        font-size: larger;
+    }
+  </style>
+{% endblock add_style %}
+
+
+{% block add_js %}
+<script>
+
+    function initMap() {
+        var map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 10,
+            center: {{ center_map | safe }}
+        });
+        setMarkers(map);
+    }
+    
+    var data = {{data_for_js  | safe }};
+    
+    function setMarkers(map) {
+    
+        for (var i = 0; i < data.length; i++) {
+            var el = data[i];
+            var marker = new google.maps.Marker({
+                position: { lat: el[1], lng: el[2] },
+                map: map,
+                title: el[0],
+            });
+        }
+    }
+</script>
+    <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBL7BsIUwiM3SSVg65sc3U-oklrdxU77eY&callback=initMap">
+    </script>
+{% endblock add_js %}

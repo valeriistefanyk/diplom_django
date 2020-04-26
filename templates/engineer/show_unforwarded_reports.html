@@ -15,9 +15,10 @@
                 </div>
                 <div class="card-body">
                     {% for info in date_report.report_info %}
-                        <div class="d-flex justify-content-around mb-3">
+                        <div class="d-flex justify-content-around mb-1">
                             <div>
-                                <p><b>Бригада №{{ info.brigade_name }} [старший водій {{ info.driver }}]</b><p>
+                                <p class="text-center"><b>Бригада №{{ info.brigade_name }} [{{ info.driver }}]</b><br>
+                                    <a href="{% url 'engineer:report-detail' info.report_id %}">детальніше про звіт</a></p>
                             </div>
                             <div>
                                 <form action="{% url 'engineer:unforwarded_reports' %}" method="POST">
@@ -27,14 +28,17 @@
                                 </form>
                             </div>
                         </div>
-                    
-                        <table class="table table-hover table-dark">
-                            <tr>
-                                <th>Машини у звіті</th>
-                                <th>Мотогодини</th>
-                                <th>Використано дизельного палива</th>
-                                <th>Стан машини</th>
-                            </tr>
+                        <div class="pb-4">
+                        <table class="table table-hover text-center table-bordered ">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th>Машини у звіті</th>
+                                    <th>Мотогодини</th>
+                                    <th>Використано дизельного палива</th>
+                                    <th>Стан машини</th>
+                                </tr>
+                            </thead>
+                            <tbody>
                                 {%for machine in info.machines %}
                                 <tr>
                                     <td>{{ machine.machine_full_name }}</td>
@@ -43,8 +47,11 @@
                                     <td>{{ machine.breakage | safe }}</td>
                                 </tr>
                                 {% endfor %}
+                            </tbody>
                         </table>
+                    </div>
                     {% endfor %}
+                    
                 </div>
             </div>
             {% endfor %}
@@ -93,6 +100,12 @@
         .table_dark tr:hover td {
             text-decoration: underline;
         }
+
+
+        hr {
+            border: 1px solid black;
+            color: black;
+          }
     </style>       
 {% endblock add_style %}
 

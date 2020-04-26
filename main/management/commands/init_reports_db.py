@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand
 from machines.models import Machine
 from senior_driver.models import SeniorDriver
-from engineer.models import Report, MachineReport
+from engineer.models import Report, MachineReport, Engineer
 import datetime
 import random
 
@@ -25,14 +25,18 @@ class Command(BaseCommand):
             print('Помилка ініціалізації. Спочатку виконайте команду "python manage.py init_machines_db"')
             return
 
+        engineer = Engineer.objects.all()[0]
+
         for i in range(0, len(date_list)-1):
             for driver in drivers:
                 report = Report.objects.create(
                     filled_up = driver,
                     date = date_list[i],
                     checked = True,
+                    checked_by=engineer,
                 )
-
+    
+    
                 concrete_machines = machines.filter(brigade=driver)[:machines_count_checkded] 
                 for machine in concrete_machines:
                     machine_report = MachineReport.objects.create(
@@ -41,6 +45,8 @@ class Command(BaseCommand):
                         name = machine.short_name(),
                         motohour = random.randint(5, 70),
                         fuel = round(random.uniform(20, 60), 1),
+                        latFld = random.uniform(50,51),
+                        lngFld = random.uniform(30,31),
                         breakage = False
                     )
                     machine.last_used_data = date_list[i]
@@ -63,7 +69,9 @@ class Command(BaseCommand):
                         name = machine.short_name(),
                         motohour = random.randint(5, 70),
                         fuel = round(random.uniform(20, 60), 1),
-                        breakage = False
+                        breakage = False,
+                        latFld = random.uniform(50,51),
+                        lngFld = random.uniform(30,31),
                     )
                     machine.last_used_data = date_list[i]
                     machine.save()

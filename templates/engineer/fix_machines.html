@@ -11,7 +11,7 @@
                 {% if breakage_machines %}
                 {% for breakage_machine in breakage_machines %}
                 <div class="card">
-                    <h5 class="card-header"><i class="fa fa-times"></i> {{ breakage_machine.full_name }} <i class="fa fa-times"></i></h5>
+                    <h5 class="card-header"><i class="fa fa-times"></i> <a href="{% url 'machines:detail' breakage_machine.id %}" class="machine">{{ breakage_machine.name }} {{ breakage_machine.number_machine }}</a> <i class="fa fa-times"></i></h5>
                     <div class="card-body">
                         <p class="card-text"><span class="font-weight-bold">Водій - </span>
                             {{ breakage_machine.brigade.full_name }}</p>
@@ -39,6 +39,13 @@
 
 {% block add_style %}
     <style> 
+
+        a.machine{
+            color: black; 
+        }
+        a.machine:hover{
+            text-decoration: underline;
+        }
         /* TABLE----------------------- */
         .table_dark {
             font-size: 14px;

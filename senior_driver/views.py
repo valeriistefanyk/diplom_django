@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import Http404
 from django.contrib.auth.decorators import login_required, permission_required
 from django.db.models import Q, Sum
@@ -67,6 +67,58 @@ def show_my_reports(request):
 
 @login_required
 @permission_required('senior_driver.full_control', raise_exception=True)
+def show_my_reports_detail(request, report_id):
+    """ Детально про звіт """
+    
+    driver = set_driver(request.user)
+
+    try:
+        report = Report.objects.select_related('filled_up', 'filled_up__user').get(pk=report_id)
+    except:
+        raise Http404("Звіт не знайдений")
+    if report.filled_up != driver:
+        raise Http404("Звіти зробив інший машиніст. Ви не маєте доступа до цього звіту!")
+
+
+    machinereports = MachineReport.objects.filter(report_id=report.id).select_related('machine', 'machine__machine')
+
+    data_for_js = []
+
+    breakage = False
+    
+    for machinereport in machinereports:
+        if machinereport.breakage:
+            breakage = True
+
+        if machinereport.latFld and machinereport.lngFld:
+            data = [machinereport.name, machinereport.latFld, machinereport.lngFld]
+            data_for_js.append(data)
+    
+    
+    if len(data_for_js) > 1:
+        lat_arr = [el[1] for el in data_for_js]
+        lng_arr = [el[2] for el in data_for_js]
+        center_lat = sum(lat_arr)/len(lat_arr)
+        center_lng = sum(lng_arr)/len(lng_arr)
+        center = {"lat": center_lat, "lng": center_lng}
+    elif len(data_for_js) == 1:
+        center = {"lat": data_for_js[0][1], "lng": data_for_js[0][2]}
+    else:
+        center = {"lat": 50.443165, "lng": 30.485434}
+    
+    context = {
+        'report': report,
+        'machinereports': machinereports,
+        'data_for_js': data_for_js,
+        'center_map': center,
+        'breakage': breakage
+    }
+    
+    return render(request, 'senior-driver/my_reports_detail.html', context)
+
+
+@login_required
+@permission_required('senior_driver.full_control', raise_exception=True)
 def show_machines(request):
     """ Машини які належать машиністу """
     
@@ -112,69 +164,84 @@ def make_report(request):
 
     return render(request, 'senior-driver/make_report.html', context)
 
-
 @login_required
 @permission_required('senior_driver.full_control', raise_exception=True)
 def make_report_fill(request):
     
-    machine_id_list = list(map(lambda el: int(el), request.POST.getlist('choices')))
-    machines = Machine.objects.filter(id__in=machine_id_list)
+    
     date = request.POST.getlist('date')[0] if request.POST.getlist('date') else None
 
     context = {}
     
     if request.POST.get('selectMachines'):
+        machine_id_list = list(map(lambda el: int(el), request.POST.getlist('choices')))
+        machines = Machine.objects.filter(id__in=machine_id_list)
 
-        
         context = {
             'date': date,
             'machines': machines,
+            'machine': machines[0] if machines else None,
+        }
+    
+    if request.POST.get('sendData'):
+        
+        report = get_or_create_report(request.POST.get('report_id'), date, request)
+                
+        fuel = request.POST.get('fuel')
+        motohour = request.POST.get('motohour')
+        machine_breakage = request.POST.get('breakage')
+        machine_breakage_info = request.POST.get('breakage_info')
+        
+
+        this_machine_id = int(request.POST.get('this_machine'))
+        
+        machine_id_list = list(map(lambda el: int(el), request.POST.getlist('choices')))
+        machine_id_list.remove(this_machine_id) 
+        
+        current_machine = Machine.objects.get(id=this_machine_id)
+
+        current_machine.work_days += 1
+        current_machine.last_used_data = date
+        
+        machine_report = MachineReport.objects.create(
+            report = report,
+            name = current_machine.name + ' №' + current_machine.number_machine,
+            machine = current_machine,
+            motohour = motohour,
+            fuel = fuel,
+        )
+
+        if request.POST.get('latFld') and request.POST.get('lngFld'):
+            machine_report.latFld = request.POST.get('latFld')
+            machine_report.lngFld = request.POST.get('lngFld')
+
+        if request.POST.get('breakage'):
+            current_machine.breakage = True
+            current_machine.breakage_info = machine_breakage_info
+            current_machine.breakage_date = date
+
+            machine_report.breakage = True
+            machine_report.breakage_info = machine_breakage_info
+            machine_report.breakage_date_start = date
+
+
+        current_machine.save()
+        machine_report.save()
+
+        machines = Machine.objects.filter(id__in=machine_id_list)
+
+        print(f"{date}\n{fuel}\n{motohour}\n{machine_breakage}\n{machine_breakage_info}\n")
+        if not machines:
+            return render(request, 'senior-driver/home_page.html', {'message': 'Звіт створений'})
+        
+        context = {
+            'report_id': report.id,
+            'date': date,
+            'machines': machines,
+            'machine': machines[0],
         }
 
-    if request.POST.get('sendData'):
-
-        machine_fuel_list = list(map(lambda el: float(el), request.POST.getlist('fuel')))
-        machine_motohour_list = list(map(lambda el: int(el), request.POST.getlist('motohour')))
-        machine_breakage_list = request.POST.getlist('breakage')
-        machine_breakage_info_list = request.POST.getlist('breakage_info')
-        for i in range(len(machine_breakage_list)):
-            if machine_breakage_list[i] == 'on':
-                machine_breakage_list[i-1] = "del"
-        machine_breakage_list = list(filter(lambda el: el == 'on' or el == 'off', machine_breakage_list))
-
-
-        # создать отчеты
-        filled_up = set_driver(request.user)
-        report = Report.objects.create(filled_up=filled_up, date=date) 
-            
-        all_info = list(zip(machines, machine_motohour_list, machine_fuel_list, machine_breakage_list, machine_breakage_info_list))
-    
-        for el in all_info:
-            machine = Machine.objects.get(pk=el[0].id)
-            machine.work_days += 1
-            machine.last_used_data = date
-            breakage = False
-            if el[3] == 'on':
-                breakage = True
-                machine.breakage = breakage
-                machine.breakage_info = el[4]
-                machine.breakage_date = date
-            
-            machine.save()
-            MachineReport.objects.create(
-                report = report,
-                name = el[0].name + ' №' + el[0].number_machine,
-                machine = el[0],
-                motohour = el[1],
-                fuel = el[2],
-                breakage = breakage,
-                breakage_info = el[4]
-            )
-            
-        return render(request, 'senior-driver/home_page.html', {'message': 'Звіт створений'})
-        
     return render(request, 'senior-driver/make_report_fill.html', context)
-
 
 
 ### допоміжні методи ###
@@ -220,3 +287,18 @@ def set_driver(user):
     if user.is_superuser:
         return SeniorDriver.objects.all().select_related('user')[1]
     return user.seniordriver
+
+
+def get_or_create_report(report_id, date, request):
+    if report_id:
+        report = Report.objects.get(id= report_id)
+        print('report: ', report, '. id = ', report.id)
+        return report
+        
+    else:
+        filled_up = set_driver(request.user)
+        report = Report.objects.create(filled_up=filled_up, date=date) 
+
+        print('report created, report_id: ', report.id)
+
+        return report

@@ -7,6 +7,7 @@
 
     <div class="container-fluid">
         <h2 class="mt-4 mb-4 text-center">Звіти які передані керівництву</h2>
+        <p class="text-center font-italic pt-2 pb-4" style="font-size: larger;">Для детального перегляду звіту, перейдіть за посиланням, натиснувши на <i class="fas fa-question-circle"></i> необхідного звіту</p>
         <div class="content-text">
             <div class="row">
                 <div class="col-md-3 offset-md-2">
@@ -80,12 +81,13 @@
             </div>
         </div>
             
-        <table class="table table-bordered table-fix">
-            <thead class="table-warning text-dark">
+        <table class="table table-bordered table-fix mt-4">
+            <thead class="table-warning text-dark text-center">
             <tr>
-                <th>Дата звіту</th>
+                <th>Дата</th>
                 <th>Оформив [бригада №]</th>
                 <th>Машини</th>
+                <th>Детально</th>
             </tr>
             </thead>
             <tbody>
@@ -100,11 +102,14 @@
                         {% endif %}
                         <td>{{ info.driver }} [Бригада №{{info.brigade_name}}]</td>
                         <td><ul class="hr">
+                            
                             {%for machine in info.machines %}
                                 <li>{{ machine.machine_short_name }} ({{ machine.motohour }}; {{ machine.fuel }})</li>
                             {% endfor %}</ul>
                         </td>
+                        <td class="text-center"><a href="{% url 'engineer:report-detail' info.report_id %}" style="color: white; font-size: larger;" title="Детальніше"><i class="fas fa-question-circle"></i></a></td>
                     </tr>
+                    
                     
                 {% endfor %}
                 {% endwith %}

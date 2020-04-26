@@ -31,7 +31,7 @@
                         {% for report in report_set %}
                         <h5 class="font-weight-bold text-warning">Звіт №{{report.id}}</h5>
                         <p><span class="font-weight-bold">Звіт за:</span> {{ report.date }}</p>
-
+                        <p><a href="{% url 'engineer:report-detail' report.id %}">детально про звіт</a></p>
                         {% if report.machines %}
                         <table class="table">
                             <tr>

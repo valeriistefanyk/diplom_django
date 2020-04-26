@@ -57,6 +57,10 @@ class MachineReport(models.Model):
     breakage_info = models.TextField(blank=True, null=True)
     breakage_date_start = models.DateField(blank=True, null=True)
 
+    latFld = models.FloatField(blank=True, null=True)
+    lngFld = models.FloatField(blank=True, null=True)
+
+
     def __str__(self):
         return f"{self.report.date} - {self.machine}"
 

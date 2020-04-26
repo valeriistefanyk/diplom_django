@@ -35,7 +35,7 @@ def show_unforwarded_reports(request):
         report.save()
         
 
-    reports_unforwarded = models.Report.objects.filter(checked=False).order_by('date')
+    reports_unforwarded = models.Report.objects.filter(checked=False).order_by('-date')
 
     date_report_set = []
     reports_date = reports_unforwarded.values('date').annotate(total=Count('id'))
@@ -48,17 +48,12 @@ def show_unforwarded_reports(request):
             driver = query.filled_up.full_name()
             brigade_name = query.filled_up.brigade_name
             machines = []
-            for machine in query.machinereport_set.values('name', 'fuel', 'motohour', 'breakage', 'breakage_info'):
+            for machine in query.machinereport_set.values('name', 'fuel', 'motohour', 'breakage'):
                 name = machine['name']
                 fuel = machine['fuel']
                 motohour = machine['motohour']
                 
-                breakage = "Є несправність" if machine['breakage'] else "Несправностей не було"
-                if breakage == "Є несправність":
-                    if machine['breakage_info']:
-                        breakage += f"<br>Інформація: {machine['breakage_info']}"
-                    else:
-                        breakage = f"<br>Інформація про несправність відсутня"
+                breakage = "<i class='fas fa-times' style='color:red;'></i>" if machine['breakage'] else "<i class='fas fa-check' style='color: green;'></i>"
                         
                 
                 machines_info = {
@@ -86,7 +81,7 @@ def show_unforwarded_reports(request):
 def show_forwarded_reports(request):
     """Відображення відправлених звітів"""    
     
-    reports_forwarded = models.Report.objects.filter(checked=True).order_by('date')
+    reports_forwarded = models.Report.objects.filter(checked=True).order_by('-date')
     
     from_date = request.GET.get('from')
     to_date = request.GET.get('to')
@@ -207,6 +202,7 @@ def show_fix_machines(request):
 
     engineer = set_engineer(request.user)
     if request.method == "POST":
+
         machine_id = request.POST.get('breakage_machine_id')
         
         machine = models.Machine.objects.get(pk=machine_id)
@@ -249,6 +245,75 @@ def all_machines(request):
         'machines': machines
     }
     return render(request, 'engineer/machines.html', context=context)
+
+
+@login_required
+@permission_required('engineer.full_control', raise_exception=True)
+def show_fix_machines(request):
+    """ Машини які перебувають/перебували у ремонті """
+
+    engineer = set_engineer(request.user)
+    if request.method == "POST":
+        machine_id = request.POST.get('breakage_machine_id')
+        
+        machine = models.Machine.objects.get(pk=machine_id)
+        
+        machine.breakage = False
+        machine.breakage_info = f"{machine.breakage_info}\nUPDATE: Машина була починена {datetime.date.today()}"
+        machine.fix_date = datetime.date.today()
+        machine.fix_by = engineer.full_name()
+        
+        machine.save()
+
+    breakage_machines = Machine.objects.filter(breakage=True).order_by('-brigade')
+    context = {
+        'breakage_machines': breakage_machines
+    }
+    return render(request, 'engineer/fix_machines.html', context)
+
+
+@login_required
+@permission_required('engineer.full_control', raise_exception=True)
+def report_detail(request, report_id):
+    
+    report = get_object_or_404(models.Report, pk=report_id)
+
+    machinereports = MachineReport.objects.filter(report_id=report.id).select_related('machine', 'machine__machine')
+
+    data_for_js = []
+
+    breakage = False
+    
+    for machinereport in machinereports:
+        if machinereport.breakage:
+            breakage = True
+
+        if machinereport.latFld and machinereport.lngFld:
+            data = [machinereport.name, machinereport.latFld, machinereport.lngFld]
+            data_for_js.append(data)
+    
+    
+    if len(data_for_js) > 1:
+        lat_arr = [el[1] for el in data_for_js]
+        lng_arr = [el[2] for el in data_for_js]
+        center_lat = sum(lat_arr)/len(lat_arr)
+        center_lng = sum(lng_arr)/len(lng_arr)
+        center = {"lat": center_lat, "lng": center_lng}
+    elif len(data_for_js) == 1:
+        center = {"lat": data_for_js[0][1], "lng": data_for_js[0][2]}
+    else:
+        center = {"lat": 50.443165, "lng": 30.485434}
+    
+    context = {
+        'report': report,
+        'machinereports': machinereports,
+        'data_for_js': data_for_js,
+        'center_map': center,
+        'breakage': breakage
+    }
+    return render(request, 'engineer/detail_report.html', context=context)
+
+
 
 
 # ПРАВИЛЬНА ДАТА

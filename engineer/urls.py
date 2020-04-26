@@ -13,4 +13,6 @@ urlpatterns = [
     path('workdays/', views.work_days, name='work_days'),
     path('fix-machines/', views.show_fix_machines, name='fix_machines'),
     path('machines/', views.all_machines, name='all-machines'),
+
+    path('report/<int:report_id>/', views.report_detail, name='report-detail'),
 ]

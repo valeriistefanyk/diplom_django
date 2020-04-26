@@ -68,7 +68,7 @@
 
     {% if machines %}
     <table class="table table-bordered table-fix">
-      <thead class="table-warning text-dark">
+      <thead class="table-warning text-dark text-center">
         <tr>
             <th scope="col">Назва машини</th>
             <th scope="col">Інвентарний номер</th>
@@ -80,10 +80,10 @@
         {% for machine in machines %}
         <tbody>
         <tr>
-            <th scope="row">{{ machine.name }}</th>
+            <th scope="row" class="text-center">{{ machine.name }}</th>
             <td>{{ machine.inventory_number }}</td>
             <td>{{ machine.number_machine }}</td>
-            <td><a class="btn btn-warning" href="{% url 'machines:detail' machine.id %}">Детальніше</a></td>
+            <td class="text-center"><a class="btn btn-warning" href="{% url 'machines:detail' machine.id %}">Детальніше</a></td>
         </tr>
       </tbody>
         {% endfor %}
