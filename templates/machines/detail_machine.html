@@ -19,11 +19,12 @@
         </div>
         <div class="col" style="font-size: larger;">
           <h3>Основні відомості:</h3>
-          <ul>
+          <ul style="line-height: 2;" class="pt-2">
             <li>Належить бригаді <b>№{{ machine.brigade.brigade_name }}</b></li>
             <li>Старший машиніст - <b>{{ machine.brigade.full_name }}</b></li>
             <li>Інвентарний номер <b>{{machine.inventory_number}}</b></li>
             <li>Номер машини <b>#{{machine.number_machine}}</b></li>
+            <li>Стан машини: <b>{% if machine.breakage %}<span style="color: red;">знаходиться в ремонті</span>{% else %}<span style="color: green;">в робочому стані</span>{% endif %}</b></li>
           </ul>
         </div>
     </div>

@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
@@ -6,12 +7,8 @@ from django.db.models import Q
 from machines import models
 
 
+@login_required
 def all_machines(request):
-
-    # login check start
-    if not request.user.is_authenticated:
-        return redirect('mylogin')
-    # login check end
 
     machiness = models.Machine.objects.all()
     
@@ -37,12 +34,8 @@ def all_machines(request):
     return render(request, 'machines/machines.html', context=context)
 
 
+@login_required
 def detail_machine(request, id):
-
-    # login check start
-    if not request.user.is_authenticated:
-        return redirect('mylogin')
-    # login check end
 
     machine = get_object_or_404(models.Machine, pk=id)
     context = {
@@ -51,12 +44,8 @@ def detail_machine(request, id):
     return render(request, 'machines/detail_machine.html', context)
 
 
+@login_required
 def show_detail_machines(request):
-
-    # login check start
-    if not request.user.is_authenticated:
-        return redirect('mylogin')
-    # login check end
 
     machiness = models.Machine.objects.all()
     

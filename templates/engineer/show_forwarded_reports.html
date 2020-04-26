@@ -96,7 +96,7 @@
                 {% for info in report.report_info %}
                 
                     <tr>{% if flag %}
-                        <td rowspan="{{ report.report_info | length }}">{{ report.date }}
+                        <td rowspan="{{ report.report_info | length }}">{{ report.date}}
                             {% update_variable False as flag %}
                         </td>
                         {% endif %}

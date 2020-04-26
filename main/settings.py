@@ -125,7 +125,7 @@ LOGOUT_REDIRECT_URL = '/logout/'
 # LOGIN_REDIRECT_URL = '/login/'
 LOGIN_URL = '/'
 
-
+LANGUAGE_CODE = 'uk-UK'
 
 try:
     from .local_settings import *

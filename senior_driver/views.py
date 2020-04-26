@@ -10,9 +10,6 @@ from senior_driver.models import SeniorDriver
 import datetime
 
 
-def test(request):
-    return render(request, 'senior-driver/test4.html', context={})
-
 @login_required
 @permission_required('senior_driver.full_control', raise_exception=True)
 def home_page(request):

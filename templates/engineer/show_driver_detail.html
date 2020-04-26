@@ -5,58 +5,127 @@
 {% block content_page %}
 
 <div class="container-fluid">
-    <h1 class="mt-4 text-center">Інформація про водія</h1>
+    <h2 class="mt-4 text-center">Інформація про водія</h2>
 
-    <div class="content-text my-4">
-        <div class="row d-flex">
-            <div class="col-md-4">
+    <div class="content-text my-4 pt-4">
+        <div class="row">
+            <div class="col-4 offset-2">
                 <div class="card shadow bg-white rounded" style="width: 18rem;">
                     <img src="{{driver.avatar.url}}" style="height: 20rem;" alt="{{driver.full_name}}">
                     <div class="card-body">
                         <h4 class="text-center">{{driver.full_name}}</h4>
                         <h5 class="text-center">@{{driver.user.username}}</h5>
-                        <p class="card-text">Дата народження: {{driver.date_of_birth}}</p>
-                        <p class="card-text">Email: {{driver.user.email}}</p>
-                        <p class="card-text">Телефон: {{driver.phones}}</p>
+                        <p class="card-text text-center">Дата народження: {{driver.date_of_birth |date:"d.m.Y"}}</p>
+                        <p class="card-text text-center"><i class="fa fa-envelope"></i> <span><a href="mailto:{{driver.user.email}}" style="color: black;">{{driver.user.email}}</a></span></p>
+                        <p class="card-text text-center"><i class="fa fa-phone" aria-hidden="true"></i> <span>{{driver.phones}}</span></p>
                     </div>
                 </div>
             </div>
-            <div class="col-md-8">
-                <div class="driver_reports">
 
-                    <h3 class="mb-4">Звіти водія</h3>
-                    {% if report_set %}
-                    <div class="shadow bg-white rounded my-5 p-4">
+            <div class="col-4">
 
-                        {% for report in report_set %}
-                        <h5 class="font-weight-bold text-warning">Звіт №{{report.id}}</h5>
-                        <p><span class="font-weight-bold">Звіт за:</span> {{ report.date }}</p>
-                        <p><a href="{% url 'engineer:report-detail' report.id %}">детально про звіт</a></p>
-                        {% if report.machines %}
-                        <table class="table">
-                            <tr>
-                                <td class="font-weight-bold">Машина</td>
-                                <td class="font-weight-bold">Мотогодини</td>
-                                <td class="font-weight-bold">Використано палива</td>
-                            </tr>
-                            {% for data in report.machines %}
-                            <tr>
-                                <td>{{data.machine}}</td>
-                                <td>{{data.motohour}}</td>
-                                <td>{{data.fuel}}</td>
-                            </tr>
-                            {% endfor %}
-                        </table>
+                <p class="text-center font-italic" style="font-size: larger;">Машини, які закріплені за старшим машиністом</p>
+                {% if machines.paginator.num_pages > 1 %} 
+                <nav aria-label="Page navigation">
+                    {# Из-за не работают некоторые классы css/mdb.min.css #}
+                    <ul class="pagination justify-content-center">
+          
+                        {% if machines.has_previous %}            
+                        <li class="page-item"> 
+                        <a class="page-link" href="?page={{machines.previous_page_number}}" aria-label="Previous">
+                          <span aria-hidden="true">&laquo;</span>
+                          <span class="sr-only">Previous</span>
+                        </a></li> 
+                        {% else %}
+                        <li class="page-item"> 
+                        <a class="page-link" href="?page=1" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                            <span class="sr-only">Previous</span>
+                          </a></li>
                         {% endif %}
-
-                        <br>
-                        <hr>
+                        
+                        {% for i in machines.paginator.page_range %}
+                            {% if machines.number == i %}
+                            <li class="page-item active">
+                                <span class="page-link">
+                                  {{i}}
+                                  <span class="sr-only">(current)</span>
+                                </span>
+                              </li>
+                            {% else %}
+                                <li class="page-item"><a class="page-link" href="?page={{i}}" title="{{i}}">{{i}}</a></li>
+                            {% endif %}
                         {% endfor %}
-                    </div>
-                    {% else%}
-                    <p>У цього старшого водія звітів немає</p>
-                    {% endif %}
+                            
+                            
+                        {% if machines.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{machines.next_page_number}}" aria-label="Next">
+                              <span aria-hidden="true">&raquo;</span>
+                              <span class="sr-only">Next</span>
+                            </a>
+                          </li>
+                        {% else %}
+                        <li class="page-item"><a class="page-link" href="#" onclick="return false;" aria-label="Next">
+                              <span aria-hidden="true">&raquo;</span>
+                              <span class="sr-only">Next</span>
+                            </a></li>
+                          {% endif %}
+                    </ul>
+                </nav>
+                {% endif %}
+
+                <div class="list-group">
+                    {% for machine in machines %}
+                        <a href="{% url 'machines:detail' machine.id %}" class="list-group-item list-group-item-action" title="Переглянути машину детально">{{machine.name}} №{{machine.number_machine}} [IN-{{machine.inventory_number}}]</a>
+                    {% endfor %}
                 </div>
+            </div> 
+        </div>
+        <div class="col-8 offset-2 pt-4 mt-4">
+            <div class="driver_reports">
+
+                <h3 class="mb-4 text-center">Звіти водія</h3>
+                {% if report_set %}
+                <div class="shadow bg-white rounded my-5 p-4">
+            
+                    {% for report in report_set %}
+                    <div class="row">
+                        <div class="col-6">
+                            <h5 class="font-weight-bold text-warning">Звіт №{{report.id}}</h5>
+                            <p><span class="font-weight-bold">Звіт за:</span> {{ report.date }}</p>
+                        </div>
+                        <div class="col-6 text-center pt-1">
+                            <p><a href="{% url 'engineer:report-detail' report.id %}" class="btn btn-warning">детально про звіт</a></p>
+                        </div>
+                    </div>
+                    
+                    
+                    {% if report.machines %}
+                    <table class="table text-center">
+                        <tr>
+                            <td class="font-weight-bold">Машина</td>
+                            <td class="font-weight-bold">Мотогодини</td>
+                            <td class="font-weight-bold">Використано палива</td>
+                        </tr>
+                        {% for data in report.machines %}
+                        <tr>
+                            <td>{{data.machine}}</td>
+                            <td>{{data.motohour}}</td>
+                            <td>{{data.fuel}}</td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                    {% endif %}
+
+                    <br>
+                    <hr>
+                    {% endfor %}
+
+                </div>
+                {% else%}
+                <p>У цього старшого водія звітів немає</p>
+                {% endif %}
             </div>
         </div>
     </div>

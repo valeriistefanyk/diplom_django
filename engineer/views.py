@@ -171,17 +171,25 @@ def show_drivers_detail(request, username):
     reports_driver = models.Report.objects.filter(filled_up=driver).values('id', 'date')
     machine_reports_all = MachineReport.objects.filter(Q(report_id__in = [o["id"] for o in reports_driver])).values('name', 'fuel', 'motohour','breakage', 'breakage_info', 'report_id')
 
-    
     for report in reports_driver:
         report["machines"] = []
         for machine_report in machine_reports_all.filter(report_id=report["id"]):
             report["machines"].append({'machine': machine_report["name"], 'motohour': machine_report["motohour"], 'fuel': machine_report["fuel"]})
 
+    machines = Machine.objects.filter(brigade=driver)
+    paginator = Paginator(machines, 9)
+    page = request.GET.get('page')
+    try:
+        machines = paginator.page(page)
+    except EmptyPage:
+        machines = paginator.page(paginator.num_pages)
+    except PageNotAnInteger:
+        machines = paginator.page(1)
 
     context = {
         'driver': driver,
-        'reports_driver': reports_driver,
         'report_set': reports_driver, 
+        'machines': machines,
     }
     return render(request, 'engineer/show_driver_detail.html', context)
 

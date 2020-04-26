@@ -5,35 +5,30 @@
 {% block content_page %}
 
 <div class="container-fluid">
-    <h1 class="mt-4 text-center">Старші водії</h1>
-    <div class="content-text">
-        {% if drivers %}
-        <table class="table table-bordered table-fix">
-            <thead class="table-warning text-dark">
-                <tr>
-                    <th scope="col">Бригада</th>
-                    <th scope="col">Працівник</th>
-                    <th scope="col">Email</th>
-                    <th scope="col">Телефон</th>
-                    <th scope="col">Інформація</th>
-                </tr>
-            <tbody>
-                {% for driver in drivers %}
-                <tr>
-                    <td>№{{driver.brigade_name}}</td>
-                    <td><img width="50px" src="{{driver.avatar.url}}" alt="{{driver.full_name}}">
-                        {{driver.full_name}}</td>
-                    <td>{{driver.user.email}}</td>
-                    <td>{{driver.phones}}</td>
-                    <td><a href="{% url 'engineer:driver_detail' driver.user.username %}"><button
-                                class="btn_send btn btn-warning text-dark text-center">Інформація / Машини /
-                                Водії</button></a></td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        {% endif %}
-    </div>
+    <h2 class="mt-4 text-center mb-4 pb-4">Старші машиністи</h2>
+        {% for driver in drivers %}
+        <div class="row col-8 pb-4 mx-auto">
+            <div class="card col-12">
+                <h5 class="card-header text-center"><span class="text-danger">Старший машиніст</span> {{driver.full_name}}</h5>
+                <div class="card-body row">
+                    
+                    <div class=" col-4" style="text-align: center;">
+                        <img src="{{ driver.avatar.url}}" alt="{{driver.full_name}}" class="rounded-circle pt-2" width="80">
+                    </div>
+                    <div class="col-5">
+                        <p class="font-larger">Закріплений за бригадою № <b>{{driver.brigade_name}}</b></p>
+                        <p><i class="fa fa-phone" aria-hidden="true"></i> <span>{{driver.phones}}</span></p>
+                        <p><i class="fa fa-envelope"></i> <span><a href="mailto:{{driver.user.email}}" style="color: black;">{{driver.user.email}}</a></span></p>
+                    </div>
+                    <div class=" col-3 pt-4">
+                        <a href="{% url 'engineer:driver_detail' driver.user.username %}"><button
+                            class="btn_send btn btn-warning text-dark text-center">Детальна інформація</button></a>
+                    </div>
+                    
+                </div>
+              </div>
+        </div>
+        {% endfor %}
 </div>
 {% endblock content_page %}
 

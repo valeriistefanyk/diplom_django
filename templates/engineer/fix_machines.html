@@ -5,13 +5,13 @@
 {% block content_page %}
 
         <div class="container-fluid">
-            <h1 class="mt-4 text-center">Інформація про ремонт машини</h1>
+            <h2 class="mt-4 text-center">Інформація про ремонт машини</h2>
             <div class="content-text">
-                <h4 class="my-4 text-danger">Машини які перебувають у ремонті:</h4>
+                <h4 class="my-4 text-danger text-center">Машини які перебувають у ремонті:</h4>
                 {% if breakage_machines %}
                 {% for breakage_machine in breakage_machines %}
-                <div class="card">
-                    <h5 class="card-header"><i class="fa fa-times"></i> <a href="{% url 'machines:detail' breakage_machine.id %}" class="machine">{{ breakage_machine.name }} {{ breakage_machine.number_machine }}</a> <i class="fa fa-times"></i></h5>
+                <div class="card offset-2 col-8">
+                    <h5 class="card-header"><i class="fa fa-times" style="color: red;"></i> <a href="{% url 'machines:detail' breakage_machine.id %}" class="machine">{{ breakage_machine.name }} {{ breakage_machine.number_machine }}</a> <i class="fa fa-times" style="color: red;"></i></h5>
                     <div class="card-body">
                         <p class="card-text"><span class="font-weight-bold">Водій - </span>
                             {{ breakage_machine.brigade.full_name }}</p>
