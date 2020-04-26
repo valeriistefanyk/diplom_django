@@ -1,0 +1,147 @@
+{% extends 'senior-driver/_base_page_driver.html'%}
+
+{% block title %}Мої звіти{% endblock %}
+
+{% block content_page %}
+
+        <div class="container-fluid">
+            <h1 class="mt-4 text-center">Мої звіти</h1>
+            <p class="text-center font-italic pt-2 pb-4" style="font-size: larger;">Для детального перегляду звіту, перейдіть за посиланням, натиснувши на <i class="fa fa-info-circle" aria-hidden="true"></i>необхідного звіту</p>
+            <div class="content-text">
+                <div class="row">
+                    <div class="col-4">
+                        <p class="list-group-item d-flex justify-content-between align-items-center">Кількість звітів за обраний проміжок часу <span class="badge badge-primary badge-pill">{{ my_reports.count }}</span></p>
+                    </div>
+                    <div class="col-8">
+                        <form class="form-inline" method="GET">
+                            <div class="form-group ml-3 mb-2">
+                                <div class="input-group date" id="datetimepicker7" data-target-input="nearest">
+                                    <input type="text" value="{{ from_date }}" class="form-control datetimepicker-input"
+                                        data-target="#datetimepicker7" name="from" />
+                                    <div class="input-group-append" data-target="#datetimepicker7" data-toggle="datetimepicker">
+                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group ml-3 mb-2">
+                                <div class="input-group date" id="datetimepicker8" data-target-input="nearest">
+                                    <input type="text" value="{{ to_date }}" class="form-control datetimepicker-input"
+                                        data-target="#datetimepicker8" name="to">
+                                    <div class="input-group-append" data-target="#datetimepicker8" data-toggle="datetimepicker">
+                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group ml-3 mb-2 pt-1">
+                                <button type="submit" class="btn btn-primary mb-2">Вибрати</button>
+                            </div>
+                            
+                        </form>
+                    </div>
+                </div>
+            </div>
+                
+                
+
+
+                <div class="reports">
+                    
+    
+
+                    {% for report in my_reports %}
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title">Звіт #{{ report.id }} за {{ report.date }} <a class="pl-4" href="{% url 'driver:report-detail' report.id %}" title="детально про звіт"><i class="fa fa-info-circle" aria-hidden="true"></i></a></h5>
+                        </div>
+                        <div class="card-body">
+                            <table class="table table-hover text-center">
+                                <tr>
+                                    <th>Машина</th>
+                                    <th>Мотогодини</th>
+                                    <th>Використано дизелю</th>
+                                    <th>Стан машини</th>
+                                </tr>
+                            {% for machine in report.machinereport_set.values %}
+                                <tr>
+                                    <td>{{ machine.name }}</td>
+                                    <td>{{ machine.motohour}}</td>
+                                    <td>{{ machine.fuel }}</td>
+                                    <td>{% if machine.breakage %}<i class='fas fa-times' style='color:red;'></i>
+                                        {% else %}<i class='fas fa-check' style='color: green;'></i>{% endif %}</td>
+                                </tr>
+                            {% endfor %}
+                            </table>
+                        </div>
+                      </div>
+                        <p></p>
+                        
+                    {% endfor %}
+                </div>
+
+                
+            </div>
+        </div>
+{% endblock content_page %}
+
+
+{% block add_style %}
+    <style>  
+        /* TABLE----------------------- */
+        .table_dark {
+            font-size: 14px;
+            width: 100%;
+            text-align: left;
+            border-collapse: collapse;
+            background: #252F48;
+            margin: 10px;
+        }
+
+        .table_dark th {
+            color: #EDB749;
+            border-bottom: 1px solid #37B5A5;
+            padding: 12px 17px;
+        }
+
+        .table_dark td {
+            color: #CAD4D6;
+            border-bottom: 1px solid #37B5A5;
+            border-right: 1px solid #37B5A5;
+            padding: 20px 27px;
+        }
+
+        .table_dark tr:last-child td {
+            border-bottom: none;
+        }
+
+        .table_dark td:last-child {
+            border-right: none;
+        }
+
+        .table_dark tr:hover td {
+            text-decoration: underline;
+        }      
+    </style>
+{% endblock add_style %}
+
+{% block add_js %}
+{# скрипт для выбора дат (начало) #}
+<script type="text/javascript">
+    $(function () {
+        $('#datetimepicker7').datetimepicker({
+            format: 'L'
+        });
+        $('#datetimepicker8').datetimepicker({
+            format: 'L',
+            useCurrent: false
+        });
+        $("#datetimepicker7").on("change.datetimepicker", function (e) {
+            $('#datetimepicker8').datetimepicker('minDate', e.date);
+        });
+        $("#datetimepicker8").on("change.datetimepicker", function (e) {
+            $('#datetimepicker7').datetimepicker('maxDate', e.date);
+        });
+    });
+</script>
+{# скрипт для выбора дат (конец) #}
+
+{% endblock add_js %}
