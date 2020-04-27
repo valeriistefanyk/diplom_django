@@ -41,7 +41,7 @@ def show_reports(request):
     date_report_set = []
     reports_date = reports.values('date').annotate(total=Count('id'))
     for report_date in reports_date:
-        date = report_date['date'].strftime("%Y-%m-%d")
+        date = report_date['date']
         queryset_rep = reports.filter(date=date)
         reports_set = []
         for query in queryset_rep:
@@ -341,6 +341,6 @@ def all_machines(request):
 
 # ПРАВИЛЬНА ДАТА
 def correct_date(date):
-    date_list = date.split('/')
-    date_correct = f"{date_list[2]}-{date_list[0]}-{date_list[1]}"
+    date_list = date.split('.')
+    date_correct = f"{date_list[2]}-{date_list[1]}-{date_list[0]}"
     return date_correct

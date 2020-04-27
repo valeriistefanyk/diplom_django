@@ -40,7 +40,7 @@ def show_unforwarded_reports(request):
     date_report_set = []
     reports_date = reports_unforwarded.values('date').annotate(total=Count('id'))
     for report_date in reports_date:
-        date = report_date['date'].strftime("%Y-%m-%d")
+        date = report_date['date']
         queryset_rep = reports_unforwarded.filter(date=date).select_related('filled_up', 'filled_up__user')
         reports_set = []
         for query in queryset_rep:
@@ -103,8 +103,8 @@ def show_forwarded_reports(request):
     date_report_set = []
     reports_date = reports_forwarded.values('date').annotate(total=Count('id'))
     for report_date in reports_date:
-        date = report_date['date'].strftime("%Y-%m-%d")
-        queryset_rep = reports_forwarded.filter(date=date).select_related('filled_up')
+        date_concrete = report_date['date']
+        queryset_rep = reports_forwarded.filter(date=date_concrete).select_related('filled_up')
         reports_set = []
         for query in queryset_rep:
             report_id = query.id
@@ -134,7 +134,7 @@ def show_forwarded_reports(request):
                 machines.append(machines_info)
 
             reports_set.append({'report_id': report_id, 'driver': driver, 'brigade_name': brigade_name, 'machines': machines})
-        date_report_set.append({'date': date, 'report_info': reports_set})
+        date_report_set.append({'date': date_concrete, 'report_info': reports_set})
 
 
     context = {
@@ -326,8 +326,8 @@ def report_detail(request, report_id):
 
 # ПРАВИЛЬНА ДАТА
 def correct_date(date):
-    date_list = date.split('/')
-    date_correct = f"{date_list[2]}-{date_list[0]}-{date_list[1]}"
+    date_list = date.split('.')
+    date_correct = f"{date_list[2]}-{date_list[1]}-{date_list[0]}"
     return date_correct
 
 def set_engineer(user):

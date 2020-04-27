@@ -101,10 +101,12 @@ TIME_ZONE = 'Europe/Kiev'
 
 USE_I18N = True
 
-USE_L10N = True
+USE_L10N = False
 
 USE_TZ = True
 
+LANGUAGE_CODE = 'uk-UK'
+DATE_FORMAT = "d.m.Y"
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
@@ -125,7 +127,6 @@ LOGOUT_REDIRECT_URL = '/logout/'
 # LOGIN_REDIRECT_URL = '/login/'
 LOGIN_URL = '/'
 
-LANGUAGE_CODE = 'uk-UK'
 
 try:
     from .local_settings import *

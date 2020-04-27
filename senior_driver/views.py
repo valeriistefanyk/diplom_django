@@ -244,11 +244,11 @@ def make_report_fill(request):
 ### допоміжні методи ###
 def correct_date(date, choise = 1):
     if choise == 1:
-        date_list = date.split('/')
-        date_correct = f"{date_list[2]}-{date_list[0]}-{date_list[1]}"
+        date_list = date.split('.')
+        date_correct = f"{date_list[2]}-{date_list[1]}-{date_list[0]}"
         return date_correct
     if choise == 2:
-        return date.strftime("%m/%d/%Y")
+        return date.strftime("%d.%m.%Y")
 
 
 def add_machines(reports):
