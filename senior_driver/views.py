@@ -227,7 +227,6 @@ def make_report_fill(request):
 
         machines = Machine.objects.filter(id__in=machine_id_list)
 
-        print(f"{date}\n{fuel}\n{motohour}\n{machine_breakage}\n{machine_breakage_info}\n")
         if not machines:
             return render(request, 'senior-driver/home_page.html', {'message': 'Звіт створений'})
         
@@ -289,13 +288,10 @@ def set_driver(user):
 def get_or_create_report(report_id, date, request):
     if report_id:
         report = Report.objects.get(id= report_id)
-        print('report: ', report, '. id = ', report.id)
         return report
         
     else:
         filled_up = set_driver(request.user)
         report = Report.objects.create(filled_up=filled_up, date=date) 
-
-        print('report created, report_id: ', report.id)
 
         return report

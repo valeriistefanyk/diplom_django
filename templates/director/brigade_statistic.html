@@ -1,0 +1,263 @@
+{% extends 'director/_base_page_director.html'%}
+
+{% load static %}
+{% block title %}Статистика бригади №{{driver.brigade_name}}{% endblock %}
+
+{% block add_head_link_2 %}
+
+    <script src="{% static 'js/moment-with-locales.min.js' %}"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/js/tempusdominus-bootstrap-4.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/css/tempusdominus-bootstrap-4.min.css" />
+    <link rel="stylesheet" href="{% static 'css/Chart.min.css' %}">
+    <script src="{% static 'js/Chart.min.js' %}"></script>
+{% endblock add_head_link_2 %}
+
+
+{% block content_page %}
+
+<div class="container-fluid">
+    <h2 class="mt-4 text-center mb-4">Статистика бригади №{{driver.brigade_name}}</h2>
+    <div class="row col-6 pb-4 mx-auto">
+        <div class="pt-4 col-12">
+            <div class=" row">
+                
+                <div class=" col-4" style="text-align: center;">
+                    <img src="{{ driver.avatar.url}}" alt="{{driver.full_name}}" class="rounded-circle pt-2" width="80">
+                </div>
+                <div class="col-8 text-center">
+                    <h5><span class="text-danger">Старший машиніст</span> {{driver.full_name}}</h5>
+                    <p><i class="fa fa-phone" aria-hidden="true"></i> <span>{{driver.phones}}</span></p>
+                    <p><i class="fa fa-envelope"></i> <span><a href="mailto:{{driver.user.email}}" style="color: black;">{{driver.user.email}}</a></span></p>
+                </div>
+            </div>
+          </div>
+    </div>
+</div>
+
+
+<form class="form-inline pt-4 pb-4 offset-1 col-10 justify-content-center" method="GET">
+    <div class="form-group mb-2">
+        <div class="input-group date" id="datetimepicker7" data-target-input="nearest">
+            <input type="text" value="{{ from_date }}" class="form-control datetimepicker-input"
+                data-target="#datetimepicker7" name="from" placeholder="Початкова дата"/>
+            <div class="input-group-append" data-target="#datetimepicker7" data-toggle="datetimepicker">
+                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+            </div>
+        </div>
+    </div>
+    <div class="form-group mx-sm-3 mb-2">
+        <div class="input-group date" id="datetimepicker8" data-target-input="nearest">
+            <input type="text" value="{{ to_date }}" class="form-control datetimepicker-input"
+                data-target="#datetimepicker8" name="to" placeholder="Кінцева дата">
+            <div class="input-group-append" data-target="#datetimepicker8" data-toggle="datetimepicker">
+                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+            </div>
+        </div>
+    </div>
+    <button type="submit" class="btn btn-warning mb-2">Вибрати</button>
+</form>
+<div>
+    {% if request.GET.from %}
+    <p class="text-center pt-3 pb-4" style="font-size: larger;">Кількість машин які використовувались в період {{from_date}}-{{to_date}} = <b>{{count_machine}}</b><br>Статистика за кожною машиною:</p>
+    {% else %}
+        <h3 class="text-center">Для формування статистики оберіть дати</h3>
+    {% endif %}
+    
+    <div class="offset-1 col-10">
+        {% for machines in data %}
+            <div class="col-12 pb-4">
+                <div class="card">
+                    <div class="card-header text-center" style="font-size: larger;">
+                        <b>{{machines.name}}</b> - була використана {{machines.count}} разів
+                    </div>
+                    <div class="card-body">
+                        <div class="">
+                            <div class="row col-12 justify-content-center">
+                                <div class="col-6">
+                                    <div class="chart-container">
+                                        <canvas id="myChart{{machines.id}}_fuel"></canvas>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="chart-container">
+                                        <canvas id="myChart{{machines.id}}_motohour"></canvas>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </div>
+                  </div>
+                
+                
+                <!-- <p><b>{{machines.name}}</b> - була використана {{machines.count}} рази </p>
+   
+                <button class="button">Показати графіки</button>
+                
+                <div class="chart_div">
+                    <div class="row col-12 justify-content-center">
+                        <div class="col-6">
+                            <div class="chart-container">
+                                <canvas id="myChart{{machines.id}}_fuel"></canvas>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="chart-container">
+                                <canvas id="myChart{{machines.id}}_motohour"></canvas>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div> -->
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="row col-10 offset-1 justify-content-center">
+    <div class="col-6">
+        <div class="chart-container">
+            <canvas id="myChart"></canvas>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="chart-container">
+            <canvas id="myChart2"></canvas>
+        </div>
+    </div>
+    
+</div>
+
+<script>
+var colors = [
+'rgba(255, 99, 132, 0.7)',
+'rgba(54, 162, 235, 0.7)',
+'rgba(255, 206, 86, 0.7)',
+'rgba(75, 192, 192, 0.7)',
+'rgba(153, 102, 255, 0.7)',
+'rgba(255, 159, 64, 0.7)',
+'rgba(255, 99, 132, 0.7)',
+'rgba(54, 162, 235, 0.7)',
+'rgba(255, 206, 86, 0.7)',
+'rgba(75, 192, 192, 0.7)',
+'rgba(153, 102, 255, 0.7)',
+'rgba(255, 159, 64, 0.7)',
+'rgba(255, 99, 132, 0.7)',
+'rgba(54, 162, 235, 0.7)',
+'rgba(255, 206, 86, 0.7)',
+'rgba(75, 192, 192, 0.7)',
+'rgba(153, 102, 255, 0.7)',
+'rgba(255, 159, 64, 0.7)',
+'rgba(255, 99, 132, 0.7)',
+'rgba(54, 162, 235, 0.7)',
+'rgba(255, 206, 86, 0.7)',
+'rgba(75, 192, 192, 0.7)',
+'rgba(153, 102, 255, 0.7)',
+'rgba(255, 159, 64, 0.7)',
+'rgba(255, 99, 132, 0.7)',
+'rgba(54, 162, 235, 0.7)',
+'rgba(255, 206, 86, 0.7)',
+'rgba(75, 192, 192, 0.7)',
+'rgba(153, 102, 255, 0.7)',
+'rgba(255, 159, 64, 0.7)',
+'rgba(255, 99, 132, 0.7)',
+'rgba(54, 162, 235, 0.7)',
+'rgba(255, 206, 86, 0.7)',
+'rgba(75, 192, 192, 0.7)',
+'rgba(153, 102, 255, 0.7)',
+'rgba(255, 159, 64, 0.7)',
+]
+
+{% for machines in data %}
+var ctx = document.getElementById('myChart{{machines.id}}_fuel').getContext('2d');
+var myChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: [{% for label in machines.labels %}'{{label}}',{% endfor %}],
+        datasets: [{
+            label: 'Використано палива',
+            data: [{% for fuel in machines.data_fuel %}{{fuel}},{% endfor %}],
+            backgroundColor: colors,
+            borderWidth: 1
+        }]
+    },
+    maintainAspectRatio: false,
+    options: {
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero: true
+                }
+            }]
+        }
+    }
+});
+
+
+var ctx = document.getElementById("myChart{{machines.id}}_motohour").getContext('2d');
+var myChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: [{% for label in machines.labels %}'{{label}}',{% endfor %}],
+        datasets: [{
+            label: 'Пройдено мотогодин',
+            data: [{% for motohour in machines.data_motohour %}{{motohour}},{% endfor %}],
+            backgroundColor: colors,
+            borderWidth: 1
+        }]
+    },
+    maintainAspectRatio: false,
+    options: {
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero: true
+                }
+            }]
+        }
+    }
+});
+{% endfor %}
+
+</script>
+{% endblock content_page %}
+
+{% block add_style %}
+<style>
+    .chart_div{
+        display: none;
+    }
+</style>
+{% endblock add_style %}
+
+{% block add_js %}
+{# скрипт для выбора дат (начало) #}
+<script type="text/javascript">
+    $(function () {
+
+        $('.button').click(function () {
+            $('div.chart_div').hide();
+            $(this).nextAll('div.chart_div').show();
+        })
+        
+
+        $('#datetimepicker7').datetimepicker({
+            locale: 'uk',
+            format: 'L'
+        });
+        $('#datetimepicker8').datetimepicker({
+            locale: 'uk',
+            format: 'L',
+            useCurrent: false
+        });
+        $("#datetimepicker7").on("change.datetimepicker", function (e) {
+            $('#datetimepicker8').datetimepicker('minDate', e.date);
+        });
+        $("#datetimepicker8").on("change.datetimepicker", function (e) {
+            $('#datetimepicker7').datetimepicker('maxDate', e.date);
+        });
+    });
+</script>
+{# скрипт для выбора дат (конец) #}
+
+{% endblock add_js %}

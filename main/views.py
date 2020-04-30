@@ -42,7 +42,6 @@ def mylogout(request):
 def redirect_on_right_page(request, user):
 
     next_value = request.POST.get('next')
-    print(next_value)
     if next_value:
         return redirect(next_value)
 

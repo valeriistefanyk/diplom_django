@@ -9,6 +9,7 @@ from machines.models import Machine, MachineName
 from engineer.models import Report, Engineer, MachineReport
 from senior_driver.models import SeniorDriver
 
+import datetime
 import json
 
 
@@ -33,7 +34,6 @@ def show_reports(request):
         from_date_correct = correct_date(from_date)
         to_date_correct = correct_date(to_date)
         reports = reports.filter(date__range = [from_date_correct, to_date_correct])
-        print(reports)
     
 
 
@@ -130,170 +130,59 @@ def show_report_detail(request, report_id):
 @login_required
 @permission_required('director.full_control', raise_exception=True)
 def show_statistics(request):
-    """ Графіки """
+    """ Перегляд статистики """
 
-    reports = Report.objects.all()
     drivers = SeniorDriver.objects.all().order_by('brigade_name').select_related('user')
     data_report = {
         'names': drivers.values_list('brigade_name', flat=True)
     }
 
-    ########## DATA FOR CHARTS START ##########
-    
-    
-    #######
-    # g_drivers = SeniorDriver.objects.all()
-    # g_reports_driver = []
-    # for g_driver in g_drivers:
-    #     g_reports_driver.append(Report.objects.filter(filled_up=g_driver))
-    # g_machines = []
-    # for g_report_driver in g_reports_driver:
-    #     g_machines.append(g_report_driver)
-
-    ## названия всех машин
-    # def machines_of_driver(reports_of_drivers):
-    #     machines = []
-    #     for report in reports_of_drivers:
-    #         machines_set = report.machinereport_set.values()
-    #         for machine in machines_set:
-    #             machine_concrete = Machine.objects.get(pk=machine['machine_id'])
-    #             machine_name = machine_concrete.machine.name + machine_concrete.number_machine
-    #             if not machine_name in machines:
-    #                 machines.append(machine_name)
-    #     return machines
-    
-    # g_reports_drivers = []
-    # g_drivers = SeniorDriver.objects.all()
-    # for g_driver in g_drivers:
-    #     g_reports_driver.append(Report.objects.filter(filled_up=g_driver))
-
-    # data = []   
-    # for reports_driver in g_reports_drivers:
-    #     data.append(machines_of_driver(reports_driver))
-
-
-    # addColumns_list = [machine for machine in machines_of_driver(reports_of_drivers)]
-    #######
-
-    
-    # higonov (№5)
-    # values_data = []
-    # higonov = SeniorDriver.objects.get(user__username='higonov')
-    # reports_higonov = Report.objects.filter(filled_up=higonov)
-
-    # m1 = reports_higonov[0].machine
-    # m2 = reports_higonov[0].machine
-    
-    # reports_higonov_m1 = reports_higonov.filter(machine=m1)
-    # reports_higonov_m2 = reports_higonov.filter(machine=m2)
-
-    # reports_higonov_m1.filter(date__range = ['2020-02-23', '2020-03-30'])
-    # reports_higonov_m2.filter(date__range = ['2020-02-23', '2020-03-30'])
-    
-    
-    # addColumns = [m1.machine.name + ' #' + m1.number_machine, m2.machine.name + ' #' + m2.number_machine]
-    # addRows = []
-    
-    # for i in range(0, reports_higonov_m1.count()):
-    #     addRows.append([reports_higonov_m1[i].date, 
-    #                     reports_higonov_m1[i].motohour, 
-    #                     reports_higonov_m2[i].motohour, 
-    #                     [
-    #                         reports_higonov_m1[i].machine.machine.name + ' #' + reports_higonov_m1[i].machine.number_machine,
-    #                         reports_higonov_m1[i].date.strftime('%b %d, %Y'),
-    #                         reports_higonov_m1[i].fuel,
-    #                         reports_higonov_m1[i].motohour
-    #                     ],
-    #                     [
-    #                         reports_higonov_m2[i].machine.machine.name + ' #' + reports_higonov_m2[i].machine.number_machine,
-    #                         reports_higonov_m2[i].date.strftime('%b %d, %Y'),
-    #                         reports_higonov_m2[i].fuel,
-    #                         reports_higonov_m2[i].motohour
-    #                     ],
-    #                 ])
-
-    
-    # addRows = [['12-02-2020', 20, 30], ["new Date(2020, 0)", 0, 0], ...]
-
-    ########## DATA FOR CHARTS END ##########
-
-
     context = {
-        'reports': reports,
         'drivers': drivers,
-        
-        # 'addColumns': addColumns,
-        # 'addRows': addRows
     }
     return render(request, 'director/statistics.html', context=context)
 
 
-#### TEST STATISTICS SHOW (END) ####
 @login_required
 @permission_required('director.full_control', raise_exception=True)
-def test_show_statistics(request):
-    
-    reports = Report.objects.all()
-    drivers = SeniorDriver.objects.all().order_by('brigade_name')
-    data_report = {
-        'names': drivers.values_list('brigade_name', flat=True)
-    }
+def brigade_statistic(request, driver_id):
+    """ Статистика по кожній бригаді """
 
-    ########## DATA FOR CHARTS START ##########
-    
-    
-    # higonov (№5)
-    values_data = []
-    higonov = SeniorDriver.objects.get(user__username='higonov')
-    reports_higonov = Report.objects.filter(filled_up=higonov)
+    driver = get_object_or_404(SeniorDriver, pk=driver_id)
 
-    m1 = reports_higonov[0].machine
-    m2 = reports_higonov[0].machine
-    
-    reports_higonov_m1 = reports_higonov.filter(machine=m1)
-    reports_higonov_m2 = reports_higonov.filter(machine=m2)
+    machinereports = MachineReport.objects.all().select_related('report')
 
-    reports_higonov_m1.filter(date__range = ['2020-02-23', '2020-03-30'])
-    reports_higonov_m2.filter(date__range = ['2020-02-23', '2020-03-30'])
-    
-    
-    addColumns = [m1.machine.name + ' #' + m1.number_machine, m2.machine.name + ' #' + m2.number_machine]
-    addRows = []
-    
-    for i in range(0, reports_higonov_m1.count()):
-        addRows.append([reports_higonov_m1[i].date, 
-                        reports_higonov_m1[i].motohour, 
-                        reports_higonov_m2[i].motohour, 
-                        [
-                            reports_higonov_m1[i].machine.machine.name + ' #' + reports_higonov_m1[i].machine.number_machine,
-                            reports_higonov_m1[i].date.strftime('%b %d, %Y'),
-                            reports_higonov_m1[i].fuel,
-                            reports_higonov_m1[i].motohour
-                        ],
-                        [
-                            reports_higonov_m2[i].machine.machine.name + ' #' + reports_higonov_m2[i].machine.number_machine,
-                            reports_higonov_m2[i].date.strftime('%b %d, %Y'),
-                            reports_higonov_m2[i].fuel,
-                            reports_higonov_m2[i].motohour
-                        ],
-                    ])
+    from_date = request.GET.get('from')
+    to_date = request.GET.get('to')
 
+
+    if from_date and to_date:
+        from_date_correct = correct_date(from_date)
+        to_date_correct = correct_date(to_date)
+
+        machinereports = machinereports.filter(report__date__range = [from_date_correct, to_date_correct])
+        
+
+    # distinct = machinereports.values('machine').annotate(machine_count=Count('machine'))
+    # machines = Machine.objects.filter(id__in=[item['machine'] for item in distinct])
+
+    # machines = machinereports.values('name').annotate(name_count=Count('name')).order_by('-name_count')
+
+    data = None
+    count_machine = None
     
-    # addRows = [['12-02-2020', 20, 30], ["new Date(2020, 0)", 0, 0], ...]
-
-    ########## DATA FOR CHARTS END ##########
-
+    if from_date and to_date:
+        data, count_machine = get_chart_data(machinereports, from_date_correct, to_date_correct)
 
     context = {
-        'reports': reports,
-        'drivers': drivers,
-        
-        'addColumns': addColumns,
-        'addRows': addRows
-    }
-    return render(request, 'director/test_statistics.html', context=context)
-#### TEST STATISTICS SHOW (END) ####
+        'from_date': from_date,
+        'to_date' : to_date,
+        'driver': driver,
 
+        'count_machine': count_machine,
+        'data': data, 
+    }
+    return render(request, 'director/brigade_statistic.html', context=context)
 
 
 @login_required
@@ -344,3 +233,29 @@ def correct_date(date):
     date_list = date.split('.')
     date_correct = f"{date_list[2]}-{date_list[1]}-{date_list[0]}"
     return date_correct
+
+
+def get_chart_data(machinereports, from_date, to_date):
+
+    # timestamps = [datetime.datetime(2016, 11, 21, 0, 0), datetime.datetime(2016, 11, 22, 0, 0), datetime.datetime(2016, 11, 23, 0, 0)]
+    # labels = [d.strftime('%Y-%d-%m') for d in timestamps]
+    machines_data = []
+
+    machines = machinereports.values('name').annotate(name_count=Count('name')).order_by('-name_count')
+    id = 0
+    for machine in machines:
+        machines_range_date = machinereports.filter(name=machine['name'], report__date__range=(from_date, to_date)).order_by('report__date')
+        
+        data_fuel = []
+        data_motohour = []
+        labels = []
+        
+        for element in machines_range_date:
+            labels.append(element.report.date)
+            data_fuel.append(element.fuel)
+            data_motohour.append(element.motohour)
+        id += 1
+        machines_data.append({'name': machine['name'], 'count': machine['name_count'], 'id': id, 'labels': labels, 'data_fuel': data_fuel, 'data_motohour': data_motohour})
+    count_machine = machines.count()
+
+    return machines_data, count_machine
