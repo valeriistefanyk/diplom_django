@@ -35,7 +35,7 @@
 </div>
 
 
-<form class="form-inline pt-4 pb-4 offset-1 col-10 justify-content-center" method="GET">
+<!-- <form class="form-inline pt-4 pb-4 offset-1 col-10 justify-content-center" method="GET">
     <div class="form-group mb-2">
         <div class="input-group date" id="datetimepicker7" data-target-input="nearest">
             <input type="text" value="{{ from_date }}" class="form-control datetimepicker-input"
@@ -55,10 +55,69 @@
         </div>
     </div>
     <button type="submit" class="btn btn-warning mb-2">Вибрати</button>
-</form>
+</form> -->
 <div>
+    <div class="row col-10 offset-1">
+        <div class="col-2 offset-1 mt-4">
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="radioDate" id="radio1" {% if radio_current == 'diapazon' %} checked {% endif %} value="diapozon">
+                <label class="form-check-label" for="radio1">
+                    діапазон дат
+                </label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="radioDate" id="radio3" {% if radio_current == 'month' %} checked {% endif %} value="months">
+                <label class="form-check-label" for="radio3">
+                    обрати місяць
+                </label>
+              </div>
+        </div>
+        <div class="col-6">
+            <div id="datediapozon" class="desc row pt-1" {% if not radio_current == 'diapazon' %} style="display: none;" {% endif %}>
+                <!-- діапазон дат -->
+                <form class="form-inline mb-4 mt-4 col-12 justify-content-center" method="GET">
+                    <div class="form-group mb-2">
+                        <div class="input-group date" id="datetimepicker7" data-target-input="nearest">
+                            <input type="text" value="{{ from_date }}" class="form-control datetimepicker-input"
+                                data-target="#datetimepicker7" name="from" placeholder="Початкова дата"/>
+                            <div class="input-group-append" data-target="#datetimepicker7" data-toggle="datetimepicker">
+                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group mx-sm-3 mb-2">
+                        <div class="input-group date" id="datetimepicker8" data-target-input="nearest">
+                            <input type="text" value="{{ to_date }}" class="form-control datetimepicker-input"
+                                data-target="#datetimepicker8" name="to" placeholder="Кінцева дата">
+                            <div class="input-group-append" data-target="#datetimepicker8" data-toggle="datetimepicker">
+                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-warning mb-2">Вибрати</button>
+                </form>
+            </div>
+        
+            <div id="datemonths" class="desc row pt-1" {% if not radio_current == 'month' %} style="display: none;" {% endif %}>
+                <!-- вибор по місячно -->
+                <form class="form-inline mt-4 mb-4 col-12 justify-content-center" method="GET">
+                    <div class="form-group mr-3 mb-2">
+                        <div class="input-group date" id="months" data-target-input="nearest">
+                            <input type="text" class="form-control datetimepicker-input" value="{{ month }}" name="month" data-target="#months" placeholder="Оберіть місяць"/>
+                            <div class="input-group-append" data-target="#months" data-toggle="datetimepicker">
+                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-warning ml-4 mb-2">Вибрати</button>
+                </form>
+            </div>
+        </div>
+    </div>
     {% if request.GET.from %}
     <p class="text-center pt-3 pb-4" style="font-size: larger;">Кількість машин які використовувались в період {{from_date}}-{{to_date}} = <b>{{count_machine}}</b><br>Статистика за кожною машиною:</p>
+    {% elif request.GET.month %}
+    <p class="text-center pt-3 pb-4" style="font-size: larger;">Кількість машин які використовувались в цей місяць - <b>{{count_machine}}</b><br>Статистика за кожною машиною:</p>
     {% else %}
         <h3 class="text-center">Для формування статистики оберіть дати</h3>
     {% endif %}
@@ -114,6 +173,13 @@
     </div>
 </div>
 
+
+
+
+
+
+
+
 <div class="row col-10 offset-1 justify-content-center">
     <div class="col-6">
         <div class="chart-container">
@@ -125,7 +191,6 @@
             <canvas id="myChart2"></canvas>
         </div>
     </div>
-    
 </div>
 
 <script>
@@ -256,8 +321,29 @@ var myChart = new Chart(ctx, {
         $("#datetimepicker8").on("change.datetimepicker", function (e) {
             $('#datetimepicker7').datetimepicker('maxDate', e.date);
         });
+
+        $('#months').datetimepicker({
+            locale: 'uk',
+            viewMode: 'years',
+            format: 'MM/YYYY',
+            maxDate: new Date(),
+        });
     });
 </script>
 {# скрипт для выбора дат (конец) #}
+
+<script>
+    $(document).ready(function() {
+        $("input[name$='radioDate']").click(function() {
+            
+            var test = $(this).val();
+            // $("input.datetimepicker-input").val(''); 
+            $("div.desc").hide();
+            
+            $("#date" + test).show();
+            
+        });
+    });
+  </script>
 
 {% endblock add_js %}

@@ -148,20 +148,29 @@ def show_statistics(request):
 def brigade_statistic(request, driver_id):
     """ Статистика по кожній бригаді """
 
+    status = { 'month': 'month', 'diapazon': 'diapazon' }
+
     driver = get_object_or_404(SeniorDriver, pk=driver_id)
 
     machinereports = MachineReport.objects.all().select_related('report')
 
     from_date = request.GET.get('from')
     to_date = request.GET.get('to')
+    month = request.GET.get('month')
 
+    radio_current = status['diapazon']
 
     if from_date and to_date:
         from_date_correct = correct_date(from_date)
         to_date_correct = correct_date(to_date)
 
         machinereports = machinereports.filter(report__date__range = [from_date_correct, to_date_correct])
-        
+    
+    if month:
+        machinereports = machinereports.filter(report__date__year=month.split('/')[1], report__date__month=month.split('/')[0])
+        radio_current = status['month']
+        # some_date = month.split('/')
+        # month2 = f"{calendar.month_name[int(some_date[0])]}, {some_date[1]}"
 
     # distinct = machinereports.values('machine').annotate(machine_count=Count('machine'))
     # machines = Machine.objects.filter(id__in=[item['machine'] for item in distinct])
@@ -174,10 +183,15 @@ def brigade_statistic(request, driver_id):
     if from_date and to_date:
         data, count_machine = get_chart_data(machinereports, from_date_correct, to_date_correct)
 
+    if month:
+        data, count_machine = get_chart_data(machinereports, month=month)
+
     context = {
         'from_date': from_date,
         'to_date' : to_date,
+        'month': month,
         'driver': driver,
+        'radio_current': radio_current,
 
         'count_machine': count_machine,
         'data': data, 
@@ -235,7 +249,7 @@ def correct_date(date):
     return date_correct
 
 
-def get_chart_data(machinereports, from_date, to_date):
+def get_chart_data(machinereports, from_date = None, to_date = None, month = None):
 
     # timestamps = [datetime.datetime(2016, 11, 21, 0, 0), datetime.datetime(2016, 11, 22, 0, 0), datetime.datetime(2016, 11, 23, 0, 0)]
     # labels = [d.strftime('%Y-%d-%m') for d in timestamps]
@@ -243,19 +257,38 @@ def get_chart_data(machinereports, from_date, to_date):
 
     machines = machinereports.values('name').annotate(name_count=Count('name')).order_by('-name_count')
     id = 0
-    for machine in machines:
-        machines_range_date = machinereports.filter(name=machine['name'], report__date__range=(from_date, to_date)).order_by('report__date')
-        
-        data_fuel = []
-        data_motohour = []
-        labels = []
-        
-        for element in machines_range_date:
-            labels.append(element.report.date)
-            data_fuel.append(element.fuel)
-            data_motohour.append(element.motohour)
-        id += 1
-        machines_data.append({'name': machine['name'], 'count': machine['name_count'], 'id': id, 'labels': labels, 'data_fuel': data_fuel, 'data_motohour': data_motohour})
-    count_machine = machines.count()
+    if from_date and to_date:
+        for machine in machines:
+
+            machines_range_date = machinereports.filter(name=machine['name'], report__date__range=(from_date, to_date)).order_by('report__date')
+
+            data_fuel = []
+            data_motohour = []
+            labels = []
+
+            for element in machines_range_date:
+                labels.append(element.report.date)
+                data_fuel.append(element.fuel)
+                data_motohour.append(element.motohour)
+            id += 1
+            machines_data.append({'name': machine['name'], 'count': machine['name_count'], 'id': id, 'labels': labels, 'data_fuel': data_fuel, 'data_motohour': data_motohour})
+        count_machine = machines.count()
+    
+    elif month:
+        for machine in machines:
+    
+            machines_range_date = machinereports.filter(name=machine['name'], report__date__year=month.split('/')[1], report__date__month=month.split('/')[0]).order_by('report__date')
+
+            data_fuel = []
+            data_motohour = []
+            labels = []
+
+            for element in machines_range_date:
+                labels.append(element.report.date)
+                data_fuel.append(element.fuel)
+                data_motohour.append(element.motohour)
+            id += 1
+            machines_data.append({'name': machine['name'], 'count': machine['name_count'], 'id': id, 'labels': labels, 'data_fuel': data_fuel, 'data_motohour': data_motohour})
+        count_machine = machines.count()
 
     return machines_data, count_machine
