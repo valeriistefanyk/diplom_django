@@ -1,22 +1,37 @@
-# commands:
+# The TrackMachine
 
-- activation virtual environment ('.env/Scripts/activate')
-- python manage.py makemigrations
-- python manage.py migrate
+## О приложении
+
+Приложение для ведения отчетности в филиале Ж/Д компании, занимающейся эксплуатацией путевых машин.
+В веб-приложении есть 3 вида аккаунта - директор, инженер, старший машинист. 
+В зависимости от типа аккаунта будут различаться функции и возможности.
+
+## Возможности и функции приложения
+
+- Создание отчетов старшим машинистом
+- Проверака отчетов и перенаправление их руководству
+- Проверка отчетности руководством (директор)
+- Просмотр информации о состоянии путевой машины, её состовляющих
+- Просмотр статистики для руководства с отображением сравнения отчетности для бригады
+- Просмотр рабочего графика
+- Управление состоянием неработающей машины со стороны инженера
+- Просмотр информации о работниках
+
+## Запуск приложения
+
+Приложение написано на Django 3.0. 
+Для запуска приложения необходимо выполнить:
+
+- клонировать проект
+- создать виртуальное окружение
+- для генерации БД:
+    1. python manage.py migrate
+    2. python manage.py full_init_db
 - python manage.py runserver
 
+Для корректного отображения google maps необходимо добавить api_key ([получить key](https://developers.google.com/maps/documentation/javascript/get-api-key?hl=ru)) в файл settings.py. 
 
-# URLs that you can visit:
+Данные созданных аккаунтов - в таблице /files/other_data/user_tables/[directors, drivers, engineers].csv
 
-- admin/
-- home/ - temporary page (i need delete this url in the future)
-- login/ - login page
-- logout/ - for user logout
-
-- machines/ - all machines
-- machines/<id> - detail machine with id = <id>
-- driver/ - driver home page
-- driver/about/ - driver profile (about him)
-- engineer/ - engineer home page
-- engineer/raports/ - showing all raports
-- director/ - director home page
+## Демо
+Код запущен на pythonanywhere - [The TrackMachine](https://valeriistefanyk.pythonanywhere.com/)

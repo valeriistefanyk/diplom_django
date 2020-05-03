@@ -4,6 +4,7 @@ from django.http import Http404
 from django.db.models import Q, Sum
 from django.db.models import Count
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.conf import settings
 
 from engineer import models
 from machines.models import Machine
@@ -185,7 +186,8 @@ def show_drivers_detail(request, username):
         machines = paginator.page(paginator.num_pages)
     except PageNotAnInteger:
         machines = paginator.page(1)
-
+    
+    
     context = {
         'driver': driver,
         'report_set': reports_driver, 
@@ -311,13 +313,14 @@ def report_detail(request, report_id):
         center = {"lat": data_for_js[0][1], "lng": data_for_js[0][2]}
     else:
         center = {"lat": 50.443165, "lng": 30.485434}
-    
+        
     context = {
         'report': report,
         'machinereports': machinereports,
         'data_for_js': data_for_js,
         'center_map': center,
-        'breakage': breakage
+        'breakage': breakage,
+        'google_api_key': settings.GOOGLE_MAPS_API_KEY,
     }
     return render(request, 'engineer/detail_report.html', context=context)
 

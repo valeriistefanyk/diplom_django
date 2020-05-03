@@ -2,14 +2,11 @@
 {% load static %}
 
 {% block add_head_link_2 %}
-    <!-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBL7BsIUwiM3SSVg65sc3U-oklrdxU77eY&v=3.exp&libraries=places&language=uk&region=UA"></script> -->
-    <!-- <script src="{% static 'js/google_maps_marker_add.js'%}"></script> -->
 {% endblock add_head_link_2 %}
 
 {% block title %}Створення звіту {% endblock %}
 
 {% block content_page %}
-
     <h1 class="mt-4 mb-6 text-center">Продовження створення звіту за {{date}}</h1>
     {% if machines %}
         <div class="content-text">
@@ -151,7 +148,7 @@
             });
         }
         </script>
-        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBL7BsIUwiM3SSVg65sc3U-oklrdxU77eY&callback=initMap&language=uk" async defer></script>
+        <script src="https://maps.googleapis.com/maps/api/js?key={{google_api_key}}&callback=initMap&language=uk" async defer></script>
         {% else %}
         <div class="content-text">
             <p class="offset-1 pt-5 pb-4 text-danger" style="font-weight: bold; font-size: larger;">Ви не вибрали машини,

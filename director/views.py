@@ -4,6 +4,7 @@ from django.http import Http404
 from django.db.models import Q
 from django.db.models import Count
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.conf import settings
 
 from machines.models import Machine, MachineName
 from engineer.models import Report, Engineer, MachineReport
@@ -122,7 +123,9 @@ def show_report_detail(request, report_id):
         'machinereports': machinereports,
         'data_for_js': data_for_js,
         'center_map': center,
-        'breakage': breakage
+        'breakage': breakage,
+
+        'google_api_key': settings.GOOGLE_MAPS_API_KEY,
     }
     return render(request, 'director/detail_report.html', context=context)
 

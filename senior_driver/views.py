@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.http import Http404
 from django.contrib.auth.decorators import login_required, permission_required
 from django.db.models import Q, Sum
+from django.conf import settings
 
 from machines.models import Machine
 from engineer.models import Report, MachineReport, Engineer
@@ -108,7 +109,9 @@ def show_my_reports_detail(request, report_id):
         'machinereports': machinereports,
         'data_for_js': data_for_js,
         'center_map': center,
-        'breakage': breakage
+        'breakage': breakage, 
+
+        'google_api_key': settings.GOOGLE_MAPS_API_KEY,
     }
     
     return render(request, 'senior-driver/my_reports_detail.html', context)
@@ -156,7 +159,7 @@ def make_report(request):
         'broken_machines': broken_machines,
         'last_used_machines': last_used_machines,
         'long_used_machines': long_used_machines,
-        'date_today': datetime.date.today().strftime("%Y-%m-%d")
+        'date_today': datetime.date.today().strftime("%Y-%m-%d"),
     }
 
     return render(request, 'senior-driver/make_report.html', context)
@@ -178,6 +181,8 @@ def make_report_fill(request):
             'date': date,
             'machines': machines,
             'machine': machines[0] if machines else None,
+
+            'google_api_key': settings.GOOGLE_MAPS_API_KEY,
         }
     
     if request.POST.get('sendData'):
@@ -235,6 +240,8 @@ def make_report_fill(request):
             'date': date,
             'machines': machines,
             'machine': machines[0],
+
+            'google_api_key': settings.GOOGLE_MAPS_API_KEY,
         }
 
     return render(request, 'senior-driver/make_report_fill.html', context)

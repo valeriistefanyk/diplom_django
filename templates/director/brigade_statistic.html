@@ -34,28 +34,6 @@
     </div>
 </div>
 
-
-<!-- <form class="form-inline pt-4 pb-4 offset-1 col-10 justify-content-center" method="GET">
-    <div class="form-group mb-2">
-        <div class="input-group date" id="datetimepicker7" data-target-input="nearest">
-            <input type="text" value="{{ from_date }}" class="form-control datetimepicker-input"
-                data-target="#datetimepicker7" name="from" placeholder="Початкова дата"/>
-            <div class="input-group-append" data-target="#datetimepicker7" data-toggle="datetimepicker">
-                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-            </div>
-        </div>
-    </div>
-    <div class="form-group mx-sm-3 mb-2">
-        <div class="input-group date" id="datetimepicker8" data-target-input="nearest">
-            <input type="text" value="{{ to_date }}" class="form-control datetimepicker-input"
-                data-target="#datetimepicker8" name="to" placeholder="Кінцева дата">
-            <div class="input-group-append" data-target="#datetimepicker8" data-toggle="datetimepicker">
-                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-            </div>
-        </div>
-    </div>
-    <button type="submit" class="btn btn-warning mb-2">Вибрати</button>
-</form> -->
 <div>
     <div class="row col-10 offset-1">
         <div class="col-2 offset-1 mt-4">
@@ -72,7 +50,7 @@
                 </label>
               </div>
         </div>
-        <div class="col-6">
+        <div class="col-8">
             <div id="datediapozon" class="desc row pt-1" {% if not radio_current == 'diapazon' %} style="display: none;" {% endif %}>
                 <!-- діапазон дат -->
                 <form class="form-inline mb-4 mt-4 col-12 justify-content-center" method="GET">

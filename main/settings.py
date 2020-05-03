@@ -1,13 +1,13 @@
 import os
 
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'ab*-(iok0mw*y74&rbu^4@)x-5a0_eydw6a4hn39adhf030xy%'
 
-# SECURITY WARNING: don't run with debug turned on in production!
+SECRET_KEY = 'some_secret_key'
+GOOGLE_MAPS_API_KEY = "your_key"
+
+
 DEBUG = False
 
 ALLOWED_HOSTS = ['valeriistefanyk.pythonanywhere.com']
@@ -58,6 +58,7 @@ TEMPLATES = [
         },
     },
 ]
+
 
 WSGI_APPLICATION = 'main.wsgi.application'
 
