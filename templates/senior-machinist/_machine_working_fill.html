@@ -1,0 +1,176 @@
+{% extends 'senior-machinist/part/_base_page_machinist.html' %}
+{% load static %}
+{% block title %}Працівники бригади{% endblock %}
+
+{% block content_page %}
+<h2 class="text-center mt-4 pb-4">Заповнення даних по напрацюванню машини</h2>
+<div class="col-12 mt-4">
+<form action="" method="post">
+    {% csrf_token %}
+    <input type="hidden" name='temp_report_id' value="{{temp_report_id}}">
+    <input type="hidden" name='date' value="{{date}}">
+        <input type="hidden" name="member_id" value="{{member_id}}">
+    <div class="col-10 offset-1">
+    <table class="table text-center">
+        <tr>
+            <th>Замовник</th>
+            <th>Станція відправлення</th>
+            <th>Станція призначення</th>
+            <th>Початку робіт у "вікно"</th>
+            <th>Закінчення робіт у "вікно"</th>
+            
+        </tr>
+        <tr>
+            <td><input type="text" class="form-control" id="client" name="client"></td>
+            <td><input type="text" class="form-control" id="station_from" name="station_from"></td>
+            <td><input type="text" class="form-control" id="station_to" name="station_to"></td>
+            <td><input type="time" class="form-control" name="departure_time" list="time-list"></td>
+            <td><input type="time" class="form-control" name="arrival_time" list="time-list"></td>
+            
+        </tr>
+    </table>
+</div>
+
+<div class="col-10 offset-1 text-center mt-4">
+    <div class="form-row">
+        <div class="col-4">
+          <label for="description">Назва виконаних робіт</label>
+          <input type="text" class="form-control"  name="description" id="description"  required>
+        </div>
+        <div class="col-4">
+          <label for="workday_production">Виробіток за робочий день</label>
+          <input type="text" class="form-control" name="workday_production" id="workday_production" required>
+        </div>
+        <div class="col-4">
+            <p id="show_map" class="mt-4 pt-2"><i class="fas fa-map-marker-alt" style="color: red;"></i> помітити місце виконання роботи на мапі</p>
+          </div>
+    </div>
+</div>
+    <input type="hidden" name="latFld" id="latFld">
+    <input type="hidden" name="lngFld" id="lngFld">
+    <div class="col-12 text-center mt-4">
+        <input type="submit" name="sendDataMachineWorking" class="btn btn-primary" value="Зберегти дані про роботу машини">
+        <input type="submit" name="sendDataAddMachine" class="btn btn-warning" value="Зберегти та додати ще запис">
+    </div>
+</form>
+</div>
+
+<datalist id="time-list">
+    <option value="09:00" ></option>
+    <option value="10:00" label=""></option>
+    <option value="11:00" label=""></option>
+    <option value="12:00" label=""></option>
+    <option value="14:00" label=""></option>
+    <option value="16:00" label=""></option>
+    <option value="18:00" label=""></option>
+    <option value="20:00" label=""></option>
+    <option value="22:00" label=""></option>
+</datalist>
+
+<p class="text-center font-italic col-10 offset-1 pb-2 pt-4 mt-4">
+    <span id="make_map"></span>
+    <span>
+        <a style="color: blue; text-decoration: underline; cursor: pointer; display: none;" id="deleteMarkerBtn" onclick="deleteMarker()">Видалити маркер</a>
+    </span>
+</p>
+
+<div class="mx-auto" style="display: none;" id="map"></div>
+<script>
+    function deleteMarker() {
+        if (markersArray) {
+            for (i in markersArray) {
+                markersArray[i].setMap(null);
+            }
+            markersArray.length = 0;
+        }
+
+        document.getElementById("latFld").value = "";
+        document.getElementById("lngFld").value = "";
+
+        document.getElementById("make_map").textContent = "Ви видалили маркер, дані про місце проведення робіт у звіті міститись не буде. Для повторного обрання місця розташування натисніть на посилання 'помітити місце виконання роботи на мапі'";
+       
+        document.getElementById("deleteMarkerBtn").style.display = "none";
+
+    }
+  var map;
+  var markersArray = [];
+  function initMap() {
+    function placeMarker(location) {
+        // first remove all markers if there are any
+        deleteOverlays();
+
+        var marker = new google.maps.Marker({
+            position: location,
+            map: map
+        });
+
+        // add marker in markers array
+        markersArray.push(marker);
+
+        map.setCenter(location);
+    }
+    // Deletes all markers in the array by removing references to them
+    function deleteOverlays() {
+        if (markersArray) {
+            for (i in markersArray) {
+                markersArray[i].setMap(null);
+            }
+            markersArray.length = 0;
+        }
+    }
+    map = new google.maps.Map(document.getElementById('map'), {
+        center : {"lat": 50.443165, "lng": 30.485434},
+        zoom: 8
+    });
+    // add a click event handler to the map object
+    google.maps.event.addListener(map, "rightclick", function (event) {
+        // place a marker
+        placeMarker(event.latLng);
+    
+        // display the lat/lng in your form's lat/lng fields
+        document.getElementById("latFld").value = event.latLng.lat();
+        document.getElementById("lngFld").value = event.latLng.lng();
+        
+        document.getElementById("make_map").innerHTML = "Ви зробили помітку на мапі (точка <span id='l1'></span>;<span id='l2'></span>). Дана мітка збережена, для її зміни натисніть на необхідне місце правою кнопкою мишки";
+        
+        document.getElementById("deleteMarkerBtn").style.display = "inline";
+        
+        document.getElementById("l1").textContent = (event.latLng.lat()).toFixed(2);
+        document.getElementById("l2").textContent = (event.latLng.lng()).toFixed(2);
+    });
+}
+</script>
+<script src="https://maps.googleapis.com/maps/api/js?key={{google_api_key}}&callback=initMap&language=uk" async defer></script>
+{% endblock %}
+
+{% block add_style %}
+<style>
+    #map {
+      height: 400px;
+      width: 80%;
+    }
+    #show_map:hover{
+        color:rgb(214, 21, 37); 
+        text-decoration: underline;
+        cursor: pointer
+    }
+</style>
+{% endblock add_style %}
+
+
+{% block add_js %}
+<script src="{% static 'js/bootstrap.js' %}"></script>
+
+<script>
+    $(document).ready(function ($) {
+
+        $("#show_map").click(function(){
+            $("#map").show();
+            document.getElementById("make_map").innerHTML = "Для того, щоб поставити точку на мапі де виконувались роботи на данній машині - натисніть на необхідній частині мапі <b>праву кнопку миши</b>";
+                
+          });
+
+    });
+    
+</script>
+{% endblock add_js %}

@@ -1,0 +1,64 @@
+<div>
+    <h2 class="text-center">
+        Початкове заповнення данних
+    </h2>
+</div>
+<div class="col-10 offset-1">
+    <p class="offset-1 pb-4" style="font-size: larger;"><span style="font-weight: bold;" class="pr-4">4.</span> <i class="fa fa-train" aria-hidden="true"></i><span class="pr-2"> Заповнення даних про бригаду</span></p>                        
+    <table class="table">
+        <tr>
+            <th rowspan="3">Посада</th>
+            <th rowspan="3">Прізвище</th>
+            <th rowspan="2" colspan="2">Час роботи</th>
+            <th colspan="4">Проходження медичних оглядів</th>
+        </tr>
+        <tr>
+            <th colspan="2">передрейсовий</th>
+            <th colspan="2">післярейсовий</th>
+        </tr>
+        <tr>
+            <th>початок</th>
+            <th>кінець</th>
+            <th>прізвище</th>
+            <th>статус</th>
+            <th>прізвище</th>
+            <th>статус</th>
+        </tr>
+        {% for member in members %}
+            <tr>
+                <td>{{member.job_title}}</td>
+                <td>{{member.last_name}} {{member.first_name}}</td>
+                <td><input type="time" name="date_time_from" list="time-list"></p>
+                    </td>
+                <td><input type="time"  name="date_time_to" list="time-list" disabled></td>
+                <td><input type="text"></td>
+                <td>
+                    <select class="form-control" id="medical_check_before" name="medical_check_before">
+                        <option value="na">не допущений</option>
+                        <option value="al">допущений</option>
+                        <option value="uk" selected>невідомо</option>
+                    </select>
+                </td>
+                <td><input type="text"></td>
+                <td>
+                    <select class="form-control" id="medical_check_after" name="medical_check_after" disabled>
+                        <option value="na">не допущений</option>
+                        <option value="al">допущений</option>
+                        <option value="uk" selected>невідомо</option>
+                    </select>
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+    <datalist id="time-list">
+        <option value="09:00" ></option>
+        <option value="10:00" label=""></option>
+        <option value="11:00" label=""></option>
+        <option value="12:00" label=""></option>
+        <option value="14:00" label=""></option>
+        <option value="16:00" label=""></option>
+        <option value="18:00" label=""></option>
+        <option value="20:00" label=""></option>
+        <option value="22:00" label=""></option>
+    </datalist>
+</div>

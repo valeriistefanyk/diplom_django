@@ -1,0 +1,170 @@
+<div>
+    <h2 class="text-center">
+        Заповнення данних
+    </h2>
+</div>
+<div class="col-10 offset-1">
+    <p class="offset-1 pb-4" style="font-size: larger;"><span style="font-weight: bold;" class="pr-4">1.</span> <i class="fa fa-train" aria-hidden="true"></i><span class="pr-2"> Дані про бригаду</span></p>                        
+    <form action="" method="post">
+        {% csrf_token %}
+        <input type="hidden" value="{{temp_report.id}}">
+        <table class="table">
+            <tr>
+                <th rowspan="3">Посада</th>
+                <th rowspan="3">Прізвище</th>
+                <th rowspan="2" colspan="2">Час роботи</th>
+                <th colspan="4">Проходження медичних оглядів</th>
+            </tr>
+            <tr>
+                <th colspan="2">передрейсовий</th>
+                <th colspan="2">післярейсовий</th>
+            </tr>
+            <tr>
+                <th>початок</th>
+                <th>кінець</th>
+                <th>прізвище</th>
+                <th>статус</th>
+                <th>прізвище</th>
+                <th>статус</th>
+            </tr>
+            {% for member in members %}
+                <tr>
+                    <input type="hidden" name="member_id" value="{{member_id}}">
+                    <td>{{member.get_job_title_display}}</td>
+                    <td>{{member.last_name}} {{member.first_name}}</td>
+                    <td><input type="time" name="date_time_from" list="time-list"></td>
+                    <td><input type="time"  name="date_time_to" list="time-list"></td>
+                    <td><input type="text"></td>
+                    <td>
+                        <select class="form-control" id="medical_check_before" name="medical_check_before">
+                            <option value="na">не допущений</option>
+                            <option value="al">допущений</option>
+                            <option value="uk" selected>невідомо</option>
+                        </select>
+                    </td>
+                    <td><input type="text"></td>
+                    <td>
+                        <select class="form-control" id="medical_check_after" name="medical_check_after">
+                            <option value="na">не допущений</option>
+                            <option value="al">допущений</option>
+                            <option value="uk" selected>невідомо</option>
+                        </select>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+        <input type="submit" name="sendDataBrigade" value="Відправити дані">
+    </form>
+    
+
+    <p class="offset-1 pb-4" style="font-size: larger;"><span style="font-weight: bold;" class="pr-4">2.</span> <i class="fa fa-train" aria-hidden="true"></i><span class="pr-2"> Показання спідометра, лічильника мотогодин</span></p>
+    <table class="table">
+        <tr>
+            <th colspan="2">Показання спідометра, лічильника мотогодин при виїзді</th>
+            <th colspan="2">Показання спідометра, лічильника мотогодин при поверненні</th>
+            <th rowspan="2">Усього пробіг, км</th>
+            <th rowspan="2">Усього відпрацьовано мотогодин</th>
+        </tr>
+        <tr>
+            <th>км</th>
+            <th>мотогодини</th>
+            <th>км</th>
+            <th>мотогодини</th>
+        </tr>
+        <tr>
+            <td><input type="number" id="km_before" step="0.1"></td>
+            <td><input type="number" id="moto_before" step="1"></td>
+            <td><input type="number" id="km_after" step="0.1"></td>
+            <td><input type="number" id="moto_after" step="1"></td>
+            <td><span id="km_balance"></span></td>
+            <td><span id="moto_balance"></span></td>
+        </tr>
+    </table>
+
+    <div>
+        <p class="offset-1 pb-4" style="font-size: larger;"><span style="font-weight: bold;" class="pr-4">3.</span> <i class="fa fa-train" aria-hidden="true"></i><span class="pr-2"> Рух паливно-мастильних матеріалів</span></p>
+        <table class="table">
+            <tr>
+                <th>Марка палива, мастила</th>
+                <th>Видано</th>
+                <th>Залишок при виїзді</th>
+                <th>Залишок при поверненні</th>
+                <th>Примітки</th>
+            </tr>
+            <tr>
+                <td><input type="text" id="marka" name="marka"></td>
+                <td><input type="text" id="vidano" name="vidano"></td>
+                <td><input type="number" id="maslo_before" name="maslo_before" step="0.1"></td>
+                <td><input type="number" id="maslo_after" name="maslo_after" step="0.1"></td>
+                <td><input type="text" id="info"></td>
+            </tr>
+        </table>
+    </div>
+
+    <div>
+        <p class="offset-1 pb-4" style="font-size: larger;"><span style="font-weight: bold;" class="pr-4">3.</span> <i class="fa fa-train" aria-hidden="true"></i><span class="pr-2"> Дані про роботу машини</span></p>
+        <table class="table">
+            <tr>
+                <th rowspan="2">Замовник</th>
+                <th rowspan="2">Станція відправлення</th>
+                <th rowspan="2">Станція призначення</th>
+                <th colspan="2">Час</th>
+                <th rowspan="2">Назва виконаних робіт</th>
+                <th rowspan="2">Місце робіт</th>
+                <th rowspan="2">Виробіток за робочий день</th>
+            </tr>
+            <tr>
+                <th>Початку робіт у "вікно"</th>
+                <th>Закінчення робіт у "вікно"</th>
+            </tr>
+            <tr>
+                <td><input type="text" id="client" name="client"></td>
+                <td><input type="text" id="station_from" name="station_from"></td>
+                <td><input type="text" id="station_to" name="station_to"></td>
+                <td><input type="time" name="departure_time" list="time-list"></td>
+                <td><input type="time"  name="arrival_time" list="time-list"></td>
+                <td><input type="text" id="description">
+                <td><input type="text" id="place_working"></td>
+                <td><input type="text" id="workday_production"></td>
+            </tr>
+        </table>
+    </div>
+    <button type="submit">Відправити</button>
+</div>
+
+<datalist id="time-list">
+    <option value="09:00" ></option>
+    <option value="10:00" label=""></option>
+    <option value="11:00" label=""></option>
+    <option value="12:00" label=""></option>
+    <option value="14:00" label=""></option>
+    <option value="16:00" label=""></option>
+    <option value="18:00" label=""></option>
+    <option value="20:00" label=""></option>
+    <option value="22:00" label=""></option>
+</datalist>
+<script>
+    var km_before = document.getElementById("km_before");
+    var km_after = document.getElementById("km_after");
+    var km_balance = document.getElementById("km_balance");
+
+    var moto_before = document.getElementById("moto_before");
+    var moto_after = document.getElementById("moto_after");
+    var moto_balance = document.getElementById("moto_balance");
+
+    function setKmBalance() {
+        if (km_before.value && km_after.value) {
+            km_balance.textContent =  parseFloat(km_after.value) - parseFloat(km_before.value)
+        }
+    }
+    function setMotoBalance() {
+        if (moto_before.value && moto_after.value) {
+            moto_balance.textContent = parseFloat(moto_after.value) - parseFloat(moto_before.value)
+        }
+    }
+
+    km_before.addEventListener("input", setKmBalance)
+    km_after.addEventListener("input", setKmBalance)
+    moto_before.addEventListener("input", setMotoBalance)
+    moto_after.addEventListener("input", setMotoBalance)
+</script>

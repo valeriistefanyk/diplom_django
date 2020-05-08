@@ -1,0 +1,160 @@
+{% extends 'senior-machinist/part/_base_page_machinist.html'%}
+{% load static %}
+{% block title %}Мої маршрутні листи{% endblock %}
+
+{% block content_page %}
+
+    <div>
+        <h2 class="text-center pt-4 pb-4">Мої маршрутні листи</h2>
+    </div>
+
+
+    {% if start_route_sheets %}
+    <div class="col-10 offset-1 pt-4 pb-4">
+        <p class="text-center" style="font-size: large; font-style: italic;">
+            Маршрутні листи які <b>розпочинались створюватись</b>, проте не були завершені
+        </p>
+        <table class="table text-center">
+            <tr>
+                <th>№ маршрутного листа</th>
+                <th>Дата</th>
+                <th>Машина</th>
+                <th>Дії</th>
+            </tr>
+            {% for route_sheet in start_route_sheets %}
+             <tr>   
+                <td style="vertical-align: middle;"><b>{{route_sheet.id}}</b></td>
+                <td style="vertical-align: middle;">{{route_sheet.date}}</td>
+                <td style="vertical-align: middle;">{{route_sheet.machine.name}} №{{route_sheet.machine.number_machine}}</td>
+                <td>
+                    <form action="{% url 'machinist:route-sheet' %}" method="post" id="fillForm{{route_sheet.id}}" class="mb-2">
+                        {% csrf_token %}
+                        <input type="hidden" name="mydate" value="{{route_sheet.date|date:'Y-m-d'}}">
+                        <input type="hidden" name="sendFillReady" value="sendFillReady">
+                        <a href="" title="Заповнити маршрутний лист" onclick="document.getElementById('fillForm{{route_sheet.id}}').submit(); return false;">
+                            <i class="fas fa-fill-drip"></i><span class="pl-2">заповнити</span></a>
+                    </form> 
+                    <form action="" method="post" id="deleteForm{{route_sheet.id}}">
+                        {% csrf_token %}
+                        <input type="hidden" name="temp_report_id" value="{{route_sheet.id}}">
+                        <input type="hidden" name="sendDeleteReady" value="sendDeleteReady">
+                        <a href=""  title="Видалити маршрутний лист" onclick="document.getElementById('deleteForm{{route_sheet.id}}').submit(); return false;">
+                            <i class="fas fa-trash" style="color: red;"></i><span class="pl-2" style="color: red;">видалити</span></a>
+                    </form>
+                   </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    {% endif %}
+
+    {% if part_route_sheets %}
+    <div class="col-10 offset-1 pt-4 pb-4">
+        <p class="text-center" style="font-size: large; font-style: italic;">
+            Маршрутні листи які <b>частично заповнені</b> та не були відправлені інженеру
+        </p>
+        <table class="table text-center">
+            <tr>
+                <th>№ маршрутного листа</th>
+                <th>Дата</th>
+                <th>Машина</th>
+                <th>Дії</th>
+                <th>Детально</th>
+            </tr>
+            {% for route_sheet in part_route_sheets %}
+             <tr>   
+                <td style="vertical-align: middle;"><b>{{route_sheet.id}}</b></td>
+                <td style="vertical-align: middle;">{{route_sheet.date}}</td>
+                <td style="vertical-align: middle;">{{route_sheet.machine.name}} №{{route_sheet.machine.number_machine}}</td>
+                <td>
+                    <form action="{% url 'machinist:route-sheet' %}" method="post" id="fillPartForm{{route_sheet.id}}" class="pb-1">
+                        {% csrf_token %}
+                        <input type="hidden" name="mydate" value="{{route_sheet.date|date:'Y-m-d'}}">
+                        <input type="hidden" name="sendFillReady" value="sendFillReady">
+                        <a href="" title="Заповнити маршрутний лист" onclick="document.getElementById('fillPartForm{{route_sheet.id}}').submit(); return false;">
+                            <i class="fas fa-fill-drip"></i><span class="pl-2">заповнити</span></a>
+                    </form>
+
+                    <form action="" method="POST" id="sendPartForm{{route_sheet.id}}" class="pb-1">
+                        {% csrf_token %}
+                        <input type="hidden" name="temp_report" value="{{route_sheet.id}}">
+                        <input type="hidden" name="sendDataFinish" value="sendDataFinish">
+                        <a href="" title="Відправити інженеру маршрутний лист в такому стані" onclick="document.getElementById('sendPartForm{{route_sheet.id}}').submit(); return false;">
+                            <i class="fas fa-share-square" style="color: green;"></i><span class="pl-2" style="color: green;">відправити</span></a>
+                    </form>
+                     
+                    <form action="" method="post" id="deletePartForm{{route_sheet.id}}">
+                        {% csrf_token %}
+                        <input type="hidden" name="temp_report_id" value="{{route_sheet.id}}">
+                        <input type="hidden" name="sendDeleteReady" value="sendDeleteReady">
+                        <a href="" title="Видалити маршрутний лист" onclick="document.getElementById('deletePartForm{{route_sheet.id}}').submit(); return false;">
+                            <i class="fas fa-trash" style="color: red;"></i><span class="pl-2" style="color: red;">видалити</span></a>
+                    </form>
+                </td>
+                <td style="vertical-align: middle;"><a class="pl-4" href="{% url 'machinist:route-sheet-detail' route_sheet.id %}" title="детально про звіт"><i class="fa fa-info-circle" aria-hidden="true"></i></a></td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    {% endif %}
+
+    {% if forward_route_sheets %}
+    <div class="col-10 offset-1 pt-4 pb-4">
+        <p class="text-center" style="font-size: large; font-style: italic;">
+            Маршрутні листи які були відправлені інженеру
+        </p>
+        <table class="table text-center">
+            <tr>
+                <th>№ маршрутного листа</th>
+                <th>Дата</th>
+                <th>Машина</th>
+                <th>Пройдено км.</th>
+                <th>Пройдено мотогодин</th>
+                <th>Статус</th>
+                <th>Детально</th>
+            </tr>
+            {% for route_sheet in forward_route_sheets %}
+             <tr>   
+                <td><b>{{route_sheet.id}}</b></td>
+                <td>{{route_sheet.date}}</td>
+                <td>{{route_sheet.machine.name}} №{{route_sheet.machine.number_machine}}</td>
+                <td>{{route_sheet.km|default:"невідомо"}}</td>
+                <td>{{route_sheet.motohour|default:"невідомо"}}</td>
+                <td>{{route_sheet.get_stage_display}}</td>
+                <td><a class="pl-4" href="{% url 'machinist:route-sheet-detail' route_sheet.id %}" title="детально про звіт"><i class="fa fa-info-circle" aria-hidden="true"></i></a></td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    {% endif %}
+
+    {% if msg %}
+    <div class="modal" id="myModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Повідомлення</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>{{msg |safe}}</p>
+                </div> 
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    
+{% endblock %}
+
+{% block add_js %}
+<script src="{% static 'js/jquery.min.js' %}"></script>
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
+<script>
+    $(window).on('load',function(){
+        $('#myModal').modal('show');
+
+    });
+</script>
+{% endblock add_js %}

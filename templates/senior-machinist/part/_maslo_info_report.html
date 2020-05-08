@@ -1,0 +1,30 @@
+<div class="col-12 mt-4">
+<h4 class="text-center pb-2">Заповнення даних руху паливно-мастильних матеріалів</h4>
+<form action="" method="post">
+    {% csrf_token %}
+    <input type="hidden" name='temp_report_id' value="{{temp_report.id}}">
+    <input type="hidden" name='date' value="{{date}}">
+    {% for member in members %}
+        <input type="hidden" name="member_id" value="{{member.id}}">
+    {% endfor %}
+    <table class="table table-bordered text-center mt-4">
+        <tr>
+            <th>Марка палива, мастила</th>
+            <th>Видано</th>
+            <th>Залишок при виїзді</th>
+            <th>Залишок при поверненні</th>
+            <th>Примітки</th>
+        </tr>
+        <tr>
+            <td><input type="text" class="form-control" id="marka" name="marka"></td>
+            <td><input type="text" class="form-control" id="vidano" name="vidano"></td>
+            <td><input type="number" class="form-control" id="maslo_before" name="maslo_before" step="0.1"></td>
+            <td><input type="number" class="form-control" id="maslo_after" name="maslo_after" step="0.1"></td>
+            <td><input type="text" class="form-control" id="info"></td>
+        </tr>
+    </table>
+    <div class="col-12 text-center">
+        <input type="submit" name="sendDataMasloInfo" class="btn btn-primary" value="Зберегти дані руху паливно-мастильних матеріалів">
+    </div>
+</form>
+</div>

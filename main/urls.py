@@ -13,6 +13,9 @@ urlpatterns = [
 
     path('machines/', include('machines.urls')),
     path('driver/', include('senior_driver.urls')),
+
+    path('machinist/', include('senior_machinist.urls')),
+
     path('engineer/', include('engineer.urls')),
     path('director/', include('director.urls')),
 

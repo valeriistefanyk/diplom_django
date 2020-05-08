@@ -1,0 +1,157 @@
+{% extends 'senior-machinist/part/_base_page_machinist.html'%}
+
+{% block title %}Моя машина{% endblock %}
+
+{% block content_page %}
+
+    <div class="container-fluid">
+        <h2 class="pt-5" style="text-align: center;">Машина яка закріплена за Вами:</h2><br>
+
+        {% if machine %}
+        
+        <div class="row col-12">
+                <div class="col-5 text-center d-flex justify-content-end" >
+                    <div class="card border-0" style="width: 18rem;">
+                        <div class="card-body">
+                            <h5 class="card-title">{{machine.name}}</h5>
+                        </div>
+                        <img class="card-img-top" src="{{machine.machine.image.url}}" alt="{{machine.name}}">
+                    </div>
+                </div>
+                <div class="col-6 offset-1" style="font-size: larger;">
+                  <h3 class="pt-4">Основні відомості:</h3>
+                  <ul style="line-height: 2;" class="pt-2">
+                    <li>Інвентарний номер <b>{{machine.inventory_number}}</b></li>
+                    <li>Номер машини <b>#{{machine.number_machine}}</b></li>
+                    <li>Стан машини: <b>{% if machine.breakage %}<span style="color: red;">знаходиться в ремонті</span>{% else %}<span style="color: green;">в робочому стані</span>{% endif %}</b></li>
+                  </ul>
+                </div>
+        </div>
+        
+        
+        
+        <div class="pt-5">
+    
+            
+    
+            <table class="table table-bordered table-fix">
+    
+                <caption style="caption-side: top;">Таблиця з даними:</caption>
+                <thead class="table-warning text-dark">
+                    <tr>
+                        <th scope="col">Поле</th>
+                        <th scope="col">Опис</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Рік введення в експлуатацію</td>
+                        <td>{{machine.year_of_commissioning}}</td>
+                    </tr>
+                    <tr>
+                        <td>Років в експлуатації</td>
+                        <td>{{machine.years_comission}}</td>
+                    </tr>
+                    <tr>
+                        <td>Двигун</td>
+                        <td>{{ machine.engine_list|join:"<br>"|default:"Дані відсутні" }}</td>
+                    </tr>
+                    <tr>
+                        <td>Номінальна потужність</td>
+                        <td>{{ machine.rated_capacity|default:"Дані відсутні" }}</td>
+                    </tr>
+                    <tr>
+                        <td>Витрати за нормою на 1 мот/год, кг</td>
+                        <td>{{ machine.costs_at_rate|default:"Дані відсутні" }}</td>
+                    </tr>
+                    <tr>
+                        <td>Дизмасло, % від витрат палива</td>
+                        <td>{{ machine.dizmaslo|default:"Дані відсутні" }}</td>
+                    </tr>
+                    <tr>
+                        <td>Турбонагнітачі</td>
+                        <td>{{ machine.turbocharger_list|join:"<br>"|default:"Дані відсутні" }}</td>
+                    </tr>
+                    <tr>
+                        <td>Фільтра</td>
+                        <td>{{ machine.filter_list|join:"<br>"|default:"Дані відсутні" }}</td>
+                    </tr>
+                    <tr>
+                        <td>Підбивочні блоки</td>
+                        <td>{{ machine.lining_blocks_list|join:"<br>"|default:"Дані відсутні" }}</td>
+                    </tr>
+                    <tr>
+                        <td>Підпійки підбивочних блоків</td>
+                        <td>{{ machine.lining_pidpiiki_list|join:"<br>"|default:"Дані відсутні" }}</td>
+                    </tr>
+                    <tr>
+                        <td>Компресори</td>
+                        <td>{{ machine.compressor_list|join:"<br>"|default:"Дані відсутні" }}</td>
+                    </tr>
+                    <tr>
+                        <td>Діаметр колісних пар</td>
+                        <td>{{ machine.diametr_wheel_pairs|default:"Дані відсутні" }}</td>
+                    </tr>
+                    <tr>
+                        <td>Акумулятори</td>
+                        <td>{{ machine.battery_list|join:"<br>"|default:"Дані відсутні" }}</td>
+                    </tr>
+                    <tr>
+                        <td>Дата проведення ост. КР</td>
+                        <td>{{ machine.date_ost_kr|default:"Дані відсутні" }}</td>
+                    </tr>
+                    <tr>
+                        <td>Первісна вартість, грн</td>
+                        <td>{{ machine.initial_value|default:"Дані відсутні" }}</td>
+                    </tr>
+                    <tr>
+                        <td>Залишкова вартість, грн</td>
+                        <td>{{ machine.residual_value|default:"Дані відсутні" }}</td>
+                    </tr>
+                    <tr>
+                        <td>Дата кінця амортизації</td>
+                        <td>{{ machine.depreciation_end_date|default:"Дані відсутні" }}</td>
+                    </tr>
+                    <tr>
+                        <td>Дизельне мастило</td>
+                        <td>{{ machine.dizmaslo_list|join:"<br>"|default:"Дані відсутні" }}</td>
+                    </tr>
+                    <tr>
+                        <td>Трансмісійна рідина</td>
+                        <td>{{ machine.transmission_fluid_list|join:"<br>"|default:"Дані відсутні" }}</td>
+                    </tr>
+                    <tr>
+                    <tr>
+                        <td>Гідравлічна рідина</td>
+                        <td>{{ machine.hydraulic_fluid_list|join:"<br>"|default:"Дані відсутні" }}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <style>
+                .back {
+                    position: absolute;
+                    top: 20px;
+                    left: 100px;
+                    line-height: 1px;
+                }
+    
+                .table-fix {
+                    background: #2b3d6b;
+                    color: #fff;
+                }
+            </style>
+
+
+
+        {% else %}
+        <h3 class="pt-5 pl-5">За Вами не числиться жодна машина!</h3>
+        {% endif %}
+    </div>
+
+{% endblock content_page %}
+
+
+{% block add_style %}
+    <style>        
+    </style>
+{% endblock add_style %}

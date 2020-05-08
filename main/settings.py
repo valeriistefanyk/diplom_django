@@ -27,6 +27,7 @@ INSTALLED_APPS = [
     'engineer',
     'administrator',
     'senior_driver',
+    'senior_machinist',
     'main',
 ]
 

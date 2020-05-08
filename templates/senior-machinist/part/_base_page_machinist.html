@@ -11,7 +11,7 @@
 
 
 
-{% block title %}Старший машиніст{% endblock %}
+{% block title %}Старший водій{% endblock %}
 
 
 {% block content %}
@@ -20,22 +20,27 @@
         <div class="bg-dark border-right" id="sidebar-wrapper">
             <div class="sidebar-heading text-light py-5">VMM Core Production</div>
             <div class="list-group list-group-flush">
-            <a href="{% url 'driver:home-page' %}"
+            <a href="{% url 'machinist:home-page' %}"
                 class="list-group-item list-group-item-action bg-dark text-light border-light border-top"><i
                     class="fa fa-home"></i>Головна</a>
-            <a href="{% url 'driver:make-report' %}"
-                class="list-group-item list-group-item-action bg-dark text-light border-light"><i
-                    class="fa fa-table"></i>Створити звіт</a>
-
-            <a href="{% url 'driver:my_reports' %}"
-                class="list-group-item list-group-item-action bg-dark text-light border-light"><i
-                    class="fa fa-truck"></i>Мої звіти</a>
-            <a href="{% url 'driver:machines' %}"
+            <a href="{% url 'machinist:route-sheet'%}"
                 class="list-group-item list-group-item-action bg-dark text-light border-light border-bottom"><i
-                    class="fa fa-wrench"></i>Мої машини</a>
-            <a href="{% url 'driver:about'%}"
+                class="fa fa-table"></i>Створити марш. лист</a>
+            <a href="{% url 'machinist:show-route-sheet'%}"
                 class="list-group-item list-group-item-action bg-dark text-light border-light border-bottom"><i
-                    class="fa fa-calendar"></i>Додатки</a>
+                    class="fa fa-calendar"></i>Мої марш. листи</a>
+            <a href="{% url 'machinist:machine' %}"
+                class="list-group-item list-group-item-action bg-dark text-light border-light border-bottom"><i
+                    class="fa fa-truck"></i>Моя машина</a>
+            <a href="{% url 'machinist:machine-status' %}"
+                class="list-group-item list-group-item-action bg-dark text-light border-light border-bottom"><i
+                    class="fa fa-wrench"></i>Стан машини</a>
+            <a href="{% url 'machinist:management-contact'%}"
+                class="list-group-item list-group-item-action bg-dark text-light border-light border-bottom"><i
+                    class="fa fa-phone"></i>Керівництво</a>
+            <a href="{% url 'machinist:brigade-members'%}"
+                class="list-group-item list-group-item-action bg-dark text-light border-light border-bottom"><i 
+                    class="fa fa-address-card"></i>Працівники бригади</a>
         </div>
     </div>
         <!-- /#sidebar-wrapper -->

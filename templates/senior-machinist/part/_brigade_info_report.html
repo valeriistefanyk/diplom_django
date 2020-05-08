@@ -1,0 +1,51 @@
+<div class="col-12 mt-4">
+    <h4 class="text-center pb-4">Заповнення даних про бригаду</h4>
+    <form action="" method="post">
+        {% csrf_token %}
+        <input type="hidden" name='temp_report_id' value="{{temp_report.id}}">
+        <input type="hidden" name='date' value="{{date}}">
+        <table class="table table-bordered text-center">
+            <tr>
+                <th rowspan="2">Працівник</th>
+                <th colspan="2">Час роботи</th>
+                <th colspan="2">Передрейсовий мед. огляд</th>
+                <th colspan="2">Післярейсовий мед. огляд</th>
+            </tr>
+            <tr>
+                <th>початок</th>
+                <th>кінець</th>
+                <th>прізвище</th>
+                <th>статус</th>
+                <th>прізвище</th>
+                <th>статус</th>
+            </tr>
+            {% for member in members %}
+                <tr>
+                    <input type="hidden" name="member_id" value="{{member.id}}">
+                    <td> {{member.get_job_title_display}} <b>{{member.last_name}} {{member.first_name}}</b></td>
+                    <td><input type="time" class="form-control" name="date_time_from" list="time-list"></td>
+                    <td><input type="time" class="form-control" name="date_time_to" list="time-list"></td>
+                    <td><input type="text" class="form-control" size="10"></td>
+                    <td>
+                        <select class="form-control" id="medical_check_before" style="width:120px" name="medical_check_before">
+                            <option value="na">не допущений</option>
+                            <option value="al">допущений</option>
+                            <option value="uk" selected>невідомо</option>
+                        </select>
+                    </td>
+                    <td><input type="text" class="form-control" size="10"></td>
+                    <td>
+                        <select class="form-control" id="medical_check_after" style="width:120px" name="medical_check_after">
+                            <option value="na">не допущений</option>
+                            <option value="al">допущений</option>
+                            <option value="uk" selected>невідомо</option>
+                        </select>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+        <div class="col-12 text-center">
+            <input type="submit" class="btn btn-primary" name="sendDataBrigade" value="Зберегти дані роботі бригади">
+        </div>
+    </form>
+</div>

@@ -1,0 +1,72 @@
+<div class="col-12 mt-4">
+    <h4 class="text-center pb-4">Заповнення даних показання спідометра, лічильника мотогодин</h4>
+<form action="" method="post">
+    {% csrf_token %}
+    <input type="hidden" name='temp_report_id' value="{{temp_report.id}}">
+    <input type="hidden" name='date' value="{{date}}">
+    {% for member in members %}
+        <input type="hidden" name="member_id" value="{{member.id}}">
+    {% endfor %}
+    <table class="table table-bordered text-center mt-4">
+        <tr>
+            <th colspan="2">Показання спідометра, лічильника мотогодин при виїзді</th>
+            <th colspan="2">Показання спідометра, лічильника мотогодин при поверненні</th>
+        </tr>
+        <tr>
+            <th>км</th>
+            <th>мотогодини</th>
+            <th>км</th>
+            <th>мотогодини</th>
+        </tr>
+        <tr>
+            <td><input type="number" class="form-control" id="km_before" name="km_before" step="0.1"></td>
+            <td><input type="number" class="form-control" id="moto_before" name="motohour_before" step="1"></td>
+            <td><input type="number" class="form-control" id="km_after" name="km_after" step="0.1"></td>
+            <td><input type="number" class="form-control" id="moto_after" name="motohour_after" step="1"></td>
+        </tr>
+    </table>
+    <div class="col-10 offset-1 row">
+        <div class="col-6 text-center">
+            <p>
+                Пройдено кілометрів <span class="mr-3 font-weight-bold" id="km_balance">-</span>
+            </p>
+        </div>
+        <div class="col-6 text-center">
+            <p>
+                Пройдено мотогодин <span class="mr-3 font-weight-bold" id="moto_balance">-</span>
+            </p>
+        </div>
+    </div>
+    
+    
+    <div class="col-12 text-center">
+        <input type="submit" name="sendDataMotoFuel" class="btn btn-primary" value="Зберегти дані спідометра та мотогодин">
+    </div>
+    
+</form>
+</div>
+<script>
+    var km_before = document.getElementById("km_before");
+    var km_after = document.getElementById("km_after");
+    var km_balance = document.getElementById("km_balance");
+
+    var moto_before = document.getElementById("moto_before");
+    var moto_after = document.getElementById("moto_after");
+    var moto_balance = document.getElementById("moto_balance");
+
+    function setKmBalance() {
+        if (km_before.value && km_after.value) {
+            km_balance.textContent =  parseFloat(km_after.value) - parseFloat(km_before.value)
+        }
+    }
+    function setMotoBalance() {
+        if (moto_before.value && moto_after.value) {
+            moto_balance.textContent = parseFloat(moto_after.value) - parseFloat(moto_before.value)
+        }
+    }
+
+    km_before.addEventListener("input", setKmBalance)
+    km_after.addEventListener("input", setKmBalance)
+    moto_before.addEventListener("input", setMotoBalance)
+    moto_after.addEventListener("input", setMotoBalance)
+</script>

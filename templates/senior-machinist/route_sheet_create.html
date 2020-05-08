@@ -1,0 +1,192 @@
+{% extends 'senior-machinist/part/_base_page_machinist.html'%}
+
+{% block title %}Створити звіт{% endblock %}
+
+{% block content_page %}
+    <div class="container-fluid">
+        <h2 class="mt-4 mb-4 text-center">Створення маршрутного листа</h2>
+        
+        <div class="content-text">
+            {% if stage == 'prepare' %}
+            <form action="{% url 'machinist:route-sheet' %}" method="POST">
+                {% csrf_token %}
+                <p class="pt-4 offset-1"><label for="date"><span style="font-size: larger; font-weight: bold;" class="pr-4">1.</span> <i class="fa fa-calendar" aria-hidden="true"></i><span style="font-size: larger;" class="pr-2"> Оберіть дату:</span></label>
+                    <input type="date" value="{{mydate}}" name="date" id="date" required></p>
+
+                <p class="offset-1 pb-4" style="font-size: larger;"><span style="font-weight: bold;" class="pr-4">2.</span> <i class="fa fa-train" aria-hidden="true"></i><span class="pr-2"> Оберіть працівників у Вашій бригаді, які приступили до роботи в цю дату:</span></p>
+                               
+                  
+                    <p class="offset-4 text-info font-italic pb-2">Працівники бригади</p>     
+                    
+                    <div class="row">
+                        <div class="offset-2 col-8">
+                            <div class="row">
+                                {% for member in members %}
+                                <div class="col-6 pb-3">
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="checkbox" name="choices" value="{{member.id}}" id="member{{member.id}}">
+                                        <label class="form-check-label" for="member{{member.id}}">{{ member.last_name}} {{ member.first_name}}</label>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+
+                <input type="submit" class="offset-1 btn btn-primary d-block mt-3 mb-3" name="sendDataFirst" value="Продовжити">
+            </form>
+            {% endif %}
+
+            {% if stage == 'full' %}
+                <p class="pt-4 text-center"><i class="fa fa-calendar" aria-hidden="true"></i><span style="font-size: larger;" class="pr-2">Дата {{date}}</span></p>
+                
+                {% if temp_report.stage == 'fwdi' %}
+                    
+                    <div class="col-8 offset-2 text-center mt-4 pt-4">
+                        <p>
+                            Маршрутний лист за цю дату уже створений і був переданий Вами інженеру.<br>
+                            Змінити його неможливо!<br>
+                        </p>
+                        <p>Зміст маршрутного листа можете подивитись на сторінці <a href="{% url 'machinist:show-route-sheet'%}"><b>Мої маршрутні листи</b></a>, звіт має <b>№{{temp_report.id}}</b></p>
+                    </div>
+                    
+                    
+                    
+                {% elif temp_report.stage == 'strt' or temp_report.stage == 'part' %}
+                
+                <p class="text-center" style="font-size: large; font-style: italic;">Вами були обрані працівники які працювали у цей день: {{members|join:", "}}</p>
+                <div class="row">
+                    <div class="col-7">
+
+                        <p class="offset-1" {% if not exist_brigade_info_report %}id="BrigadeInfoReport"  style="font-size: larger;"{% endif %} style="font-size: larger;">
+                            <span style="font-weight: bold;" class="pr-4">1.</span> 
+                            <i class="fa fa-train" aria-hidden="true"></i>
+                            <span {% if not exist_brigade_info_report %} class="hover underline" {% endif %} style="padding-right: 2ch;"> Дані про бригаду</span>
+                            {% if exist_brigade_info_report %}
+                                <i class='fas fa-check' style='color: green;'></i>
+                            {% else %}
+                                <i class='fas fa-times' style='color:red;'></i>
+                            {% endif %}
+                        </p> 
+                        <p class="offset-1" {% if not exist_moto_fuel_info_report %}id="MotoAndFuelInfoReport"{% endif %} style="font-size: larger;">
+                            <span style="font-weight: bold;" class="pr-4">2.</span> 
+                            <i class="fa fa-train" aria-hidden="true"></i>
+                            <span {% if not exist_moto_fuel_info_report %} class="hover underline" {% endif %} style="padding-right: 2ch;"> Показання спідометра, лічильника мотогодин</span>
+                            {% if exist_moto_fuel_info_report %}
+                                <i class='fas fa-check' style='color: green;'></i>
+                            {% else %}
+                                <i class='fas fa-times' style='color:red;'></i>
+                            {% endif %}
+                        </p>
+                        <p class="offset-1" {% if not exist_maslo_info_report %}id="MasloInfoReport"{% endif %} style="font-size: larger;">
+                            <span style="font-weight: bold;" class="pr-4">3.</span> 
+                            <i class="fa fa-train" aria-hidden="true"></i>
+                            <span {% if not exist_maslo_info_report %} class="hover underline" {% endif %} style="padding-right: 2ch;"> Рух паливно-мастильних матеріалів</span>
+                            {% if exist_maslo_info_report %}
+                                <i class='fas fa-check' style='color: green;'></i>
+                            {% else %}
+                                <i class='fas fa-times' style='color:red;'></i>
+                            {% endif %}
+                        </p>
+                        
+                        <p class="offset-1" {% if not exist_machine_working_report %}id="MachineWorkingReport" onclick="document.getElementById('myform').submit(); return false;"{% endif %} style="font-size: larger;">
+                                <span style="font-weight: bold;" class="pr-4">4.</span> 
+                                <i class="fa fa-train" aria-hidden="true"></i>
+                                <span {% if not exist_machine_working_report %} class="hover underline" {% endif %} style="padding-right: 2ch;"> Дані про роботу машини</span>
+                            {% if exist_machine_working_report %}
+                                <i class='fas fa-check' style='color: green;'></i>
+                            {% else %}
+                                <i class='fas fa-times' style='color:red;'></i>
+                            {% endif %}
+                        </p>
+                        <form action="{% url 'machinist:machine-fill'%}" method="POST" id='myform'>
+                            {% csrf_token %}
+                            <input type="hidden" name='temp_report_id' value="{{temp_report.id}}">
+                            <input type="hidden" name='date' value="{{date}}">
+                            <input type="hidden" name='msg' value="msg">
+                            {% for member in members %}
+                                <input type="hidden" name="member_id" value="{{member.id}}">
+                            {% endfor %}
+                        </form>
+                    </div>
+                    <div class="col-5 text-center">
+                        <div class="col-10 mt-4">
+                            <p class="text-center">Натисніть на пункт дані якого ще не заповненні (там де іконка <i class='fas fa-times' style='color:red;'></i>). Заповніть форму. При закінчені оформлення 4х пунктів, натисніть на кнопку нижче</p>
+                        </div>
+                        <div class="col-2"></div>
+                        <div class="col-10">
+                            <form action="{% url 'machinist:show-route-sheet' %}" method="post">
+                                {% csrf_token %}
+                                <input type="hidden" name="date" value="{{date}}">
+                                <input type="hidden" name="temp_report" value="{{temp_report.id}}">
+                                <input type="submit" class="text-center btn btn-warning" name="sendDataFinish" value="Завершити створення звіту">
+                            </form>
+                        </div>
+                        
+                    </div>
+                </div>
+                {% else %}
+                    {{temp_report.stage}} | unknows stage
+                {% endif %}
+
+                <div class="BrigadeInfoReport_block" style="display: none;">
+                    {% include 'senior-machinist/part/_brigade_info_report.html' %}
+                </div>
+                <div class="MotoAndFuelInfoReport_block" style="display: none;">
+                    {% include 'senior-machinist/part/_moto_fuel_info_report.html'%}
+                </div>
+                <div class="MasloInfoReport_block" style="display: none;">
+                    {% include 'senior-machinist/part/_maslo_info_report.html'%}
+                </div>
+                <div class="MachineWorkingReport_block" style="display: none;">
+                    {% include 'senior-machinist/part/_machine_working_info_report.html'%}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock content_page %}
+
+{% block add_style %}
+<style>
+    .hover:hover{
+        font-weight: bold;
+        color: red;
+    }
+    .underline{
+        text-decoration: underline;
+    }
+</style>
+{% endblock add_style %}
+
+{% block add_js %}
+<script>
+    $(document).ready(function(){
+        $("#BrigadeInfoReport").click(function(){
+            $(".BrigadeInfoReport_block").show()
+            $(".MotoAndFuelInfoReport_block").hide()
+            $(".MasloInfoReport_block").hide()
+            $(".MachineWorkingReport_block").hide()
+        })
+        $("#MotoAndFuelInfoReport").click(function(){
+            $(".BrigadeInfoReport_block").hide()
+            $(".MotoAndFuelInfoReport_block").show()
+            $(".MasloInfoReport_block").hide()
+            $(".MachineWorkingReport_block").hide()
+        })
+        $("#MasloInfoReport").click(function(){
+            $(".BrigadeInfoReport_block").hide()
+            $(".MotoAndFuelInfoReport_block").hide()
+            $(".MasloInfoReport_block").show()
+            $(".MachineWorkingReport_block").hide()
+        })
+        $("#MachineWorkingReport").click(function(){
+            $(".BrigadeInfoReport_block").hide()
+            $(".MotoAndFuelInfoReport_block").hide()
+            $(".MasloInfoReport_block").hide()
+            $(".MachineWorkingReport_block").show()
+        })
+    }); 
+</script>
+{% endblock add_js %}
+
+    

@@ -1,0 +1,119 @@
+{% extends 'senior-machinist/part/_base_page_machinist.html' %}
+
+{% block title %}Контакти{% endblock %}
+{% load static %}
+{% block content_page %}
+    <h2 class="mt-4 text-center">Інформація</h2>
+    <div class="row pt-4">
+        <div class=" col-2 offset-2 text-center">
+            {% if machinist.avatar %}
+                <img src="{{ machinist.avatar.url}}" alt="{{machinist.user.username}}" class="rounded-circle" width="150" height="150">
+                <br>
+                <form action="" method="POST" enctype="multipart/form-data" class="mt-2">
+                    {% csrf_token %}
+                    <input type="hidden" name="some" value="some">
+                    <label class="btn btn-secondary btn-sm">
+
+                        Змінити фото <input type="file" accept=".jpg, .jpeg, .png" class="autosubmit" name="avatar" hidden>
+                    </label>
+                </form>
+                
+            {% else %}
+                <span>Фото немає</span>
+            {% endif %}
+        </div>
+        <div class="col-6">
+            <p class="font-larger">Старший машиніст <b>{{machinist.user.last_name}} {{machinist.user.first_name}}</b></p>
+            <p class="font-weight-bolder font-larger">@{{machinist.user.username}}</p>
+            <p class="font-larger">Бригада №{{machinist.brigade_name}}</p>
+        </div>
+    </div>
+    <div class="row pt-3">
+        <div class="col-6 offset-2 pt-3">
+            <p class="font-larger"><i class="fa fa-phone" aria-hidden="true"></i> <span>{{machinist.telephone1}}</span>
+                {% if machinist.telephone2 %}, <span>{{machinist.telephone2}}</span>{% endif %} </p>
+            <p class="font-larger"><i class="fa fa-envelope"></i> <span>{{machinist.user.email}}</span></p>
+            <p class="font-italic">За даними контактами з Вами можуть зв'язуватись директор та інженери</p>
+        </div>
+    </div>   
+    <h3 class="text-center pt-4">Контакти керівництва</h3>
+        
+        {% for engineer in engineers %}
+        <div class="row pt-4">
+            <div class=" col-2 offset-2 text-center">
+                <img src="{{ engineer.avatar.url}}" alt="{{engineer.user.username}}" class="rounded-circle" width="100">
+            </div>
+            <div class="col-6">
+                <p class="font-larger"><b><span class="text-success">Інженер</span> {{engineer.user.last_name}} {{engineer.user.first_name}}</b></p>
+                <p><i class="fa fa-phone" aria-hidden="true"></i> <span>{{engineer.telephone1}}</span>
+                    {% if engineer.telephone2 %}, <span>{{engineer.telephone2}}</span>{% endif %} </p>
+                <p><i class="fa fa-envelope"></i> <span><a href="mailto:{{engineer.user.email}}" style="color: black;">{{engineer.user.email}}</a></span></p>
+            </div>
+        </div>
+        {% endfor %}
+        {% for director in directors %}
+        <div class="row pt-4">
+            <div class=" col-2 offset-2 text-center">
+                <img src="{{ director.avatar.url}}" alt="{{director.user.username}}" class=" rounded-circle" width="100">
+            </div>
+            <div class="col-6">
+                <p class="font-larger"><b><span class="text-danger">Директор</span> {{director.user.last_name}} {{director.user.first_name}}</b></p>
+                <p><i class="fa fa-phone" aria-hidden="true"></i> <span>{{director.telephone1}}</span>
+                    {% if director.telephone2 %}, <span>{{director.telephone2}}</span>{% endif %} </p>
+                <p><i class="fa fa-envelope"></i> <span><a href="mailto:{{director.user.email}}" style="color: black;">{{director.user.email}}</a></span></p>
+            </div>
+        </div>
+        {% endfor %}
+
+        
+    {% if msg %}
+    <div class="modal" id="myModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Повідомлення</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>{{msg |safe}}</p>
+                </div> 
+            </div>
+        </div>
+    </div>
+    {% endif %}
+        
+        
+        
+{% endblock content_page %}
+
+
+{% block add_style %}
+        <style>
+            .font-larger{
+                font-size: larger;
+            }
+                        
+          </style>
+{% endblock add_style %}
+
+
+{% block add_js %}
+<script src="{% static 'js/bootstrap.js' %}"></script>
+
+<script>
+    $(window).on('load',function(){
+        $('#myModal').modal('show');
+
+    });
+    $(document).ready(function ($) {
+
+        $('form .autosubmit').on('change', function() {
+            this.form.submit();
+         });
+
+    });
+    
+</script>
+{% endblock add_js %}

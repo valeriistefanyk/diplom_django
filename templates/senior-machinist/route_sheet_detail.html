@@ -1,0 +1,206 @@
+{% extends 'senior-machinist/part/_base_page_machinist.html'%}
+{% load static %}
+
+{% block title %}Детально про звіт №{{route_sheet.id}}{% endblock %}
+
+{% block content_page %}
+    <div>
+        <h2 class="mt-4 text-center">Детально про звіт</h2>
+
+        <div class="row offset-3 col-6 justify-content-center pt-3">
+            <div class="col-6 text-center pt-3">
+                <p class="font-larger"><i class="fa fa-file" aria-hidden="true"></i> <span>Звіт №{{route_sheet.id}}</span></p>
+            </div>
+            <div class="col-6 text-center pt-3">
+                <p class="font-larger"><i class="fa fa-calendar"></i> <span>{{route_sheet.date}}</span></p>
+            </div>
+        </div>
+        <p class="text-center font-italic pt-4 mt-4 font-larger">Машина та дані про мотогодини і використане дизельне паливо</p>
+        <div class="col-10 text-center offset-1">
+        <table class="table">
+            <tr>
+                <th>Машина</th>
+                <th>Пройдено кілометрів</th>
+                <th>Пройдено мотогодин</th>
+                <th>Використано палива</th>
+            </tr>
+            <tr>
+                <td>{{route_sheet.machine|default:"невідомо"}}</td>
+                <td>{{route_sheet.km|default:"невідомо"}}</td>
+                <td>{{route_sheet.motohour|default:"невідомо"}}</td>
+                <td>{{route_sheet.fuel|default:"невідомо"}}</td>
+            </tr>
+        </table>
+        </div>
+
+        <p class="text-center font-italic pt-4 mt-4 font-larger">1. Дані про бригаду</p>
+        {% if brigade_info_reports %}
+        <div class="col-10 text-center offset-1">
+        <table class="table">
+            <tr>
+                <th>Посада</th>
+                <th>Прізвище</th>
+                <th>Початок роботи</th>
+                <th>Кінець роботи</th>
+                <th>Передрейсовий мед. огляд</th>
+                <th>Післярейсовий мед. огляд</th>
+            </tr>
+            {% for brigade_info_report in brigade_info_reports%}
+            <tr>
+                <td>{{brigade_info_report.member.get_job_title_display|default:"невідомо"}}</td>
+                <td>{{brigade_info_report.member}}</td>
+                <td>{{brigade_info_report.date_time_from|date:'H:i'|default:"невідомо"}}</td>
+                <td>{{brigade_info_report.date_time_to|date:'H:i'|default:"невідомо"}}</td>
+                <td>{{brigade_info_report.get_medical_check_before_display|default:"невідомо"}}</td>
+                <td>{{brigade_info_report.get_medical_check_after_display|default:"невідомо"}}</td>
+            </tr>
+            {% endfor %}
+        </table>
+        </div>
+        {% else %}
+            <p class="offset-1 mb-3 mt-3">Даних про бригаду немає</p>
+        {% endif %}
+
+
+        <p class="text-center font-italic pt-4 mt-4 font-larger">2. Показання спідометра, лічильника мотогодин</p>
+        {% if moto_fuel_info_report %}
+        <div class="row col-10 text-center offset-1">
+            <div class="col-5">
+                <table class="table table-bordered">
+                    <tr>
+                        <td rowspan="2" style="vertical-align: middle;">Показання спідометра, лічильника мотогодин при виїзді</td>
+                        <td>{{moto_fuel_info_report.motohour_before|default:"невідомо"}} мт/г</td>
+                    </tr>
+                    <tr>
+                        
+                        <td>{{moto_fuel_info_report.km_before|default:"невідомо"}} км</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="col-5 offset-1">
+                <table class="table table-bordered">
+                    <tr>
+                        <td rowspan="2" style="vertical-align: middle;">Показання спідометра, лічильника мотогодин при поверненні</td>
+                        <td>{{moto_fuel_info_report.motohour_after|default:"невідомо"}} мт/г</td>
+                    </tr>
+                    <tr>
+                        <td>{{moto_fuel_info_report.km_after|default:"невідомо"}} км</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        {% else %}
+            <p class="offset-1 mb-3 mt-3">Даних про показання спідометра, лічильника мотогодин немає</p>
+        {% endif %}
+
+        <p class="text-center font-italic pt-4 mt-4 font-larger">3. Рух паливно-мастильних матеріалів</p>
+        {% if maslo_info_report %}
+        <div class="col-10 text-center offset-1">
+        <table class="table">
+            <tr>
+                <th>Марка</th>
+                <th>Видано</th>
+                <th>Залишок при виїзді</th>
+                <th>Залишок при поверненні</th>
+                <th>Примітки</th>
+            </tr>
+            <tr>
+                <td>{{maslo_info_report.marka|default:"невідомо"}}</td>
+                <td>{{maslo_info_report.vidano|default:"невідомо"}}</td>
+                <td>{{maslo_info_report.maslo_before|default:"невідомо"}}</td>
+                <td>{{maslo_info_report.maslo_after|default:"невідомо"}}</td>
+                <td>{{maslo_info_report.info|default:"невідомо"}}</td>
+            </tr>
+        </table>
+        </div>
+        {% else %}
+            <p class="offset-1 mb-3 mt-3">Даних про рух паливно-мастильних матеріалів немає</p>
+        {% endif %}
+
+
+        <p class="text-center font-italic pt-4 mt-4 font-larger">4. Дані про роботу машини</p>
+        {% if brigade_info_reports %}
+        <div class="col-10 text-center offset-1">
+        <table class="table table-bordered">
+            <tr>
+                <th>Клієнт</th>
+                <th>Станція відправлення</th>
+                <th>Станція призначення</th>
+                <th>Початку робіт у «вікно»</th>
+                <th>Закінчення робіт у «вікно»</th>
+                <th>Назва виконаних робіт</th>
+                <th>Виробіток за робочий день</th>
+            </tr>
+            {% for machine_working_report in machine_working_reports%}
+            <tr>
+                <td>{{machine_working_report.client|default:"невідомо"}}</td>
+                <td>{{machine_working_report.station_from|default:"невідомо"}}</td>
+                <td>{{machine_working_report.station_to|default:"невідомо"}}</td>
+                <td>{{machine_working_report.departure_time|date:'H:i'|default:"невідомо"}}</td>
+                <td>{{machine_working_report.arrival_time|date:'H:i'|default:"невідомо"}}</td>
+                <td>{{machine_working_report.description|default:"невідомо"}}</td>
+                <td>{{machine_working_report.workday_production|default:"невідомо"}}</td>
+            </tr>
+            {% endfor %}
+        </table>
+        </div>
+        {% else %}
+            <p class="offset-1 mb-3 mt-3">Даних про роботу машини немає</p>
+        {% endif %}
+
+        <p class="text-center font-italic pt-3 font-larger">Місця проведення робот</p>
+        {% if data_for_js %}
+            <p class="offset-2 col-8 text-center">На карті зображені місця виконання роботи. Наведіть на маркер <i class="fas fa-map-marker-alt" style="color: red;"></i>, щоб дізнатись які роботи проводились на данній дільниці.
+                <br>Маркери можуть бути віддаленні один від одного, використовуйте зумування
+            </p>
+        {% else %}
+            <p class="text-center">Даних про місця де виконувались роботи невідома або не була вказана</p>
+        {% endif %}
+    </div>
+    <div class="offset-1 col-10" id="map">
+
+    </div>
+    
+{% endblock content_page %}
+
+{% block add_style %}
+<style>
+    #map {
+        height: 500px;
+    }
+    .font-larger{
+        font-size: larger;
+    }
+  </style>
+{% endblock add_style %}
+
+
+{% block add_js %}
+<script>
+
+    function initMap() {
+        var map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 8,
+            center: {{ center_map | safe }}
+        });
+        setMarkers(map);
+    }
+    
+    var data = {{data_for_js  | safe }};
+    
+    function setMarkers(map) {
+    
+        for (var i = 0; i < data.length; i++) {
+            var el = data[i];
+            var marker = new google.maps.Marker({
+                position: { lat: el[1], lng: el[2] },
+                map: map,
+                title: el[0],
+            });
+        }
+    }
+</script>
+    <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key={{google_api_key}}&callback=initMap&language=uk">
+    </script>
+{% endblock add_js %}

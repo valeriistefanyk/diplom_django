@@ -1,0 +1,52 @@
+<div class="col-12">
+<form action="" method="post">
+    {% csrf_token %}
+    <input type="hidden" name='temp_report_id' value="{{temp_report.id}}">
+    <input type="hidden" name='date' value="{{date}}">
+    {% for member in members %}
+        <input type="hidden" name="member_id" value="{{member.id}}">
+    {% endfor %}
+    <div class="col-12">
+    <table class="table">
+        <tr>
+            <th rowspan="2">Замовник</th>
+            <th rowspan="2">Станція відправлення</th>
+            <th rowspan="2">Станція призначення</th>
+            <th colspan="2">Час</th>
+            <th rowspan="2">Назва виконаних робіт</th>
+            <th rowspan="2">Місце робіт</th>
+            <th rowspan="2">Виробіток за робочий день</th>
+        </tr>
+        <tr>
+            <th>Початку робіт у "вікно"</th>
+            <th>Закінчення робіт у "вікно"</th>
+        </tr>
+        <tr>
+            <td><input type="text" id="client" name="client"></td>
+            <td><input type="text" id="station_from" name="station_from"></td>
+            <td><input type="text" id="station_to" name="station_to"></td>
+            <td><input type="time" name="departure_time" list="time-list"></td>
+            <td><input type="time" name="arrival_time" list="time-list"></td>
+            <td><input type="text" name="description" id="description">
+            <td><input type="text" name="place_working" id="place_working"></td>
+            <td><input type="text" name="workday_production" id="workday_production"></td>
+        </tr>
+    </table>
+</div>
+    <div class="col-12 text-center">
+        <input type="submit" name="sendDataMachineWorking" class="btn btn-primary" value="Зберегти дані про роботу машини">
+    </div>
+</form>
+</div>
+
+<datalist id="time-list">
+    <option value="09:00" ></option>
+    <option value="10:00" label=""></option>
+    <option value="11:00" label=""></option>
+    <option value="12:00" label=""></option>
+    <option value="14:00" label=""></option>
+    <option value="16:00" label=""></option>
+    <option value="18:00" label=""></option>
+    <option value="20:00" label=""></option>
+    <option value="22:00" label=""></option>
+</datalist>

@@ -1,0 +1,44 @@
+{% extends 'senior-machinist/part/_base_page_machinist.html' %}
+
+{% block title %}Працівники бригади{% endblock %}
+
+{% block content_page %}
+        <h2 class="text-center mt-4 mb-4">Працівники у Вашій бригаді</h2>
+
+        {% if members %}
+        <div class="col-8 offset-2 text-center pt-4">
+
+          
+        <table class="table">
+                <tr>
+                    <th>Прізвище</th>
+                    <th>Ім'я</th>
+                    <th>Телефони</th>
+                </tr>
+            
+            {% for member in members %}
+                <tr>
+                    <td>{{member.last_name}}</td>
+                    <td>{{member.first_name}}</td>
+                    <td>{{member.phones}}</td>
+                </tr>
+            {% endfor %}
+            </table>
+        </div>  
+        {% else %}
+            <p>У вас немає жодного водія</p>
+        {% endif %}
+        
+        
+        
+{% endblock content_page %}
+
+
+{% block add_style %}
+        <style>
+            .font-larger{
+                font-size: larger;
+            }
+                        
+          </style>
+{% endblock add_style %}

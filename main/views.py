@@ -53,4 +53,6 @@ def redirect_on_right_page(request, user):
         return redirect('engineer:home-page')
     if user.has_perm('director.full_control'):
         return redirect('director:home-page')
+    if user.has_perm('senior_machinist.full_control'):
+        return redirect('machinist:home-page')
     return redirect('/')

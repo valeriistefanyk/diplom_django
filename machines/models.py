@@ -29,6 +29,55 @@ class Machine(models.Model):
     fix_date = models.DateField(blank=True, null=True)
     fix_by = models.CharField(max_length=50, blank=True, null=True)
 
+    NORMAL = '0'
+    CALLENGINEER = '1'
+    DNTRUSH = '2'
+    SCRITICAL = '3'
+    VCRITICAL = '4'
+    UNKNOW = '5'
+    MACHINE_STATUS = [
+        (VCRITICAL, 'Дуже критичний, потребує терміновий ремонт'),
+        (SCRITICAL, 'Потребує капітального ремонту'),
+        (DNTRUSH, 'Не терміново'),
+        (CALLENGINEER, 'Невідомо, потрібен технічний інженер'),
+        (UNKNOW, 'невідомо'),
+        (NORMAL, 'В нормальному стані'),
+    ]
+    status = models.CharField(
+        max_length=1,
+        choices=MACHINE_STATUS,
+        default=NORMAL,
+    )
+
+
+    NORMAL_CONDITION = '0'
+    SMALLFAULT_RUNNING = '1'
+    FAULT_SENDTECHORENG = '2'
+    FAULT_CHECKEDTECHNICIAN = '3'
+    FAULT_CHECKENGINEER = '4'
+    FAULT = '5'
+    UNDERREPAIR = '6'
+    UNDERREPAIR_CALLENGINEER  = '7'
+    
+    MACHINE_CONDITION = [
+        (NORMAL_CONDITION, 'В робочому стані'),
+        (SMALLFAULT_RUNNING, 'Є не термінова несправність. Поки працює за графіком'),
+        (FAULT_CHECKEDTECHNICIAN, 'Є несправність. Інформація переправлена техніку та інженеру'),
+        (FAULT_SENDTECHORENG, 'Є несправність. Перевіряється техніком'),
+        (FAULT_CHECKENGINEER, 'Є несправність. Інформацію дізнатись у інженера'),
+        (FAULT, 'Є несправність'),
+        (UNDERREPAIR, 'Знаходиться на ремонті'),
+        (UNDERREPAIR_CALLENGINEER, 'На ремонті. Інформація у інженера'),
+        
+    ]
+
+    machine_condition = models.CharField(
+        max_length=1,
+        choices=MACHINE_CONDITION,
+        default=NORMAL_CONDITION,
+    )
+
+
     brigade = models.ForeignKey(SeniorDriver, on_delete=models.CASCADE)
 
     work_days = models.IntegerField(default=0)

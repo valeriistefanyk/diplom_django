@@ -1,0 +1,98 @@
+{% extends 'senior-machinist/part/_base_page_machinist.html'%}
+
+{% block title %}Стан машини{% endblock %}
+
+{% block content_page %}
+<div class="container-fluid">
+    <h2 class="pt-5" style="text-align: center;">Стан машини</h2><br>
+
+    {% if machine %}
+    
+    <div class="row col-12">
+            <div class="col-5 text-center d-flex justify-content-end" >
+                <div class="card border-0" style="width: 18rem;">
+                    <div class="card-body">
+                        <h5 class="card-title">{{machine.name}}</h5>
+                    </div>
+                    <img class="card-img-top" src="{{machine.machine.image.url}}" alt="{{machine.name}}">
+                </div>
+            </div>
+            <div class="col-6 offset-1" style="font-size: larger;">
+              <h3 class="pt-4">Основні відомості:</h3>
+              <ul style="line-height: 2;" class="pt-2">
+                <li>Інвентарний номер <b>{{machine.inventory_number}}</b></li>
+                <li>Номер машини <b>#{{machine.number_machine}}</b></li>
+                <li><a href="{% url 'machinist:machine' %}">Детально про машину</a></li>
+            </ul>
+            </div>
+    </div>
+    <div class="col-10 offset-1">
+        <p style="font-size: larger;" class="text-center pb-4 pt-4">Стан машини: <b><span {% if machine.machine_condition == '0' %} style="color: green;"{% else %} style="color: red;" {% endif %}>{{machine.get_machine_condition_display}}</span></b></p>     
+
+        {% if not machine.breakage %}
+        <div class="col-8 offset-2">
+            <p class="text-center pb-4">Якщо в колійній машині є якісь несправності, Вам потрібно змінити статус на цій сторінці нижче.</p>
+            <form action="" method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="status">Оберіть статус який більше підходить</label>
+                    <select class="form-control" name="status" id="status">
+                        <option value="4">Дуже критичний, потребує терміновий ремонт</option>
+                        <option value="3">Потребує капітального ремонту</option>
+                        <option value="2">Не терміново</option>
+                        <option value="1">Невідомо, потрібен технічний інженер</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="breakage_info">Інформація про несправність</label>
+                    <input type="text" class="form-control" name="breakage_info" id="breakage_info">
+                </div>
+                <div class="form-group">
+                    <label for="breakage_date">Дата виникнення несправності</label>
+                    <input type="date" class="form-control" name="breakage_date" id="breakage_date">
+                </div>
+                <div class="text-center">
+                    <input type="submit" class="btn btn-danger" value="Змінити стан машини" name="sendBreakageInfo">
+                </div>
+                
+            </form>
+        </div>
+
+        {% else %}
+        <div class="col-8 offset-2">
+            <p class="text-center pb-4">Машина в системі має статус "Є несправність". Якщо машина була починена, або Ви випадково в системі встановили статус несправності машини, виведіть машину з ремонту за формою нижче </p>
+            <form action="" method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="status_condition">Оберіть статус який більше підходить</label>
+                    <select class="form-control" name="status_condition" id="status_condition">
+                        <option value="4" selected>Машина в робочому стані</option>
+                        <option value="3">Машина починена техніком</option>
+                        <option value="2">Випадково відправили машину у ремонт</option>
+                        <option value="1">Інші причини (інженер може з'язатись з Вами для інформування)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="fix_date">Дата виводу з ремонту</label>
+                    <input type="date" class="form-control" name="fix_date" id="fix_date">
+                </div>
+                <div class="text-center">
+                    <input type="submit" class="btn btn-success" value="Вивести машину з ремонту" name="sendFixInfo">
+                </div>
+                
+            </form>
+        </div>
+        {% endif %}
+        
+    </div>
+    {% else %}
+    <p class="text-center" style="font-weight: bold; font-size: large;">За Вами не закріплена машина!</p>
+    {% endif %}
+{% endblock %}
+
+
+{% block add_style %}
+<script>
+    document.getElementById("fix_date").valueAsDate = new Date();
+</script>
+{% endblock add_style %}
