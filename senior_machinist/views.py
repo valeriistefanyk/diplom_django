@@ -245,7 +245,7 @@ def route_sheet(request):
             masloinforeport.save()
 
             if maslo_after and maslo_before:
-                temp_report.maslo = float(maslo_after) - float(maslo_before)
+                temp_report.maslo = float(maslo_before) - float(maslo_after)
             temp_report.stage = 'part'
             temp_report.save()
 

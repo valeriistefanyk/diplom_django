@@ -124,9 +124,9 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
 
         print("Створення машиністів")
-        # self.create_permissions()
+        self.create_permissions()
         # self.create_csv('machinists')
-        # self.read_csv('machinists')
+        self.read_csv('machinists')
         self.create_brigade_members()
 
 
