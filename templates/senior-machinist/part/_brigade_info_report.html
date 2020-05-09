@@ -27,18 +27,20 @@
                     <td><input type="time" class="form-control" name="date_time_to" list="time-list"></td>
                     <td><input type="text" class="form-control" size="10"></td>
                     <td>
-                        <select class="form-control" id="medical_check_before" style="width:120px" name="medical_check_before">
+                        <select class="form-control" id="medical_check_before{{member.id}}" style="width:120px" name="medical_check_before">
+                            <option value="ps" selected>пройдено</option>
                             <option value="na">не допущений</option>
                             <option value="al">допущений</option>
-                            <option value="uk" selected>невідомо</option>
+                            <option value="uk">невідомо</option>
                         </select>
                     </td>
                     <td><input type="text" class="form-control" size="10"></td>
                     <td>
-                        <select class="form-control" id="medical_check_after" style="width:120px" name="medical_check_after">
+                        <select class="form-control" id="medical_check_after{{member.id}}" style="width:120px" name="medical_check_after">
+                            <option value="ps" selected>пройдено</option>
                             <option value="na">не допущений</option>
-                            <option value="al">допущений</option>
-                            <option value="uk" selected>невідомо</option>
+                            <option value="hl">здоровий</option>
+                            <option value="uk">невідомо</option>
                         </select>
                     </td>
                 </tr>
@@ -49,3 +51,18 @@
         </div>
     </form>
 </div>
+<script>
+    $(document).ready(function(){
+        var num = 'na';
+        {% for member in members %}
+        $("#medical_check_before{{member.id}}").on('change', function() {
+            if ($(this).val() == 'na'){
+                $('#medical_check_after{{member.id}} [value="na"]').prop('selected', true);
+            }
+            else {
+                $('#medical_check_after{{member.id}}').prop('disabled', false);
+            }
+        });
+        {% endfor %}
+    });
+</script>
